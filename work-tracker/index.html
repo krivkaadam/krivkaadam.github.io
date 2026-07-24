@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+// link
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+
+</head>
+<body>
+
+<div id="login-screen">
+  <h1>Ledger</h1>
+  <p>Sign in to track hours.</p>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="email" />
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password" />
+  </div>
+  <button class="btn primary" id="login-btn" style="width:100%">Sign in</button>
+  <div id="error-msg"></div>
+</div>
+
+<div class="wrap hidden" id="app-screen">
+  <header class="top">
+    <div>
+      <div class="brand">Ledger<em>.</em></div>
+      <div class="sub">hours worked</div>
+    </div>
+    <button id="signout">Sign out</button>
+  </header>
+
+  <div class="card">
+    <div class="timer-status">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">No session running</span>
+    </div>
+    <div class="timer-display" id="timer-display">00:00:00</div>
+    <div class="timer-note">
+      <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
+    </div>
+    <div class="timer-actions">
+      <button class="btn primary" id="start-btn">Start</button>
+      <button class="btn" id="pause-btn" style="display:none">Pause</button>
+      <button class="btn running" id="resume-btn" style="display:none">Resume</button>
+      <button class="btn" id="stop-btn" style="display:none; border-color:var(--danger); color:var(--danger);">Stop &amp; save</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="summary-row">
+      <div class="summary-total">
+        <div class="label" id="summary-label">This month</div>
+        <div class="value" id="summary-value">0h 00m</div>
+      </div>
+      <div class="filters">
+        <div class="field">
+          <label>From</label>
+          <input type="date" id="filter-from" />
+        </div>
+        <div class="field">
+          <label>To</label>
+          <input type="date" id="filter-to" />
+        </div>
+        <button class="btn" id="filter-apply">Apply</button>
+        <button class="btn ghost" id="filter-reset">This month</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="entries-head">
+    <span>Entries</span>
+    <span class="count" id="entries-count">0</span>
+  </div>
+  <div id="entries-list"></div>
+</div>
+
+</body>
+</html>
