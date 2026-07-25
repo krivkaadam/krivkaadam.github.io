@@ -125,7 +125,8 @@ input[type=email],
 input[type=password],
 input[type=text],
 input[type=number],
-input[type=date] {
+input[type=date],
+select {
     width: 100%;
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -134,6 +135,16 @@ input[type=date] {
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
+}
+
+select {
+    cursor: pointer;
+}
+
+select:disabled,
+input:disabled {
+    opacity: 0.6;
+    cursor: default;
 }
 
 input:focus {
@@ -288,6 +299,45 @@ button {
     flex-wrap: wrap;
 }
 
+.project-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.project-row .col {
+    flex: 1;
+    min-width: 150px;
+}
+
+.project-row .rate-col {
+    max-width: 130px;
+    min-width: 110px;
+}
+
+.project-row .currency-col {
+    max-width: 90px;
+    min-width: 80px;
+}
+
+#new-project-row {
+    display: none;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+#new-project-row.show {
+    display: flex;
+}
+
+#project-error {
+    color: var(--danger);
+    font-size: 12px;
+    margin: -8px 0 14px;
+    min-height: 14px;
+}
+
 /* ---- Summary ---- */
 .summary-row {
     display: flex;
@@ -323,7 +373,8 @@ button {
     margin-bottom: 0;
 }
 
-.filters input {
+.filters input,
+.filters select {
     width: 140px;
     font-size: 13px;
     padding: 8px 10px;
@@ -332,6 +383,60 @@ button {
 .filters .btn {
     padding: 8px 12px;
     font-size: 13px;
+}
+
+.summary-value-lines {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+}
+
+.summary-value-lines .line {
+    white-space: nowrap;
+}
+
+.breakdown {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.breakdown-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 5px 0;
+    color: var(--text-dim);
+}
+
+.breakdown-row .b-project {
+    color: var(--text);
+}
+
+.breakdown-row .b-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    white-space: nowrap;
 }
 
 /* ---- Entries ---- */
@@ -392,11 +497,26 @@ button {
     font-style: italic;
 }
 
+.entry .project-col {
+    flex-shrink: 0;
+    max-width: 120px;
+}
+
 .entry .dur-col {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
     color: var(--text);
-    width: 76px;
+    width: 70px;
+    text-align: right;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.entry .earn-col {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    width: 90px;
     text-align: right;
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;

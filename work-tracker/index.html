@@ -44,6 +44,31 @@
       <span id="status-text">No session running</span>
     </div>
     <div class="timer-display" id="timer-display">00:00:00</div>
+
+    <div class="project-row">
+      <div class="col">
+        <select id="project-select">
+          <option value="">Select a project…</option>
+          <option value="__new__">+ Add new project…</option>
+        </select>
+      </div>
+      <div class="rate-col">
+        <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
+      </div>
+      <div class="currency-col">
+        <select id="currency-select">
+          <option value="CZK">CZK</option>
+          <option value="EUR">EUR</option>
+        </select>
+      </div>
+    </div>
+    <div id="new-project-row">
+      <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
+      <button class="btn" id="new-project-confirm">Add</button>
+      <button class="btn ghost" id="new-project-cancel">Cancel</button>
+    </div>
+    <div id="project-error"></div>
+
     <div class="timer-note">
       <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
     </div>
@@ -59,9 +84,15 @@
     <div class="summary-row">
       <div class="summary-total">
         <div class="label" id="summary-label">This month</div>
-        <div class="value" id="summary-value">0h 00m</div>
+        <div class="summary-value-lines" id="summary-value">0h 00m</div>
       </div>
       <div class="filters">
+        <div class="field">
+          <label>Project</label>
+          <select id="filter-project">
+            <option value="">All projects</option>
+          </select>
+        </div>
         <div class="field">
           <label>From</label>
           <input type="date" id="filter-from" />
@@ -73,6 +104,10 @@
         <button class="btn" id="filter-apply">Apply</button>
         <button class="btn ghost" id="filter-reset">This month</button>
       </div>
+    </div>
+    <div class="breakdown" id="breakdown-section" style="display:none">
+      <div class="breakdown-title">By project</div>
+      <div id="breakdown-list"></div>
     </div>
   </div>
 
