@@ -54,6 +54,20 @@ function computeElapsed(session){
   return session.paused_seconds || 0;
 }
 
+/* Only the running clock ticks, and only while a session is actually running.
+   Everything else (buttons, status text) re-renders on real state changes, not every 250ms. */
+function startTicking(){
+  if(tickHandle) return;
+  tickHandle = setInterval(()=>{
+    if(currentSession && currentSession.status === 'running'){
+      document.getElementById('timer-display').textContent = fmtHMS(computeElapsed(currentSession));
+    }
+  }, 250);
+}
+function stopTicking(){
+  if(tickHandle){ clearInterval(tickHandle); tickHandle = null; }
+}
+
 /* ---------- auth ---------- */
 async function checkSession(){
   const { data:{ session } } = await sb.auth.getSession();
@@ -65,7 +79,7 @@ async function checkSession(){
   }
 }
 
-document.getElementById('login-btn').addEventListener('click', async ()=>{
+async function attemptLogin(){
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const errEl = document.getElementById('error-msg');
@@ -74,12 +88,18 @@ document.getElementById('login-btn').addEventListener('click', async ()=>{
   if(error){ errEl.textContent = error.message; return; }
   currentUser = data.user;
   showApp();
+}
+document.getElementById('login-btn').addEventListener('click', attemptLogin);
+['email','password'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') attemptLogin();
+  });
 });
 
 document.getElementById('signout').addEventListener('click', async ()=>{
   await sb.auth.signOut();
   currentUser = null;
-  if(tickHandle) clearInterval(tickHandle);
+  stopTicking();
   showLogin();
 });
 
@@ -98,7 +118,6 @@ async function showApp(){
   await loadOpenSession();
   await loadEntries();
   subscribeRealtime();
-  if(!tickHandle) tickHandle = setInterval(renderTimer, 250);
 }
 
 /* ---------- projects ---------- */
@@ -207,6 +226,7 @@ function renderTimer(){
   const sessionMeta = document.getElementById('session-meta');
 
   if(!currentSession){
+    stopTicking();
     document.body.classList.remove('session-active');
     dot.className = 'dot';
     statusText.textContent = 'No session running';
@@ -225,8 +245,9 @@ function renderTimer(){
 
   document.body.classList.add('session-active');
   display.textContent = fmtHMS(computeElapsed(currentSession));
-  noteInput.disabled = true;
-  noteInput.value = currentSession.note || '';
+  if(document.activeElement !== noteInput){
+    noteInput.value = currentSession.note || '';
+  }
   projSel.disabled = true;
   rateInput.disabled = true;
   currencySel.disabled = true;
@@ -237,6 +258,7 @@ function renderTimer(){
 
   const projLabel = currentSession.project_id ? ` — ${currentSession.project_id}` : '';
   if(currentSession.status === 'running'){
+    startTicking();
     dot.className = 'dot running';
     statusText.textContent = 'Running' + projLabel;
     startBtn.style.display = 'none';
@@ -244,6 +266,7 @@ function renderTimer(){
     resumeBtn.style.display = 'none';
     stopBtn.style.display = '';
   } else {
+    stopTicking();
     dot.className = 'dot paused';
     statusText.textContent = 'Paused' + projLabel;
     startBtn.style.display = 'none';
@@ -252,6 +275,21 @@ function renderTimer(){
     stopBtn.style.display = '';
   }
 }
+
+document.getElementById('note-input').addEventListener('blur', async ()=>{
+  if(!currentSession) return; // no active session yet — note is just staged for the next Start
+  const newNote = document.getElementById('note-input').value.trim();
+  if(newNote === (currentSession.note || '')) return; // nothing changed
+  const { data, error } = await sb.from('sessions').update({
+    note: newNote || null
+  }).eq('id', currentSession.id).select().single();
+  if(error){ alert(error.message); return; }
+  currentSession = data;
+  document.getElementById('session-meta').textContent = currentSession.note || '';
+});
+document.getElementById('note-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') e.target.blur();
+});
 
 document.getElementById('start-btn').addEventListener('click', async ()=>{
   const errEl = document.getElementById('project-error');
