@@ -15,6 +15,8 @@
 <body>
 
 
+<body>
+
 <div id="login-screen">
   <h1>Ledger</h1>
   <p>Sign in to track hours.</p>
@@ -36,43 +38,57 @@
       <div class="brand">Ledger<em>.</em></div>
       <div class="sub">hours worked</div>
     </div>
-    <button id="signout">Sign out</button>
+    <div class="header-actions">
+      <a href="../" id="home-link">← Home</a>
+      <button id="signout">Sign out</button>
+    </div>
   </header>
 
-  <div class="card">
+  <div class="card timer-card">
     <div class="timer-status">
       <span class="dot" id="status-dot"></span>
       <span id="status-text">No session running</span>
     </div>
     <div class="timer-display" id="timer-display">00:00:00</div>
+    <div class="session-meta" id="session-meta"></div>
 
-    <div class="project-row">
-      <div class="col">
-        <select id="project-select">
-          <option value="">Select a project…</option>
-          <option value="__new__">+ Add new project…</option>
-        </select>
-      </div>
-      <div class="rate-col">
-        <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
-      </div>
-      <div class="currency-col">
-        <select id="currency-select">
-          <option value="CZK">CZK</option>
-          <option value="EUR">EUR</option>
-        </select>
-      </div>
+    <div id="focus-visual">
+      <!-- Drop your own celebratory gif/image here, e.g.:
+           <img src="tree-growing.gif" style="width:100%; border-radius:10px;" />
+           It only shows once a session is running. -->
+      <div id="focus-visual-placeholder">your gif goes here</div>
     </div>
-    <div id="new-project-row">
-      <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
-      <button class="btn" id="new-project-confirm">Add</button>
-      <button class="btn ghost" id="new-project-cancel">Cancel</button>
-    </div>
-    <div id="project-error"></div>
 
-    <div class="timer-note">
-      <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
+    <div id="pre-session-fields">
+      <div class="project-row">
+        <div class="col">
+          <select id="project-select">
+            <option value="">Select a project…</option>
+            <option value="__new__">+ Add new project…</option>
+          </select>
+        </div>
+        <div class="rate-col">
+          <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
+        </div>
+        <div class="currency-col">
+          <select id="currency-select">
+            <option value="CZK">CZK</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+      </div>
+      <div id="new-project-row">
+        <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
+        <button class="btn" id="new-project-confirm">Add</button>
+        <button class="btn ghost" id="new-project-cancel">Cancel</button>
+      </div>
+      <div id="project-error"></div>
+
+      <div class="timer-note">
+        <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
+      </div>
     </div>
+
     <div class="timer-actions">
       <button class="btn primary" id="start-btn">Start</button>
       <button class="btn" id="pause-btn" style="display:none">Pause</button>
@@ -81,7 +97,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="summary-card">
     <div class="summary-row">
       <div class="summary-total">
         <div class="label" id="summary-label">This month</div>
@@ -112,11 +128,13 @@
     </div>
   </div>
 
-  <div class="entries-head">
-    <span>Entries</span>
-    <span class="count" id="entries-count">0</span>
+  <div id="entries-section">
+    <div class="entries-head">
+      <span>Entries</span>
+      <span class="count" id="entries-count">0</span>
+    </div>
+    <div id="entries-list"></div>
   </div>
-  <div id="entries-list"></div>
 </div>
 
 
