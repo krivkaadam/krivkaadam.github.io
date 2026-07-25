@@ -225,6 +225,9 @@ function renderTimer(){
   const currencySel = document.getElementById('currency-select');
   const sessionMeta = document.getElementById('session-meta');
 
+  const nextStatus = !currentSession ? 'paused' : currentSession.status === 'running' ? 'running' : 'paused';
+  updateFocusGif(nextStatus);
+
   if(!currentSession){
     stopTicking();
     document.body.classList.remove('session-active');

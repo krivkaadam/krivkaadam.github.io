@@ -54,11 +54,11 @@
       <div class="session-meta" id="session-meta"></div>
 
       <div id="focus-visual">
-     
-      <img id="focus-gif" src="../src/assets/CoffeePause.gif" alt=""
-           style="width:100%; border-radius:10px; display:block;"
-           onerror="this.style.display='none'; document.getElementById('focus-visual-placeholder').style.display='flex';" />
-    </div>
+        <img id="focus-gif" src="../src/assets/CoffeePause.gif" alt=""
+             style="width:100%; border-radius:10px; display:block;"
+             onerror="this.style.display='none'; const placeholder = document.getElementById('focus-visual-placeholder'); if (placeholder) placeholder.style.display='flex';" />
+        <div id="focus-visual-placeholder" style="display:none; min-height:200px; align-items:center; justify-content:center; border:1px dashed rgba(255,255,255,0.2); border-radius:10px; color:rgba(255,255,255,0.55);">Focus animation unavailable</div>
+      </div>
 
       <div id="pre-session-fields">
         <div class="project-row">
