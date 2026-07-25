@@ -1,147 +1,151 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ledger</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="style.css">
 
 </head>
-<body>
-
 
 <body>
 
-<div id="login-screen">
-  <h1>Ledger</h1>
-  <p>Sign in to track hours.</p>
-  <div class="field">
-    <label for="email">Email</label>
-    <input type="email" id="email" autocomplete="email" />
-  </div>
-  <div class="field">
-    <label for="password">Password</label>
-    <input type="password" id="password" autocomplete="current-password" />
-  </div>
-  <button class="btn primary" id="login-btn" style="width:100%">Sign in</button>
-  <div id="error-msg"></div>
-</div>
 
-<div class="wrap hidden" id="app-screen">
-  <header class="top">
-    <div>
-      <div class="brand">Ledger<em>.</em></div>
-      <div class="sub">hours worked</div>
-    </div>
-    <div class="header-actions">
-      <a href="../" id="home-link">← Home</a>
-      <button id="signout">Sign out</button>
-    </div>
-  </header>
+  <body>
 
-  <div class="card timer-card">
-    <div class="timer-status">
-      <span class="dot" id="status-dot"></span>
-      <span id="status-text">No session running</span>
-    </div>
-    <div class="timer-display" id="timer-display">00:00:00</div>
-    <div class="session-meta" id="session-meta"></div>
-
-    <div id="focus-visual">
-      <!-- Drop your own celebratory gif/image here, e.g.:
-           <img src="tree-growing.gif" style="width:100%; border-radius:10px;" />
-           It only shows once a session is running. -->
-      <div id="focus-visual-placeholder">your gif goes here</div>
+    <div id="login-screen">
+      <h1>Ledger</h1>
+      <p>Sign in to track hours.</p>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" />
+      </div>
+      <button class="btn primary" id="login-btn" style="width:100%">Sign in</button>
+      <div id="error-msg"></div>
     </div>
 
-    <div id="pre-session-fields">
-      <div class="project-row">
-        <div class="col">
-          <select id="project-select">
-            <option value="">Select a project…</option>
-            <option value="__new__">+ Add new project…</option>
-          </select>
+    <div class="wrap hidden" id="app-screen">
+      <header class="top">
+        <div>
+          <div class="brand">Ledger<em>.</em></div>
+          <div class="sub">hours worked</div>
         </div>
-        <div class="rate-col">
-          <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
+        <div class="header-actions">
+          <a href="../" id="home-link">← Home</a>
+          <button id="signout">Sign out</button>
         </div>
-        <div class="currency-col">
-          <select id="currency-select">
-            <option value="CZK">CZK</option>
-            <option value="EUR">EUR</option>
-          </select>
+      </header>
+
+      <div class="card timer-card">
+        <div class="timer-status">
+          <span class="dot" id="status-dot"></span>
+          <span id="status-text">No session running</span>
+        </div>
+        <div class="timer-display" id="timer-display">00:00:00</div>
+        <div class="session-meta" id="session-meta"></div>
+
+        <div id="focus-visual">
+
+          <img src="../../src/assets/PiggyBank.gif" style="width:100%; border-radius:10px;" />
+
+        </div>
+
+        <div id="pre-session-fields">
+          <div class="project-row">
+            <div class="col">
+              <select id="project-select">
+                <option value="">Select a project…</option>
+                <option value="__new__">+ Add new project…</option>
+              </select>
+            </div>
+            <div class="rate-col">
+              <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
+            </div>
+            <div class="currency-col">
+              <select id="currency-select">
+                <option value="CZK">CZK</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </div>
+          </div>
+          <div id="new-project-row">
+            <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
+            <button class="btn" id="new-project-confirm">Add</button>
+            <button class="btn ghost" id="new-project-cancel">Cancel</button>
+          </div>
+          <div id="project-error"></div>
+
+          <div class="timer-note">
+            <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
+          </div>
+        </div>
+
+        <div class="timer-actions">
+          <button class="btn primary" id="start-btn">Start</button>
+          <button class="btn" id="pause-btn" style="display:none">Pause</button>
+          <button class="btn running" id="resume-btn" style="display:none">Resume</button>
+          <button class="btn" id="stop-btn" style="display:none; border-color:var(--danger); color:var(--danger);">Stop
+            &amp; save</button>
         </div>
       </div>
-      <div id="new-project-row">
-        <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
-        <button class="btn" id="new-project-confirm">Add</button>
-        <button class="btn ghost" id="new-project-cancel">Cancel</button>
-      </div>
-      <div id="project-error"></div>
 
-      <div class="timer-note">
-        <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
-      </div>
-    </div>
-
-    <div class="timer-actions">
-      <button class="btn primary" id="start-btn">Start</button>
-      <button class="btn" id="pause-btn" style="display:none">Pause</button>
-      <button class="btn running" id="resume-btn" style="display:none">Resume</button>
-      <button class="btn" id="stop-btn" style="display:none; border-color:var(--danger); color:var(--danger);">Stop &amp; save</button>
-    </div>
-  </div>
-
-  <div class="card" id="summary-card">
-    <div class="summary-row">
-      <div class="summary-total">
-        <div class="label" id="summary-label">This month</div>
-        <div class="summary-value-lines" id="summary-value">0h 00m</div>
-      </div>
-      <div class="filters">
-        <div class="field">
-          <label>Project</label>
-          <select id="filter-project">
-            <option value="">All projects</option>
-          </select>
+      <div class="card" id="summary-card">
+        <div class="summary-row">
+          <div class="summary-total">
+            <div class="label" id="summary-label">This month</div>
+            <div class="summary-value-lines" id="summary-value">0h 00m</div>
+          </div>
+          <div class="filters">
+            <div class="field">
+              <label>Project</label>
+              <select id="filter-project">
+                <option value="">All projects</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>From</label>
+              <input type="date" id="filter-from" />
+            </div>
+            <div class="field">
+              <label>To</label>
+              <input type="date" id="filter-to" />
+            </div>
+            <button class="btn" id="filter-apply">Apply</button>
+            <button class="btn ghost" id="filter-reset">This month</button>
+          </div>
         </div>
-        <div class="field">
-          <label>From</label>
-          <input type="date" id="filter-from" />
+        <div class="breakdown" id="breakdown-section" style="display:none">
+          <div class="breakdown-title">By project</div>
+          <div id="breakdown-list"></div>
         </div>
-        <div class="field">
-          <label>To</label>
-          <input type="date" id="filter-to" />
+      </div>
+
+      <div id="entries-section">
+        <div class="entries-head">
+          <span>Entries</span>
+          <span class="count" id="entries-count">0</span>
         </div>
-        <button class="btn" id="filter-apply">Apply</button>
-        <button class="btn ghost" id="filter-reset">This month</button>
+        <div id="entries-list"></div>
       </div>
     </div>
-    <div class="breakdown" id="breakdown-section" style="display:none">
-      <div class="breakdown-title">By project</div>
-      <div id="breakdown-list"></div>
-    </div>
-  </div>
-
-  <div id="entries-section">
-    <div class="entries-head">
-      <span>Entries</span>
-      <span class="count" id="entries-count">0</span>
-    </div>
-    <div id="entries-list"></div>
-  </div>
-</div>
 
 
 
-<!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
 
-</body>
+  </body>
+
 </html>
