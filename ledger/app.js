@@ -558,5 +558,17 @@ function subscribeRealtime(){
     .subscribe();
 }
 
+/* ---------- gif switching ---------- */
+function updateFocusGif(status){
+  const img = document.getElementById('focus-gif');
+  const placeholder = document.getElementById('focus-visual-placeholder');
+  const src = status === 'paused' ? '../src/assets/CoffeePause.gif' : '../src/assets/PiggyBank.gif';
+  if(img.dataset.currentSrc === src) return; // don't restart the same gif's animation needlessly
+  img.dataset.currentSrc = src;
+  img.style.display = 'block';
+  placeholder.style.display = 'none';
+  img.src = src;
+}
+
 /* ---------- boot ---------- */
 checkSession();

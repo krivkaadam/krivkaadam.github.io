@@ -1,4 +1,4 @@
- :root{
+:root{
     --bg: #16181a;
     --surface: #1e2124;
     --surface-2: #24272a;
@@ -426,11 +426,11 @@
   }
   body.session-active #focus-visual{display:block;}
   #focus-visual-placeholder{
+    display:none;
     width:100%;
     aspect-ratio:16/9;
     border:1px dashed var(--border-strong);
     border-radius:var(--radius);
-    display:flex;
     align-items:center;
     justify-content:center;
     color:var(--text-faint);
