@@ -406,6 +406,9 @@
     justify-content:center;
     text-align:center;
   }
+  body.session-active .wrap{
+    padding-bottom: 30px;
+  }
   body.session-active .timer-status{justify-content:center;}
   body.session-active .timer-display{
     font-size:88px;
