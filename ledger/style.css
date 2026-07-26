@@ -394,6 +394,7 @@
 
   /* ---- Focus mode (session running) ---- */
   body.session-active #summary-card,
+  body.session-active #statement-card,
   body.session-active #entries-section{
     display:none;
   }

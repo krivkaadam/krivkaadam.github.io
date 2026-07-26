@@ -602,7 +602,7 @@ function updateStatementRangeNote(){
   const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : '(no start limit)';
   const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : '(no end limit)';
   document.getElementById('stmt-range-note').innerHTML =
-    `Uses the range/project currently applied above: <b>${fromTxt} → ${toTxt}</b>, <b>${escapeHtml(label)}</b>. Adjust the filters above, then come back and preview again.`;
+    `Uses the range/project currently applied above: <b>${fromTxt} → ${toTxt}</b>, <b>${escapeHtml(label)}</b>. <br>Adjust the filters above, then come back and preview again.`;
 }
 
 function stripDiacritics(str){
@@ -685,7 +685,7 @@ async function generateStatement(){
       <div class="pc-qr-row">
         <div class="pc-qr-canvas"></div>
         <div class="pc-qr-note">
-          Scan with your banking app to pay <b>${fmtMoney(c.earnings, cur)}</b> to IBAN ${escapeHtml(iban)}.
+          Scan with your banking app to pay <b>${fmtMoney(c.earnings, cur)}</b><br> to IBAN ${escapeHtml(iban)}.
           ${msgVal ? `<br>Payment note: ${escapeHtml(msgVal)}` : ''}
           ${vsVal ? `<br>Variable symbol: ${escapeHtml(vsVal)}` : ''}
         </div>
@@ -711,7 +711,7 @@ async function generateStatement(){
         });
       } catch(err){
         console.error('QR generation failed', err);
-        container.textContent = 'QR generation failed — see console.';
+        container.textContent = 'QR generation failed - see console.';
       }
     }
   }
