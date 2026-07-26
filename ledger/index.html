@@ -9,7 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <link rel="stylesheet" href="style.css">
 
@@ -57,7 +59,9 @@
         <img id="focus-gif" src="../src/assets/CoffeePause.gif" alt=""
              style="width:100%; border-radius:10px; display:block;"
              onerror="this.style.display='none'; const placeholder = document.getElementById('focus-visual-placeholder'); if (placeholder) placeholder.style.display='flex';" />
-        <div id="focus-visual-placeholder" style="display:none; min-height:200px; align-items:center; justify-content:center; border:1px dashed rgba(255,255,255,0.2); border-radius:10px; color:rgba(255,255,255,0.55);">Focus animation unavailable</div>
+        <div id="focus-visual-placeholder"
+             style="display:none; min-height:200px; align-items:center; justify-content:center; border:1px dashed rgba(255,255,255,0.2); border-radius:10px; color:rgba(255,255,255,0.55);">
+          Focus animation unavailable</div>
       </div>
 
       <div id="pre-session-fields">
@@ -128,6 +132,37 @@
         <div class="breakdown-title">By project</div>
         <div id="breakdown-list"></div>
       </div>
+    </div>
+
+
+    <div class="card" id="statement-card">
+      <div class="entries-head" style="margin:0 0 16px;">
+        <span>Print / export statement</span>
+      </div>
+      <div class="statement-setup">
+        <div class="field">
+          <label>Your name</label>
+          <input type="text" id="stmt-your-name" placeholder="Jane Doe" />
+        </div>
+        <div class="field">
+          <label>Sent to</label>
+          <input type="text" id="stmt-friend-name" placeholder="Friend's name" />
+        </div>
+        <div class="field full">
+          <label>Your bank IBAN (for the payment QR code)</label>
+          <input type="text" id="stmt-iban" placeholder="CZ65 0800 0000 1920 0014 5399" />
+        </div>
+        <div class="field">
+          <label>Variable symbol (optional)</label>
+          <input type="text" id="stmt-vs" placeholder="e.g. 202607" />
+        </div>
+        <div class="field">
+          <label>QR payment note (optional)</label>
+          <input type="text" id="stmt-msg" placeholder="e.g. Hours July" />
+        </div>
+      </div>
+      <div id="stmt-range-note"></div>
+      <button class="btn primary" id="stmt-generate">Preview statement</button>
     </div>
 
     <div id="entries-section">

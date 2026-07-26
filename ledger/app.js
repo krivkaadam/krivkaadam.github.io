@@ -68,6 +68,19 @@ function stopTicking(){
   if(tickHandle){ clearInterval(tickHandle); tickHandle = null; }
 }
 
+/* Swaps the focus-mode image between the "running" and "paused" gif.
+   Uses a data attribute so we don't restart the same gif's animation on every re-render. */
+function updateFocusGif(status){
+  const img = document.getElementById('focus-gif');
+  const placeholder = document.getElementById('focus-visual-placeholder');
+  const src = status === 'paused' ? 'coffee-pause.gif' : 'tree-growing.gif';
+  if(img.dataset.currentSrc === src) return;
+  img.dataset.currentSrc = src;
+  img.style.display = 'block';
+  placeholder.style.display = 'none';
+  img.src = src;
+}
+
 /* ---------- auth ---------- */
 async function checkSession(){
   const { data:{ session } } = await sb.auth.getSession();
@@ -114,6 +127,8 @@ async function showApp(){
   filterFrom = b.from;
   filterTo = b.to;
   document.getElementById('summary-label').textContent = 'This month';
+  loadStatementPrefs();
+  updateStatementRangeNote();
   await loadProjects();
   await loadOpenSession();
   await loadEntries();
@@ -225,9 +240,6 @@ function renderTimer(){
   const currencySel = document.getElementById('currency-select');
   const sessionMeta = document.getElementById('session-meta');
 
-  const nextStatus = !currentSession ? 'paused' : currentSession.status === 'running' ? 'running' : 'paused';
-  updateFocusGif(nextStatus);
-
   if(!currentSession){
     stopTicking();
     document.body.classList.remove('session-active');
@@ -262,6 +274,7 @@ function renderTimer(){
   const projLabel = currentSession.project_id ? ` — ${currentSession.project_id}` : '';
   if(currentSession.status === 'running'){
     startTicking();
+    updateFocusGif('running');
     dot.className = 'dot running';
     statusText.textContent = 'Running' + projLabel;
     startBtn.style.display = 'none';
@@ -270,6 +283,7 @@ function renderTimer(){
     stopBtn.style.display = '';
   } else {
     stopTicking();
+    updateFocusGif('paused');
     dot.className = 'dot paused';
     statusText.textContent = 'Paused' + projLabel;
     startBtn.style.display = 'none';
@@ -537,6 +551,7 @@ document.getElementById('filter-apply').addEventListener('click', ()=>{
   filterTo = toVal ? new Date(toVal + 'T23:59:59').toISOString() : null;
   filterProject = document.getElementById('filter-project').value;
   document.getElementById('summary-label').textContent = 'Selected range';
+  updateStatementRangeNote();
   loadEntries();
 });
 document.getElementById('filter-reset').addEventListener('click', ()=>{
@@ -548,8 +563,156 @@ document.getElementById('filter-reset').addEventListener('click', ()=>{
   document.getElementById('filter-to').value = '';
   document.getElementById('filter-project').value = '';
   document.getElementById('summary-label').textContent = 'This month';
+  updateStatementRangeNote();
   loadEntries();
 });
+
+/* ---------- statement / print export ---------- */
+const STMT_PREFS_KEY = 'ledger_statement_prefs';
+
+function loadStatementPrefs(){
+  let prefs = {};
+  try{
+    const raw = localStorage.getItem(STMT_PREFS_KEY);
+    if(raw) prefs = JSON.parse(raw);
+  } catch(e){ /* ignore malformed storage */ }
+  document.getElementById('stmt-your-name').value = prefs.yourName || '';
+  document.getElementById('stmt-friend-name').value = prefs.friendName || '';
+  document.getElementById('stmt-iban').value = prefs.iban || '';
+  document.getElementById('stmt-vs').value = prefs.vs || '';
+  document.getElementById('stmt-msg').value = prefs.msg || '';
+}
+function saveStatementPrefs(){
+  const prefs = {
+    yourName: document.getElementById('stmt-your-name').value.trim(),
+    friendName: document.getElementById('stmt-friend-name').value.trim(),
+    iban: document.getElementById('stmt-iban').value.trim(),
+    vs: document.getElementById('stmt-vs').value.trim(),
+    msg: document.getElementById('stmt-msg').value.trim()
+  };
+  try{ localStorage.setItem(STMT_PREFS_KEY, JSON.stringify(prefs)); } catch(e){ /* storage unavailable */ }
+  return prefs;
+}
+['stmt-your-name','stmt-friend-name','stmt-iban','stmt-vs','stmt-msg'].forEach(id=>{
+  document.getElementById(id).addEventListener('blur', saveStatementPrefs);
+});
+
+function updateStatementRangeNote(){
+  const label = filterProject ? `project "${filterProject}"` : 'all projects';
+  const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : '(no start limit)';
+  const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : '(no end limit)';
+  document.getElementById('stmt-range-note').innerHTML =
+    `Uses the range/project currently applied above: <b>${fromTxt} → ${toTxt}</b>, <b>${escapeHtml(label)}</b>. Adjust the filters above, then come back and preview again.`;
+}
+
+function stripDiacritics(str){
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/* Builds a Czech "QR platba" (SPAYD) payment string */
+function buildSpayd({ iban, amount, currency, vs, msg }){
+  const parts = ['SPD*1.0', `ACC:${iban.replace(/\s+/g,'').toUpperCase()}`, `AM:${amount.toFixed(2)}`, `CC:${currency}`];
+  const cleanMsg = stripDiacritics(msg).replace(/[^A-Za-z0-9 .,\-\/]/g, '').slice(0, 60).trim();
+  if(cleanMsg) parts.push(`MSG:${cleanMsg}`);
+  const cleanVs = (vs || '').replace(/\D/g, '').slice(0, 10);
+  if(cleanVs) parts.push(`X-VS:${cleanVs}`);
+  return parts.join('*');
+}
+
+async function generateStatement(){
+  const prefs = saveStatementPrefs();
+
+  // header / meta
+  const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : 'the beginning';
+  const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : 'today';
+  document.getElementById('ps-period').textContent = `${fromTxt} — ${toTxt}`;
+  document.getElementById('ps-from').textContent = prefs.yourName || '—';
+  document.getElementById('ps-to').textContent = prefs.friendName || '—';
+  document.getElementById('ps-project').textContent = filterProject || 'All projects';
+  document.getElementById('ps-generated').textContent = new Date().toLocaleString();
+
+  // rows, oldest first for a readable statement
+  const rows = document.getElementById('ps-rows');
+  const chronological = [...entries].sort((a,b)=> new Date(a.started_at) - new Date(b.started_at));
+  rows.innerHTML = chronological.map(e=>{
+    const earn = earningsFor(e);
+    const earnTxt = earn != null ? fmtMoney(earn, e.currency || 'CZK') : '—';
+    return `<tr>
+      <td>${fmtDate(e.started_at)}</td>
+      <td>${fmtTime(e.started_at)}</td>
+      <td>${escapeHtml(e.project_id || '—')}</td>
+      <td>${escapeHtml(e.note || '')}</td>
+      <td class="num">${fmtHM(e.duration_seconds)}</td>
+      <td class="num">${earnTxt}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="color:#999; text-align:center; padding:20px;">No sessions in this range.</td></tr>';
+
+  // per-currency totals + QR
+  const byCurrency = {};
+  entries.forEach(e=>{
+    const cur = e.currency || 'CZK';
+    if(!byCurrency[cur]) byCurrency[cur] = {seconds:0, earnings:0};
+    byCurrency[cur].seconds += e.duration_seconds || 0;
+    const earn = earningsFor(e);
+    if(earn != null) byCurrency[cur].earnings += earn;
+  });
+
+  const blocksEl = document.getElementById('ps-currency-blocks');
+  blocksEl.innerHTML = '';
+  const iban = document.getElementById('stmt-iban').value.trim();
+
+  const currencies = Object.keys(byCurrency);
+  for(const cur of currencies){
+    const c = byCurrency[cur];
+    const block = document.createElement('div');
+    block.className = 'print-currency-block';
+
+    const canQr = iban && c.earnings > 0 && (cur === 'CZK' || cur === 'EUR');
+    block.innerHTML = `
+      <div class="pc-totals">
+        <div>
+          <div class="lbl">Total hours (${escapeHtml(cur)})</div>
+          <div class="big">${fmtHM(c.seconds)}</div>
+        </div>
+        <div>
+          <div class="lbl">Total amount</div>
+          <div class="big">${c.earnings > 0 ? fmtMoney(c.earnings, cur) : '—'}</div>
+        </div>
+      </div>
+      ${canQr ? `
+      <div class="pc-qr-row">
+        <canvas class="pc-qr-canvas" width="150" height="150"></canvas>
+        <div class="pc-qr-note">Scan with your banking app to pay <b>${fmtMoney(c.earnings, cur)}</b> to IBAN ${escapeHtml(iban)}.</div>
+      </div>` : (iban ? '' : `<div class="pc-qr-note">Add your IBAN above to include a payment QR code for this amount.</div>`)}
+    `;
+    blocksEl.appendChild(block);
+
+    if(canQr && window.QRCode){
+      const canvas = block.querySelector('.pc-qr-canvas');
+      const spayd = buildSpayd({
+        iban,
+        amount: c.earnings,
+        currency: cur,
+        vs: document.getElementById('stmt-vs').value,
+        msg: document.getElementById('stmt-msg').value
+      });
+      try{
+        await QRCode.toCanvas(canvas, spayd, { width: 150, margin: 1 });
+      } catch(err){
+        console.error('QR generation failed', err);
+      }
+    }
+  }
+
+  document.getElementById('print-overlay').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+document.getElementById('stmt-generate').addEventListener('click', generateStatement);
+document.getElementById('print-close').addEventListener('click', ()=>{
+  document.getElementById('print-overlay').classList.add('hidden');
+});
+document.getElementById('print-now').addEventListener('click', ()=> window.print());
 
 /* ---------- realtime sync across devices ---------- */
 function subscribeRealtime(){
@@ -559,18 +722,6 @@ function subscribeRealtime(){
       ()=>{ loadOpenSession(); loadEntries(); }
     )
     .subscribe();
-}
-
-/* ---------- gif switching ---------- */
-function updateFocusGif(status){
-  const img = document.getElementById('focus-gif');
-  const placeholder = document.getElementById('focus-visual-placeholder');
-  const src = status === 'paused' ? '../src/assets/CoffeePause.gif' : '../src/assets/PiggyBank.gif';
-  if(img.dataset.currentSrc === src) return; // don't restart the same gif's animation needlessly
-  img.dataset.currentSrc = src;
-  img.style.display = 'block';
-  placeholder.style.display = 'none';
-  img.src = src;
 }
 
 /* ---------- boot ---------- */
