@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ledger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="icon" type="image/ico" href="../favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -43,7 +45,7 @@
         <div class="sub">hours worked</div>
       </div>
       <div class="header-actions">
-        <a href="../src/assets/PiggyBank.gif" id="home-link">← Home</a>
+        <a href="../" id="home-link">← Home</a>
         <button id="signout">Sign out</button>
       </div>
     </header>
@@ -57,12 +59,14 @@
       <div class="session-meta" id="session-meta"></div>
 
       <div id="focus-visual">
-        <img id="focus-gif" src="../src/assets/CoffeePause.gif" alt=""
+        <!-- Add your two files to the same folder as index.html:
+             tree-growing.gif  -> shown while running
+             coffee-pause.gif  -> shown while paused
+           renderTimer() below swaps the src automatically. -->
+        <img id="focus-gif" src="tree-growing.gif" alt=""
              style="width:100%; border-radius:10px; display:block;"
-             onerror="this.style.display='none'; const placeholder = document.getElementById('focus-visual-placeholder'); if (placeholder) placeholder.style.display='flex';" />
-        <div id="focus-visual-placeholder"
-             style="display:none; min-height:200px; align-items:center; justify-content:center; border:1px dashed rgba(255,255,255,0.2); border-radius:10px; color:rgba(255,255,255,0.55);">
-          Focus animation unavailable</div>
+             onerror="this.style.display='none'; document.getElementById('focus-visual-placeholder').style.display='flex';" />
+        <div id="focus-visual-placeholder">your gif goes here</div>
       </div>
 
       <div id="pre-session-fields">
@@ -135,7 +139,6 @@
       </div>
     </div>
 
-
     <div class="card" id="statement-card">
       <div class="entries-head" style="margin:0 0 16px;">
         <span>Print / export statement</span>
@@ -172,6 +175,50 @@
         <span class="count" id="entries-count">0</span>
       </div>
       <div id="entries-list"></div>
+    </div>
+  </div>
+
+  <div id="print-overlay" class="hidden">
+    <div class="print-toolbar no-print">
+      <button class="btn ghost" id="print-close">Close</button>
+      <button class="btn primary" id="print-now">Print / Save as PDF</button>
+    </div>
+    <div id="print-sheet">
+      <h1>Hours worked</h1>
+      <div class="print-sub" id="ps-period">Period</div>
+      <div class="print-meta">
+        <div>
+          <div class="m-label">From</div>
+          <div class="m-value" id="ps-from">—</div>
+        </div>
+        <div>
+          <div class="m-label">To</div>
+          <div class="m-value" id="ps-to">—</div>
+        </div>
+        <div>
+          <div class="m-label">Project</div>
+          <div class="m-value" id="ps-project">All</div>
+        </div>
+        <div>
+          <div class="m-label">Generated</div>
+          <div class="m-value" id="ps-generated">—</div>
+        </div>
+      </div>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Project</th>
+            <th>Note</th>
+            <th class="num">Duration</th>
+            <th class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="ps-rows"></tbody>
+      </table>
+      <div id="ps-currency-blocks"></div>
+      <div class="print-footer">Generated with Ledger.</div>
     </div>
   </div>
 
