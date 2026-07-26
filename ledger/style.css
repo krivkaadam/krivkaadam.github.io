@@ -558,7 +558,12 @@
     align-items:center;
     gap:20px;
   }
-  .pc-qr-row canvas{border:1px solid #eee;}
+   .pc-qr-row .pc-qr-canvas{
+    border:1px solid #eee;
+    width:150px;
+    height:150px;
+    flex-shrink:0;
+  }
   .pc-qr-note{font-size:11px; color:#999; max-width:320px;}
   #print-sheet .print-footer{
     margin-top:32px;

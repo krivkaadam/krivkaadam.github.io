@@ -73,7 +73,7 @@ function stopTicking(){
 function updateFocusGif(status){
   const img = document.getElementById('focus-gif');
   const placeholder = document.getElementById('focus-visual-placeholder');
-  const src = status === 'paused' ? 'coffee-pause.gif' : 'tree-growing.gif';
+  const src = status === 'paused' ? '../src/assets/CoffeePause.gif' : '../src/assets/PiggyBank.gif';
   if(img.dataset.currentSrc === src) return;
   img.dataset.currentSrc = src;
   img.style.display = 'block';
@@ -660,6 +660,8 @@ async function generateStatement(){
   const blocksEl = document.getElementById('ps-currency-blocks');
   blocksEl.innerHTML = '';
   const iban = document.getElementById('stmt-iban').value.trim();
+  const msgVal = document.getElementById('stmt-msg').value.trim();
+  const vsVal = document.getElementById('stmt-vs').value.trim();
 
   const currencies = Object.keys(byCurrency);
   for(const cur of currencies){
@@ -681,25 +683,35 @@ async function generateStatement(){
       </div>
       ${canQr ? `
       <div class="pc-qr-row">
-        <canvas class="pc-qr-canvas" width="150" height="150"></canvas>
-        <div class="pc-qr-note">Scan with your banking app to pay <b>${fmtMoney(c.earnings, cur)}</b> to IBAN ${escapeHtml(iban)}.</div>
+        <div class="pc-qr-canvas"></div>
+        <div class="pc-qr-note">
+          Scan with your banking app to pay <b>${fmtMoney(c.earnings, cur)}</b> to IBAN ${escapeHtml(iban)}.
+          ${msgVal ? `<br>Payment note: ${escapeHtml(msgVal)}` : ''}
+          ${vsVal ? `<br>Variable symbol: ${escapeHtml(vsVal)}` : ''}
+        </div>
       </div>` : (iban ? '' : `<div class="pc-qr-note">Add your IBAN above to include a payment QR code for this amount.</div>`)}
     `;
     blocksEl.appendChild(block);
 
     if(canQr && window.QRCode){
-      const canvas = block.querySelector('.pc-qr-canvas');
+      const container = block.querySelector('.pc-qr-canvas');
       const spayd = buildSpayd({
         iban,
         amount: c.earnings,
         currency: cur,
-        vs: document.getElementById('stmt-vs').value,
-        msg: document.getElementById('stmt-msg').value
+       vs: vsVal,
+        msg: msgVal
       });
       try{
-        await QRCode.toCanvas(canvas, spayd, { width: 150, margin: 1 });
+        new QRCode(container, {
+          text: spayd,
+          width: 150,
+          height: 150,
+          correctLevel: QRCode.CorrectLevel.M
+        });
       } catch(err){
         console.error('QR generation failed', err);
+        container.textContent = 'QR generation failed — see console.';
       }
     }
   }
