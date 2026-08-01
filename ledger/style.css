@@ -382,37 +382,6 @@ button{font-family: var(--font-body);}
   white-space:nowrap;
 }
 
-.export-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:10px;
-  letter-spacing:0.04em;
-  text-transform:uppercase;
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,0.04);
-  color:var(--text-faint);
-}
-.export-pill .export-dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:var(--text-faint);
-  box-shadow:0 0 0 1px rgba(255,255,255,0.1);
-}
-.export-pill.exported{
-  color:var(--accent);
-  border-color:color-mix(in srgb, var(--accent) 35%, var(--border));
-}
-.export-pill.exported .export-dot{
-  background:var(--accent);
-}
-.export-pill.pending{
-  color:var(--text-faint);
-}
-
 /* ---- Entries ---- */
 .entries-head{
   font-family: var(--font-display);
