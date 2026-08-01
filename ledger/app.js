@@ -3,6 +3,32 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* ---------- theme (Alpine Prism: seamless light / dark) ---------- */
+const THEME_KEY = 'ledger_theme';
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+}
+function initTheme(){
+  let theme = null;
+  try{ theme = localStorage.getItem(THEME_KEY); } catch(e){ /* storage unavailable */ }
+  if(!theme){
+    theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  applyTheme(theme);
+}
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const next = current === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+  try{ localStorage.setItem(THEME_KEY, next); } catch(e){ /* storage unavailable */ }
+}
+initTheme();
+['theme-toggle', 'theme-toggle-app'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('click', toggleTheme);
+});
+
 /* ---------- state ---------- */
 let currentUser = null;
 let currentSession = null; // open row (ended_at is null), or null
