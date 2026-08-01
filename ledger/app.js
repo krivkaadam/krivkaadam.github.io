@@ -499,6 +499,10 @@ function renderEntries(){
           <span class="num">${String(entries.length - i).padStart(2,'0')}</span>
           <span class="date-col">${fmtDate(e.started_at)} · ${fmtTime(e.started_at)}</span>
           <span class="badge">${escapeHtml(e.project_id || '—')}</span>
+          <span class="export-pill ${e.exported ? 'exported' : 'pending'}" title="${e.exported ? 'Included in a statement export' : 'Not exported yet'}">
+            <span class="export-dot"></span>
+            ${e.exported ? 'Exported' : 'Pending'}
+          </span>
         </div>
         <div class="entry-right">
           <span class="dur-col">${fmtHM(e.duration_seconds)}</span>
@@ -628,7 +632,8 @@ function updateStatementRangeNote(){
   const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : '(no start limit)';
   const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : '(no end limit)';
   document.getElementById('stmt-range-note').innerHTML =
-    `Uses the range/project currently applied above: <b>${fromTxt} → ${toTxt}</b>, <b>${escapeHtml(label)}</b>. <br>Adjust the filters above, then come back and preview again.`;
+    `Range: <b>${fromTxt} - ${toTxt}</b>.<br>
+     Project: <b>${escapeHtml(label)}</b>.`;
 }
 
 function stripDiacritics(str){
