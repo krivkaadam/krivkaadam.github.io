@@ -238,6 +238,31 @@ async function prefillRateForProject(projectName){
   if(data[0].currency) document.getElementById('currency-select').value = data[0].currency;
 }
 
+function isMissingColumnError(error){
+  const message = (error && error.message) ? error.message : '';
+  return Boolean(error && (message.includes('does not exist') || message.includes('column') || error.code === '42703'));
+}
+
+async function insertSession(payload){
+  const { data, error } = await sb.from('sessions').insert(payload).select().single();
+  if(error && isMissingColumnError(error)){
+    const fallbackPayload = { ...payload };
+    ['status', 'paused_seconds', 'last_resumed_at', 'currency'].forEach(key => delete fallbackPayload[key]);
+    return sb.from('sessions').insert(fallbackPayload).select().single();
+  }
+  return { data, error };
+}
+
+async function updateSession(id, patch){
+  const { data, error } = await sb.from('sessions').update(patch).eq('id', id).select().single();
+  if(error && isMissingColumnError(error)){
+    const fallbackPatch = { ...patch };
+    ['status', 'paused_seconds', 'last_resumed_at', 'currency'].forEach(key => delete fallbackPatch[key]);
+    return sb.from('sessions').update(fallbackPatch).eq('id', id).select().single();
+  }
+  return { data, error };
+}
+
 /* ---------- open session ---------- */
 async function loadOpenSession(){
   const { data, error } = await sb
@@ -284,6 +309,7 @@ function renderTimer(){
     return;
   }
 
+  const sessionStatus = currentSession.status || 'running';
   document.body.classList.add('session-active');
   display.textContent = fmtHMS(computeElapsed(currentSession));
   if(document.activeElement !== noteInput){
@@ -298,7 +324,7 @@ function renderTimer(){
   sessionMeta.textContent = currentSession.note ? currentSession.note : '';
 
   const projLabel = currentSession.project_id ? ` - ${currentSession.project_id}` : '';
-  if(currentSession.status === 'running'){
+  if(sessionStatus === 'running'){
     startTicking();
     updateFocusGif('running');
     dot.className = 'dot running';
@@ -346,7 +372,7 @@ document.getElementById('start-btn').addEventListener('click', async ()=>{
   const currencyVal = document.getElementById('currency-select').value;
   const note = document.getElementById('note-input').value.trim();
   const nowIso = new Date().toISOString();
-  const { data, error } = await sb.from('sessions').insert({
+  const { data, error } = await insertSession({
     user_id: currentUser.id,
     started_at: nowIso,
     last_resumed_at: nowIso,
@@ -356,9 +382,20 @@ document.getElementById('start-btn').addEventListener('click', async ()=>{
     project_id: projectVal,
     hourly_rate: rateVal ? parseFloat(rateVal) : null,
     currency: currencyVal
-  }).select().single();
+  });
   if(error){ alert(error.message); return; }
-  currentSession = data;
+  currentSession = {
+    ...(data || {}),
+    status: 'running',
+    paused_seconds: 0,
+    last_resumed_at: nowIso,
+    currency: currencyVal,
+    note: note || null,
+    project_id: projectVal,
+    hourly_rate: rateVal ? parseFloat(rateVal) : null,
+    user_id: currentUser.id,
+    started_at: nowIso
+  };
   renderTimer();
   await loadProjects();
 });
@@ -366,23 +403,33 @@ document.getElementById('start-btn').addEventListener('click', async ()=>{
 document.getElementById('pause-btn').addEventListener('click', async ()=>{
   if(!currentSession) return;
   const elapsed = computeElapsed(currentSession);
-  const { data, error } = await sb.from('sessions').update({
+  const { data, error } = await updateSession(currentSession.id, {
     paused_seconds: elapsed,
     status: 'paused'
-  }).eq('id', currentSession.id).select().single();
+  });
   if(error){ alert(error.message); return; }
-  currentSession = data;
+  currentSession = {
+    ...(currentSession || {}),
+    ...(data || {}),
+    status: 'paused',
+    paused_seconds: elapsed
+  };
   renderTimer();
 });
 
 document.getElementById('resume-btn').addEventListener('click', async ()=>{
   if(!currentSession) return;
-  const { data, error } = await sb.from('sessions').update({
+  const { data, error } = await updateSession(currentSession.id, {
     status: 'running',
     last_resumed_at: new Date().toISOString()
-  }).eq('id', currentSession.id).select().single();
+  });
   if(error){ alert(error.message); return; }
-  currentSession = data;
+  currentSession = {
+    ...(currentSession || {}),
+    ...(data || {}),
+    status: 'running',
+    last_resumed_at: new Date().toISOString()
+  };
   renderTimer();
 });
 
@@ -409,14 +456,20 @@ async function loadEntries(){
   let query = sb.from('sessions')
     .select('*')
     .eq('user_id', currentUser.id)
-    .eq('status', 'stopped')
     .order('started_at', {ascending:false});
   if(filterFrom) query = query.gte('started_at', filterFrom);
   if(filterTo) query = query.lt('started_at', filterTo);
   if(filterProject) query = query.eq('project_id', filterProject);
-  const { data, error } = await query;
+  let { data, error } = await query;
+  if(error && isMissingColumnError(error)){
+    query = sb.from('sessions').select('*').eq('user_id', currentUser.id).order('started_at', {ascending:false});
+    if(filterFrom) query = query.gte('started_at', filterFrom);
+    if(filterTo) query = query.lt('started_at', filterTo);
+    if(filterProject) query = query.eq('project_id', filterProject);
+    ({ data, error } = await query);
+  }
   if(error){ console.error(error); return; }
-  entries = data || [];
+  entries = (data || []).filter(e => e.ended_at != null || e.status === 'stopped');
   renderEntries();
 }
 
