@@ -10,7 +10,7 @@
   /* palette (theme-independent) */
   --abyss-teal:  #042736;
   --deep-fjord:  #083B4F;
-  --glacier:     #00A8FF;
+  --glacier:     #00ace1;
   --alpine-red:  #EF4444;
   --alpine-white:#FFFFFF;
   --ice-white:   #E2E8F0;
@@ -539,14 +539,7 @@ body.session-active #focus-visual{display:block;}
 /* The gif itself fades to transparent at its edges (soft alpha mask), so the
    page background shows through directly instead of a hard-edged overlay
    sitting on top of it. */
-#focus-gif{
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%),
-                       linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
-  -webkit-mask-composite: source-in, source-in;
-  mask-image: linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%),
-              linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
-  mask-composite: intersect;
-}
+
 #focus-visual-placeholder{
   display:none;
   width:100%;

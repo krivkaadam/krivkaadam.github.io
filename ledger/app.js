@@ -645,10 +645,29 @@ function buildSpayd({ iban, amount, currency, vs, msg }){
   return parts.join('*');
 }
 
+async function markExportedSessions(ids){
+  if(!ids || !ids.length) return;
+  const previousEntries = entries;
+  entries = entries.map(entry => ids.includes(entry.id) ? { ...entry, exported: true } : entry);
+  const { error } = await sb.from('sessions').update({ exported: true }).in('id', ids);
+  if(error){
+    console.error('Failed to mark sessions as exported', error);
+    entries = previousEntries;
+  }
+}
+
 async function generateStatement(){
   const prefs = saveStatementPrefs();
 
-  // header / meta
+  const exportableEntries = (entries || []).filter(e => !e.exported);
+  if(!exportableEntries.length){
+    document.getElementById('ps-rows').innerHTML = '<tr><td colspan="6" style="color:#999; text-align:center; padding:20px;">No unexported sessions in this range.</td></tr>';
+    document.getElementById('ps-currency-blocks').innerHTML = '';
+    document.getElementById('print-overlay').classList.remove('hidden');
+    window.scrollTo(0,0);
+    return;
+  }
+
   const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : 'the beginning';
   const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : 'today';
   document.getElementById('ps-period').textContent = `${fromTxt} — ${toTxt}`;
@@ -657,9 +676,8 @@ async function generateStatement(){
   document.getElementById('ps-project').textContent = filterProject || 'All projects';
   document.getElementById('ps-generated').textContent = new Date().toLocaleString();
 
-  // rows, oldest first for a readable statement
   const rows = document.getElementById('ps-rows');
-  const chronological = [...entries].sort((a,b)=> new Date(a.started_at) - new Date(b.started_at));
+  const chronological = [...exportableEntries].sort((a,b)=> new Date(a.started_at) - new Date(b.started_at));
   rows.innerHTML = chronological.map(e=>{
     const earn = earningsFor(e);
     const earnTxt = earn != null ? fmtMoney(earn, e.currency || 'CZK') : '—';
@@ -673,9 +691,8 @@ async function generateStatement(){
     </tr>`;
   }).join('') || '<tr><td colspan="6" style="color:#999; text-align:center; padding:20px;">No sessions in this range.</td></tr>';
 
-  // per-currency totals + QR
   const byCurrency = {};
-  entries.forEach(e=>{
+  exportableEntries.forEach(e=>{
     const cur = e.currency || 'CZK';
     if(!byCurrency[cur]) byCurrency[cur] = {seconds:0, earnings:0};
     byCurrency[cur].seconds += e.duration_seconds || 0;
@@ -725,7 +742,7 @@ async function generateStatement(){
         iban,
         amount: c.earnings,
         currency: cur,
-       vs: vsVal,
+        vs: vsVal,
         msg: msgVal
       });
       try{
@@ -742,6 +759,7 @@ async function generateStatement(){
     }
   }
 
+  await markExportedSessions(exportableEntries.map(e => e.id));
   document.getElementById('print-overlay').classList.remove('hidden');
   window.scrollTo(0,0);
 }
