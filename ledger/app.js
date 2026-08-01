@@ -297,7 +297,7 @@ function renderTimer(){
   currencySel.value = currentSession.currency || 'CZK';
   sessionMeta.textContent = currentSession.note ? currentSession.note : '';
 
-  const projLabel = currentSession.project_id ? ` — ${currentSession.project_id}` : '';
+  const projLabel = currentSession.project_id ? ` - ${currentSession.project_id}` : '';
   if(currentSession.status === 'running'){
     startTicking();
     updateFocusGif('running');
@@ -320,7 +320,7 @@ function renderTimer(){
 }
 
 document.getElementById('note-input').addEventListener('blur', async ()=>{
-  if(!currentSession) return; // no active session yet — note is just staged for the next Start
+  if(!currentSession) return; // no active session yet - note is just staged for the next Start
   const newNote = document.getElementById('note-input').value.trim();
   if(newNote === (currentSession.note || '')) return; // nothing changed
   const { data, error } = await sb.from('sessions').update({
@@ -446,7 +446,7 @@ function renderEntries(){
   } else {
     summaryEl.innerHTML = currencies.map(cur=>{
       const c = byCurrency[cur];
-      const earnPart = c.earnings > 0 ? ` — ${fmtMoney(c.earnings, cur)}` : '';
+      const earnPart = c.earnings > 0 ? ` - ${fmtMoney(c.earnings, cur)}` : '';
       return `<div class="line">${fmtHM(c.seconds)}${earnPart}</div>`;
     }).join('');
   }
@@ -471,7 +471,7 @@ function renderEntries(){
       const perCurrency = byProject[proj];
       const parts = Object.keys(perCurrency).map(cur=>{
         const c = perCurrency[cur];
-        const earnPart = c.earnings > 0 ? ` — ${fmtMoney(c.earnings, cur)}` : '';
+        const earnPart = c.earnings > 0 ? ` - ${fmtMoney(c.earnings, cur)}` : '';
         return `${fmtHM(c.seconds)}${earnPart}`;
       }).join(' · ');
       return `<div class="breakdown-row"><span class="b-project">${escapeHtml(proj)}</span><span class="b-amount">${parts}</span></div>`;
@@ -498,7 +498,7 @@ function renderEntries(){
         <div class="entry-left">
           <span class="num">${String(entries.length - i).padStart(2,'0')}</span>
           <span class="date-col">${fmtDate(e.started_at)} · ${fmtTime(e.started_at)}</span>
-          <span class="badge">${escapeHtml(e.project_id || '—')}</span>
+          <span class="badge">${escapeHtml(e.project_id || '-')}</span>
           <span class="export-pill ${e.exported ? 'exported' : 'pending'}" title="${e.exported ? 'Included in a statement export' : 'Not exported yet'}">
             <span class="export-dot"></span>
             ${e.exported ? 'Exported' : 'Pending'}
@@ -675,9 +675,9 @@ async function generateStatement(){
 
   const fromTxt = filterFrom ? new Date(filterFrom).toLocaleDateString() : 'the beginning';
   const toTxt = filterTo ? new Date(new Date(filterTo).getTime() - 1).toLocaleDateString() : 'today';
-  document.getElementById('ps-period').textContent = `${fromTxt} — ${toTxt}`;
-  document.getElementById('ps-from').textContent = prefs.yourName || '—';
-  document.getElementById('ps-to').textContent = prefs.friendName || '—';
+  document.getElementById('ps-period').textContent = `${fromTxt} - ${toTxt}`;
+  document.getElementById('ps-from').textContent = prefs.yourName || '-';
+  document.getElementById('ps-to').textContent = prefs.friendName || '-';
   document.getElementById('ps-project').textContent = filterProject || 'All projects';
   document.getElementById('ps-generated').textContent = new Date().toLocaleString();
 
@@ -685,11 +685,11 @@ async function generateStatement(){
   const chronological = [...exportableEntries].sort((a,b)=> new Date(a.started_at) - new Date(b.started_at));
   rows.innerHTML = chronological.map(e=>{
     const earn = earningsFor(e);
-    const earnTxt = earn != null ? fmtMoney(earn, e.currency || 'CZK') : '—';
+    const earnTxt = earn != null ? fmtMoney(earn, e.currency || 'CZK') : '-';
     return `<tr>
       <td>${fmtDate(e.started_at)}</td>
       <td>${fmtTime(e.started_at)}</td>
-      <td>${escapeHtml(e.project_id || '—')}</td>
+      <td>${escapeHtml(e.project_id || '-')}</td>
       <td>${escapeHtml(e.note || '')}</td>
       <td class="num">${fmtHM(e.duration_seconds)}</td>
       <td class="num">${earnTxt}</td>
@@ -726,7 +726,7 @@ async function generateStatement(){
         </div>
         <div>
           <div class="lbl">Total amount</div>
-          <div class="big">${c.earnings > 0 ? fmtMoney(c.earnings, cur) : '—'}</div>
+          <div class="big">${c.earnings > 0 ? fmtMoney(c.earnings, cur) : '-'}</div>
         </div>
       </div>
       ${canQr ? `
