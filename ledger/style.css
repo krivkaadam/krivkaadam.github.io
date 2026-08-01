@@ -19,7 +19,7 @@
   --accent: var(--glacier);
   --danger: var(--alpine-red);
 
-  --font-display: 'Rubik Distressed', 'Inter', system-ui, sans-serif;
+  --font-display: 'Anton', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -530,26 +530,18 @@ body.session-active .session-meta{display:block;}
   max-width:280px;
   margin:0 0 28px;
   position:relative;
-  overflow:hidden;
 }
 body.session-active #focus-visual{display:block;}
-#focus-visual::before{
-  content:'';
-  position:absolute; inset:0;
-  background: linear-gradient(to right,
-    var(--fade-color) 0%, transparent 14%,
-    transparent 86%, var(--fade-color) 100%);
-  pointer-events:none;
-  z-index:2;
-}
-#focus-visual::after{
-  content:'';
-  position:absolute; inset:0;
-  background: linear-gradient(to bottom,
-    var(--fade-color) 0%, transparent 22%,
-    transparent 78%, var(--fade-color) 100%);
-  pointer-events:none;
-  z-index:2;
+/* The gif itself fades to transparent at its edges (soft alpha mask), so the
+   page background shows through directly instead of a hard-edged overlay
+   sitting on top of it. */
+#focus-gif{
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  -webkit-mask-composite: source-in, source-in;
+  mask-image: linear-gradient(to right, transparent 0%, black 22%, black 78%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  mask-composite: intersect;
 }
 #focus-visual-placeholder{
   display:none;
