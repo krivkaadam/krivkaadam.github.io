@@ -203,7 +203,7 @@ header.top .sub{
   margin:0 0 6px;
   color:var(--text-heading);
 }
-#login-screen p{color:var(--text-dim); font-size:13px; margin:0 0 20px;}
+#login-screen p{color:var(--text-dim); font-size:13px; margin: 0 0 32px;}
 .field{margin-bottom:14px;}
 .field label{
   display:block;
