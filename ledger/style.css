@@ -183,7 +183,8 @@ header.top .sub{
 
 /* ---- Login ---- */
 #login-screen{
-  max-width:360px;
+  max-width:480px;
+  width:min(92vw, 480px);
   margin:100px auto auto;
   padding:32px;
   background:var(--surface);
@@ -826,6 +827,7 @@ table.print-table td.num, table.print-table th.num{text-align:right; font-varian
   font-size:11px;
   color:var(--text-faint);
   letter-spacing:0.02em;
+  align-self: center;
 }
 .footer-meta .footer-sep{opacity:0.5;}
 .footer-meta .footer-link{
