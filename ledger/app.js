@@ -572,7 +572,7 @@ function renderEntries(){
           <span class="num">${String(entries.length - i).padStart(2,'0')}</span>
           <span class="date-col">${fmtDate(e.started_at)} · ${fmtTime(e.started_at)}</span>
           <span class="badge">${escapeHtml(e.project_id || '-')}</span>
-          <span class="export-pill ${e.exported ? 'exported' : 'pending'}" title="${e.exported ? 'Included in a statement export' : 'Not exported yet'}">
+          <span class="export-pill ${e.exported ? 'exported' : 'new period'}" title="${e.exported ? 'Included in a statement export' : 'Not exported yet'}">
             <span class="export-dot"></span>
             ${e.exported ? 'Exported' : '...'}
           </span>

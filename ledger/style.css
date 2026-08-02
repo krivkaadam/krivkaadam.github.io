@@ -169,7 +169,7 @@ header.top .sub{
   height:13px;
   border-radius:50%;
   background:currentColor;
-  transform:rotate(-12deg);
+  transform:rotate(30deg);
   -webkit-mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
   mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
 }
@@ -771,4 +771,65 @@ table.print-table td.num, table.print-table th.num{text-align:right; font-varian
   #print-overlay{position:absolute; inset:0; background:#fff; padding:0;}
   #print-sheet{box-shadow:none; margin:0; max-width:none;}
   .no-print{display:none !important;}
+}
+
+/* ---- Site footer ----
+   Sits on the same fixed Alpine Prism background as the rest of the page
+   (no extra surface/shadow of its own - the low-poly pattern behind it
+   already satisfies "weighty background" per the pattern's usage rule),
+   separated only by a single hairline border to match header.top. Hidden
+   in focus mode along with the other secondary chrome. */
+.app-footer{
+  border-top:1px solid var(--border);
+  position:relative;
+  z-index:1;
+}
+.footer-inner{
+  max-width:920px;
+  margin:0 auto;
+  padding:28px 20px 40px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:18px;
+}
+.footer-brand{
+  font-family: var(--font-display);
+  font-weight:400;
+  font-size:15px;
+  letter-spacing:0.02em;
+  text-transform:uppercase;
+  color:var(--text-heading);
+}
+.footer-brand em{color:var(--accent); font-style:normal;}
+.footer-tagline{
+  font-size:11px;
+  color:var(--text-faint);
+  margin-top:4px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+.footer-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  font-family: var(--font-mono);
+  font-size:11px;
+  color:var(--text-faint);
+  letter-spacing:0.02em;
+}
+.footer-meta .footer-sep{opacity:0.5;}
+.footer-meta .footer-link{
+  color:var(--text-faint);
+  text-decoration:none;
+  border-bottom:1px solid transparent;
+}
+.footer-meta .footer-link:hover{color:var(--accent); border-bottom-color:var(--accent);}
+
+body.session-active .app-footer{display:none;}
+
+@media (max-width:480px){
+  .footer-inner{flex-direction:column; gap:14px; padding:24px 14px 32px;}
 }
