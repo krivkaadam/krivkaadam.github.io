@@ -741,6 +741,9 @@ async function markExportedSessions(ids){
     console.error('Failed to mark all sessions as exported', error || `expected ${ids.length}, updated ${data ? data.length : 0}`);
     entries = previousEntries;
   }
+  // Reflect the outcome (success or rollback) in the entries list right away,
+  // rather than leaving the "Exported" pills stale until the next reload.
+  renderEntries();
 }
 
 async function generateStatement(){
@@ -854,6 +857,7 @@ async function generateStatement(){
 document.getElementById('stmt-generate').addEventListener('click', generateStatement);
 document.getElementById('print-close').addEventListener('click', ()=>{
   document.getElementById('print-overlay').classList.add('hidden');
+  renderEntries();
 });
 document.getElementById('print-now').addEventListener('click', ()=> window.print());
 

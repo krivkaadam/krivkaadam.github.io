@@ -12,7 +12,7 @@
   --deep-fjord:  #083B4F;
   --glacier:     #00ace1;
   --alpine-red:  #EF4444;
-  --alpine-white:#FFFFFF;
+  --alpine-white:#FDFDFF;
   --ice-white:   #E2E8F0;
 
   --radius: 0px;
@@ -85,7 +85,7 @@ body{
 .prism-bg polygon{ fill: currentColor; }
 
 .wrap{
-  max-width:720px;
+  max-width:920px;
   margin:0 auto;
   padding:48px 20px 100px;
   position:relative;
@@ -147,7 +147,7 @@ header.top .sub{
 }
 .theme-toggle:hover{border-color:var(--border-strong); color:var(--accent);}
 .theme-toggle .tt-icon{display:none;}
-:root:not([data-theme="light"]) .theme-toggle .tt-moon{display:inline;}
+:root:not([data-theme="light"]) .theme-toggle .tt-moon{display:inline-flex;}
 :root[data-theme="light"] .theme-toggle .tt-sun{display:inline;}
 .theme-toggle-row{
   display:flex;
@@ -155,6 +155,24 @@ header.top .sub{
   margin-bottom:8px;
 }
 .header-actions{display:flex; gap:8px; align-items:center;}
+
+/* Crescent moon, drawn with a mask so it reads cleanly at small sizes and
+   inherits the toggle's current color instead of relying on a glyph that
+   renders inconsistently across platforms/fonts. */
+.tt-icon.tt-moon{
+  align-items:center;
+  justify-content:center;
+}
+.moon-crescent{
+  display:inline-block;
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:currentColor;
+  transform:rotate(-12deg);
+  -webkit-mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
+  mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
+}
 
 /* ---- Login ---- */
 #login-screen{
@@ -382,6 +400,41 @@ button{font-family: var(--font-body);}
   white-space:nowrap;
 }
 
+/* ---- Export status indicator ----
+   Quiet, low-contrast pill that sits flush with the rest of the entry's
+   metadata instead of reading as a separate loud "badge". Pending entries
+   stay near-invisible (faint dot + ellipsis); exported ones pick up a hint
+   of accent color on the dot only, so the row itself doesn't shout. */
+.export-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-family: var(--font-mono);
+  font-size:10px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+  line-height:1;
+  white-space:nowrap;
+}
+.export-pill .export-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--text-faint);
+  flex-shrink:0;
+  transition:background-color .15s ease;
+}
+.export-pill.exported{color:var(--text-faint);}
+.export-pill.exported .export-dot{background:var(--accent);}
+.export-pill.pending .export-dot{
+  animation:pulse-faint 2s infinite;
+}
+@keyframes pulse-faint{
+  0%,100%{opacity:0.4;}
+  50%{opacity:0.9;}
+}
+
 /* ---- Entries ---- */
 .entries-head{
   font-family: var(--font-display);
@@ -594,6 +647,28 @@ body.session-active #focus-visual{display:block;}
   padding:0 20px;
 }
 .print-toolbar .btn{border-radius:0;}
+/* The overlay's paper background (#f4f2ee) never changes with the app
+   theme, but .btn's colors come from theme variables - in dark mode those
+   resolve to light, low-contrast text/borders that all but disappear on
+   the light paper background. Pin these buttons to fixed, paper-appropriate
+   colors regardless of --theme so "Close" stays visible either way. */
+.print-toolbar .btn{
+  background:#ffffff;
+  border-color:rgba(4,39,54,0.25);
+  color:#083B4F;
+}
+.print-toolbar .btn:hover{
+  border-color:rgba(4,39,54,0.5);
+  background:#fbfbfa;
+}
+.print-toolbar .btn.primary{
+  background:#00A8FF;
+  border-color:#00A8FF;
+  color:#04202c;
+}
+.print-toolbar .btn.primary:hover{
+  background:#33bcff;
+}
 #print-sheet{
   max-width:760px;
   margin:0 auto;
