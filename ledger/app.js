@@ -258,6 +258,13 @@ async function updateSession(id, patch){
   if(error && isMissingColumnError(error)){
     const fallbackPatch = { ...patch };
     ['status', 'paused_seconds', 'last_resumed_at', 'currency'].forEach(key => delete fallbackPatch[key]);
+    if(Object.keys(fallbackPatch).length === 0){
+      // Every field we tried to write is unsupported by this schema - there is
+      // nothing left to send. Report the original error instead of silently
+      // "succeeding" with a no-op update (which is what caused sessions to
+      // look paused/stopped locally while staying open in the database).
+      return { data: null, error };
+    }
     return sb.from('sessions').update(fallbackPatch).eq('id', id).select().single();
   }
   return { data, error };
@@ -352,7 +359,7 @@ document.getElementById('note-input').addEventListener('blur', async ()=>{
   const { data, error } = await sb.from('sessions').update({
     note: newNote || null
   }).eq('id', currentSession.id).select().single();
-  if(error){ alert(error.message); return; }
+  if(error || !data){ alert(error ? error.message : 'Could not save the note - please try again.'); return; }
   currentSession = data;
   document.getElementById('session-meta').textContent = currentSession.note || '';
 });
@@ -383,7 +390,7 @@ document.getElementById('start-btn').addEventListener('click', async ()=>{
     hourly_rate: rateVal ? parseFloat(rateVal) : null,
     currency: currencyVal
   });
-  if(error){ alert(error.message); return; }
+  if(error || !data){ alert(error ? error.message : 'Could not start the session - please try again.'); return; }
   currentSession = {
     ...(data || {}),
     status: 'running',
@@ -407,7 +414,7 @@ document.getElementById('pause-btn').addEventListener('click', async ()=>{
     paused_seconds: elapsed,
     status: 'paused'
   });
-  if(error){ alert(error.message); return; }
+  if(error || !data){ alert(error ? error.message : 'Could not pause - please check your connection and try again.'); return; }
   currentSession = {
     ...(currentSession || {}),
     ...(data || {}),
@@ -419,16 +426,17 @@ document.getElementById('pause-btn').addEventListener('click', async ()=>{
 
 document.getElementById('resume-btn').addEventListener('click', async ()=>{
   if(!currentSession) return;
+  const nowIso = new Date().toISOString();
   const { data, error } = await updateSession(currentSession.id, {
     status: 'running',
-    last_resumed_at: new Date().toISOString()
+    last_resumed_at: nowIso
   });
-  if(error){ alert(error.message); return; }
+  if(error || !data){ alert(error ? error.message : 'Could not resume - please check your connection and try again.'); return; }
   currentSession = {
     ...(currentSession || {}),
     ...(data || {}),
     status: 'running',
-    last_resumed_at: new Date().toISOString()
+    last_resumed_at: nowIso
   };
   renderTimer();
 });
@@ -436,12 +444,24 @@ document.getElementById('resume-btn').addEventListener('click', async ()=>{
 document.getElementById('stop-btn').addEventListener('click', async ()=>{
   if(!currentSession) return;
   const elapsed = computeElapsed(currentSession);
-  const { error } = await sb.from('sessions').update({
+  const stoppedId = currentSession.id;
+  const { data, error } = await sb.from('sessions').update({
     ended_at: new Date().toISOString(),
     duration_seconds: Math.round(elapsed),
     status: 'stopped'
-  }).eq('id', currentSession.id);
+  }).eq('id', stoppedId).eq('user_id', currentUser.id).select().single();
+
   if(error){ alert(error.message); return; }
+  if(!data || !data.ended_at){
+    // No error was thrown, but no row came back / wasn't actually closed.
+    // Do NOT clear currentSession here - that's what previously let a session
+    // look "stopped" locally while remaining open (and re-timing itself from
+    // its original started_at) in the database.
+    alert('Could not confirm the session was stopped - please check your connection and try again.');
+    await loadOpenSession();
+    return;
+  }
+
   currentSession = null;
   document.getElementById('note-input').value = '';
   document.getElementById('project-select').value = '';
@@ -554,7 +574,7 @@ function renderEntries(){
           <span class="badge">${escapeHtml(e.project_id || '-')}</span>
           <span class="export-pill ${e.exported ? 'exported' : 'pending'}" title="${e.exported ? 'Included in a statement export' : 'Not exported yet'}">
             <span class="export-dot"></span>
-            ${e.exported ? 'Exported' : 'Pending'}
+            ${e.exported ? 'Exported' : '...'}
           </span>
         </div>
         <div class="entry-right">
@@ -604,25 +624,34 @@ function openEdit(row, e){
 
   editRow.querySelector('.cancel-btn').addEventListener('click', renderEntries);
   editRow.querySelector('.save-btn').addEventListener('click', async ()=>{
+    const saveBtn = editRow.querySelector('.save-btn');
+    saveBtn.disabled = true;
     const newNote = editRow.querySelector('.edit-note').value.trim();
     const newMinutes = parseInt(editRow.querySelector('.edit-minutes').value, 10) || 0;
     const newRateVal = editRow.querySelector('.edit-rate').value;
     const newCurrency = editRow.querySelector('.edit-currency').value;
-    const { error } = await sb.from('sessions').update({
+    const { data, error } = await sb.from('sessions').update({
       note: newNote || null,
       duration_seconds: newMinutes * 60,
       hourly_rate: newRateVal ? parseFloat(newRateVal) : null,
       currency: newCurrency
-    }).eq('id', e.id);
-    if(error){ alert(error.message); return; }
+    }).eq('id', e.id).select().single();
+    if(error || !data){
+      alert(error ? error.message : 'Could not save this entry - please try again.');
+      saveBtn.disabled = false;
+      return;
+    }
     await loadEntries();
   });
 }
 
 async function deleteEntry(id){
   if(!confirm('Delete this entry? This cannot be undone.')) return;
-  const { error } = await sb.from('sessions').delete().eq('id', id);
+  const { data, error } = await sb.from('sessions').delete().eq('id', id).select();
   if(error){ alert(error.message); return; }
+  if(!data || !data.length){
+    alert('Could not delete this entry - it may have already been removed. Refreshing the list.');
+  }
   await loadEntries();
 }
 
@@ -707,9 +736,9 @@ async function markExportedSessions(ids){
   if(!ids || !ids.length) return;
   const previousEntries = entries;
   entries = entries.map(entry => ids.includes(entry.id) ? { ...entry, exported: true } : entry);
-  const { error } = await sb.from('sessions').update({ exported: true }).in('id', ids);
-  if(error){
-    console.error('Failed to mark sessions as exported', error);
+  const { data, error } = await sb.from('sessions').update({ exported: true }).in('id', ids).select();
+  if(error || !data || data.length !== ids.length){
+    console.error('Failed to mark all sessions as exported', error || `expected ${ids.length}, updated ${data ? data.length : 0}`);
     entries = previousEntries;
   }
 }
