@@ -250,21 +250,55 @@
       background: #E03126;
     }
 
-    header .theme-toggle {
-      width: 38px;
-      height: 38px;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--alpine-white);
-      display: flex;
+    .theme-toggle {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      transition: border-color 0.15s ease, color 0.15s ease;
     }
 
-    header .theme-toggle:hover {
+    .theme-toggle:hover {
       border-color: var(--glacier);
       color: var(--glacier);
+    }
+
+    .theme-toggle .tt-icon {
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    :root:not([data-theme="light"]) .theme-toggle .tt-moon {
+      display: inline-flex;
+    }
+
+    :root[data-theme="light"] .theme-toggle .tt-sun {
+      display: inline;
+    }
+
+    .tt-icon.tt-moon {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .moon-crescent {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: currentColor;
+      transform: rotate(30deg);
+      -webkit-mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
+      mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
     }
 
     header .mobile-toggle {
@@ -900,7 +934,10 @@
       </nav>
 
       <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+          <span class="tt-icon tt-sun">☀</span>
+          <span class="tt-icon tt-moon"><span class="moon-crescent"></span></span>
+        </button>
         <button class="btn-talk" onclick="showLinks()">
           Let's Talk
         </button>
@@ -1229,7 +1266,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:16:59</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:20:41</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
@@ -1281,7 +1318,8 @@
     const root = document.documentElement;
     const themeToggle = document.getElementById('themeToggle');
     function applyThemeIcon() {
-      themeToggle.textContent = root.getAttribute('data-theme') === 'dark' ? '☀' : '☾';
+      const isLight = root.getAttribute('data-theme') === 'light';
+      themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
     }
     themeToggle.addEventListener('click', () => {
       const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
