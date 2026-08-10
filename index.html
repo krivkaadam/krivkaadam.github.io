@@ -878,14 +878,13 @@
 
 <body>
   <!-- GLOBAL DISTRESS FILTER DEFINITION -->
-  <!-- GLOBAL DISTRESS FILTER DEFINITION -->
 <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
   <filter id="distress-speckles">
     <!-- 1. Fine-grained noise base -->
     <feTurbulence
       type="fractalNoise"
-      baseFrequency="0.5"
-      numOctaves="1"
+      baseFrequency="0.9"
+      numOctaves="8"
       seed="7"
       result="noise" />
 
@@ -897,7 +896,7 @@
         1 0 0 0 0
         0 1 0 0 0
         0 0 1 0 0
-        0 0 0 18 -9"
+        0 0 0 15 -10"
       result="speckles" />
 
     <!-- 3. Punch sparse holes out of the text (reveals background behind) -->
@@ -905,7 +904,29 @@
   </filter>
 </svg>
 
+<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+  <filter id="distress-speckles">
+    <feTurbulence
+      type="fractalNoise"
+      baseFrequency="0.8"
+      numOctaves="3"
+      seed="7"
+      result="noise" />
 
+    <feColorMatrix
+      in="noise"
+      type="matrix"
+      values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 18 -9"
+      result="speckles" />
+
+    <!-- Subtract speckle dots directly out of the text geometry -->
+    <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+  </filter>
+</svg>
 
 
 
@@ -1279,7 +1300,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:34:07</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:41:29</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
