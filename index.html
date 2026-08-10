@@ -1,66 +1,64 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adam Křivka - Portfolio</title>
+
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-cHDw7SsQ.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32-CG9wQAaX.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16-CgY6xWkh.png">
   <link rel="manifest" href="/assets/site-BwHFeIBa.webmanifest">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!DOCTYPE html>
-  <html lang="en" data-theme="dark">
-  <title>Adam Křivka — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    /* ============ TOKENS ============ */
+    /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
     :root {
-      --abyss-teal: #042736;
-      --deep-fjord: #083B4F;
+      --abyss-teal: #03212d;
+      --deep-fjord: #063244;
       --glacier: #00A8FF;
-      --alpine-red: #EF4444;
-      --alpine-white: #FDFDFF;
+      --glacier-hover: #39BAFF;
+      --alpine-red: #FF3B30;
+      --alpine-white: #FFFFFF;
       --ice-white: #E2E8F0;
 
       --font-display: 'Anton', sans-serif;
       --font-stencil: 'Allerta Stencil', sans-serif;
       --font-body: 'Inter', sans-serif;
 
-      --edge: 0px;
-      /* sharp geometry, no rounding, anywhere */
+      --edge: 0px; /* Sharp zero-radius geometry */
     }
 
     html[data-theme="dark"] {
       --bg: var(--abyss-teal);
-      --surface: var(--deep-fjord);
+      --surface: #072e3d;
+      --card-bg: #FFFFFF;
+      --card-text: #042736;
       --heading: var(--alpine-white);
       --text: var(--ice-white);
-      --text-dim: rgba(226, 232, 240, 0.58);
-      --border: rgba(226, 232, 240, 0.14);
-      --card-shadow: none;
-      --fade-color: 4, 39, 54;
-      /* rgb of abyss teal, used in gradients */
-      --pattern-color: 253, 253, 255;
-      /* alpine white, near-invisible wash */
-      --pattern-opacity: 0.04;
+      --text-dim: rgba(226, 232, 240, 0.65);
+      --border: rgba(226, 232, 240, 0.15);
+      --poly-fill-1: rgba(0, 168, 255, 0.12);
+      --poly-fill-2: rgba(4, 39, 54, 0.65);
+      --poly-fill-3: rgba(255, 255, 255, 0.04);
     }
 
     html[data-theme="light"] {
-      --bg: var(--alpine-white);
-      --surface: var(--deep-fjord);
-      --heading: var(--abyss-teal);
-      --text: var(--abyss-teal);
-      --text-dim: rgba(4, 39, 54, 0.62);
-      --border: rgba(4, 39, 54, 0.14);
-      --card-shadow: 0 18px 45px -20px rgba(4, 39, 54, 0.35), 0 4px 12px -6px rgba(4, 39, 54, 0.18);
-      --fade-color: 253, 253, 255;
-      --pattern-color: 8, 59, 79;
-      /* deep fjord wash */
-      --pattern-opacity: 0.05;
+      --bg: #F0F4F8;
+      --surface: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --card-text: #042736;
+      --heading: #042736;
+      --text: #083B4F;
+      --text-dim: rgba(8, 59, 79, 0.7);
+      --border: rgba(4, 39, 54, 0.15);
+      --poly-fill-1: rgba(0, 168, 255, 0.18);
+      --poly-fill-2: rgba(8, 59, 79, 0.08);
+      --poly-fill-3: rgba(4, 39, 54, 0.03);
     }
 
     * {
@@ -69,92 +67,75 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: auto;
-    }
-
     body {
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
-      line-height: 1.55;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
       position: relative;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: 0; }
 
-    ul {
-      list-style: none;
-    }
-
-    button {
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    input {
-      font-family: inherit;
-    }
-
-    /* ============ FIXED ALPINE PRISM WASH (dark-mode low-opacity backdrop) ============ */
-    .prism-wash {
+    /* ============ GLOBAL BACKGROUND POLYGONS LAYER ============ */
+    .bg-polygon-layer {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: var(--pattern-opacity);
-    }
-
-    .prism-wash svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* ============ ALPINE PRISM PATTERN (heavy, for hero/footer) ============ */
-    .prism-panel {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
       overflow: hidden;
     }
 
-    .prism-panel svg {
+    .bg-polygon-layer svg {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    /* ============ LAYOUT SHELLS ============ */
+    /* Section-level Background Polygon Facets */
+    .section-poly-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .section-poly-bg svg {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: cover;
+         object-fit: cover;
+    }
+
+    /* ============ LAYOUT CONTAINER ============ */
     .shell {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
       padding: 0 clamp(1.25rem, 4vw, 3rem);
       position: relative;
       z-index: 2;
     }
 
-    /* ============ NAV ============ */
+    /* ============ HEADER & NAV ============ */
     header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 100;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
+      background: #042330;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .nav-inner {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
       padding: 0 clamp(1.25rem, 4vw, 3rem);
-      height: 76px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -163,130 +144,96 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
       cursor: pointer;
     }
 
     .brand-mark {
-      width: 40px;
-      height: 40px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      width: 36px;
+      height: 36px;
+      background: var(--deep-fjord);
+      border: 1px solid var(--glacier);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--glacier);
       font-family: var(--font-stencil);
-      font-size: 0.95rem;
-      letter-spacing: 0.02em;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 30% 20%, rgba(0, 168, 255, 0.35), transparent 70%);
+      font-size: 0.9rem;
+      font-weight: 700;
     }
 
     .brand-name {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.95rem;
-      letter-spacing: 0.01em;
-      color: var(--heading);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--alpine-white);
+      display: block;
     }
 
     .brand-role {
       display: block;
-      font-size: 0.68rem;
-      color: var(--text-dim);
-      letter-spacing: 0.04em;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
     nav.primary-nav {
       display: flex;
       align-items: center;
-      gap: 2.25rem;
+      gap: 2rem;
     }
 
     nav.primary-nav a {
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.03em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      padding-bottom: 4px;
-      border-bottom: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    nav.primary-nav a:hover {
-      color: var(--heading);
-      border-bottom-color: var(--glacier);
-    }
-
-    nav.primary-nav a.accent {
+    nav.primary-nav a:hover, nav.primary-nav a.accent {
       color: var(--glacier);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
-    .theme-toggle {
-      width: 40px;
-      height: 40px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      letter-spacing: 0.02em;
+    .btn-shop {
+      background: var(--alpine-red);
+      color: var(--alpine-white);
+      padding: 0 1.25rem;
+      height: 68px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-    }
-
-    .theme-toggle:hover {
-      border-color: var(--glacier);
-      color: var(--glacier);
-    }
-
-    .btn {
-      border: 0;
-      font-family: var(--font-body);
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .btn-primary {
-      background: var(--glacier);
-      color: var(--abyss-teal);
-      padding: 0.75rem 1.5rem;
-      font-size: 0.85rem;
+    .btn-shop:hover {
+      background: #E03126;
     }
 
-    .btn-primary:hover {
-      background: #39BAFF;
-    }
-
-    .btn-outline {
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
       background: transparent;
-      color: var(--text);
       border: 1px solid var(--border);
-      padding: 0.7rem 1.4rem;
-      font-size: 0.85rem;
-    }
-
-    .btn-outline:hover {
-      border-color: var(--glacier);
-      color: var(--glacier);
+      color: var(--heading);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
     }
 
     .mobile-toggle {
@@ -295,257 +242,374 @@
       height: 40px;
       background: transparent;
       border: 1px solid var(--border);
-      color: var(--text);
+      color: var(--heading);
       align-items: center;
       justify-content: center;
     }
 
-    /* ============ HERO ============ */
-    main {
-      position: relative;
-      z-index: 1;
-    }
+    /* ============ HERO SECTION ============ */
+    main { position: relative; z-index: 1; }
 
     .hero {
       position: relative;
-      padding: calc(76px + 6rem) 0 6rem;
+      padding: calc(68px + 4rem) 0 5rem;
+      background: linear-gradient(180deg, #021822 0%, #063143 100%);
+      border-bottom: 1px solid var(--border);
       overflow: hidden;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--font-stencil);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
+    .eyebrow-label {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--glacier);
-      border: 1px solid var(--border);
-      padding: 0.5rem 0.9rem;
-      margin-bottom: 2rem;
-    }
-
-    .eyebrow .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--glacier);
-      display: inline-block;
+      margin-bottom: 0.5rem;
+      display: block;
     }
 
     .hero-title {
       font-family: var(--font-display);
-      color: var(--heading);
-      font-size: clamp(3rem, 9vw, 7.5rem);
-      line-height: 0.92;
+      color: var(--alpine-white);
+      font-size: clamp(3rem, 7.5vw, 6.5rem);
+      line-height: 0.95;
       text-transform: uppercase;
-      letter-spacing: 0.01em;
-      -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 9px, transparent 9px 11px);
-      mask-image: repeating-linear-gradient(180deg, #000 0 9px, transparent 9px 11px);
-    }
-
-    .hero-title span {
-      display: block;
-    }
-
-    .hero-title .accent {
-      color: var(--glacier);
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
     }
 
     .hero-sub {
-      max-width: 640px;
-      margin-top: 2rem;
+      max-width: 620px;
       font-size: 1.05rem;
-      color: var(--text-dim);
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
     }
 
     .hero-actions {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
-      margin-top: 2.5rem;
+      margin-top: 2rem;
     }
 
-    /* ============ PROJECT GRID ============ */
+    .btn-glacier {
+      background: var(--glacier);
+      color: var(--abyss-teal);
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-glacier:hover { background: var(--glacier-hover); }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--alpine-white);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.75rem;
+    }
+
+    .btn-outline-light:hover { border-color: var(--glacier); color: var(--glacier); }
+
+    /* ============ STAT STRIP WIDGET (Matterhorn 360KM Style) ============ */
+    .stat-strip {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border: 2px solid var(--glacier);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      line-height: 1;
+      color: var(--heading);
+      text-transform: uppercase;
+    }
+
+    .stat-desc {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--glacier);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    /* ============ SECTION HEADER STYLING ============ */
     .section {
-      padding: 5rem 0;
+      padding: 4.5rem 0;
       position: relative;
     }
 
     .section-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1.5rem;
-    }
-
-    .section-label {
-      font-family: var(--font-stencil);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--glacier);
+      margin-bottom: 2rem;
     }
 
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
       color: var(--heading);
       text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
     }
 
-    .grid-3 {
+    /* ============ CARDS GRID (Ticket Cards Style) ============ */
+    .grid-4 {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
     }
 
-    .card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--card-shadow);
-      min-height: 22rem;
+    /* Standard Card (White Card with Cyan Action Bar) */
+    .ticket-card {
+      background: var(--card-bg);
+      color: var(--card-text);
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: space-between;
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      position: relative;
       overflow: hidden;
     }
 
-    html[data-theme="light"] .card {
-      background: var(--alpine-white);
+    .ticket-card-image {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
     }
 
-    html[data-theme="dark"] .card {
-      background: rgba(8, 59, 79, 0.55);
-    }
-
-    .card-pattern {
+    .ticket-card-image::after {
+      content: "";
       position: absolute;
       inset: 0;
-      opacity: 0.5;
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 60%);
     }
 
-    .card-pattern svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .card-body {
-      position: relative;
+    .ticket-validity {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
       z-index: 2;
-      padding: 2rem;
-      background: linear-gradient(180deg, transparent 0%, rgba(var(--fade-color), 0.55) 55%, rgba(var(--fade-color), 0.92) 100%);
-    }
-
-    html[data-theme="light"] .card .card-body {
-      background: linear-gradient(180deg, transparent 0%, rgba(4, 39, 54, 0.06) 40%, rgba(4, 39, 54, 0.10) 100%);
-    }
-
-    .card-tag {
-      font-family: var(--font-stencil);
       font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .ticket-card-content {
+      padding: 1.25rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ticket-category {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #0084C7;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .ticket-card h3 {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #042736;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .ticket-price {
+      font-size: 0.8rem;
+      color: #556B75;
+      margin-bottom: 1.25rem;
+    }
+
+    .ticket-action-row {
+      display: flex;
+      gap: 2px;
+      margin-top: auto;
+    }
+
+    .btn-learn-more {
+      flex: 1;
+      background: var(--glacier);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.72rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--glacier);
-      display: block;
-      margin-bottom: 0.6rem;
+      padding: 0.75rem;
+      text-align: center;
     }
 
-    .card h3 {
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      text-transform: uppercase;
-      color: var(--heading);
-      margin-bottom: 0.5rem;
-    }
+    .btn-learn-more:hover { background: #008CDB; }
 
-    html[data-theme="light"] .card h3,
-    html[data-theme="light"] .card p {
-      color: var(--abyss-teal);
-    }
-
-    html[data-theme="dark"] .card h3 {
-      color: var(--alpine-white);
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: var(--text-dim);
-    }
-
-    .card-link {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
-    }
-
-    .card-link:hover~.card-body .card-tag,
-    .card:hover .card-tag {
-      color: #39BAFF;
-    }
-
-    /* ============ ABOUT / STAT STRIP ============ */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .about-copy p {
-      color: var(--text-dim);
-      margin-bottom: 1.1rem;
-      font-size: 0.98rem;
-      max-width: 52ch;
-    }
-
-    .about-copy p strong {
-      color: var(--heading);
-      font-weight: 600;
-    }
-
-    .stat-list {
-      border-top: 1px solid var(--border);
-    }
-
-    .stat-row {
+    .btn-cart-icon {
+      width: 40px;
+      background: var(--alpine-red);
+      color: #FFFFFF;
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: 1.1rem 0;
-      border-bottom: 1px solid var(--border);
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
     }
 
-    .stat-num {
-      font-family: var(--font-display);
-      font-size: 2rem;
+    .btn-cart-icon:hover { background: #E03126; }
+
+    /* ALL TICKETS / ALL PROJECTS DARK POLYGON CARD */
+    .all-tickets-card {
+      background: linear-gradient(135deg, #053344 0%, #021a24 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 340px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .all-tickets-card:hover .all-tickets-btn {
       color: var(--glacier);
     }
 
-    .stat-label {
-      font-size: 0.78rem;
-      letter-spacing: 0.03em;
+    .all-tickets-btn {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--alpine-white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    /* ============ LINKS SECTION ============ */
-    #links {
-      display: none;
+    /* ============ FEATURED HIGHLIGHTS SECTION (Piste Highlights Style) ============ */
+    .featured-section {
+      background: #042432;
+      position: relative;
+      padding: 4.5rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
     }
 
-    #links.active {
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .featured-left-card {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .featured-left-card img {
+      width: 100%;
+      height: 380px;
+      -o-object-fit: cover;
+         object-fit: cover;
       display: block;
     }
 
-    #home.hidden {
-      display: none;
+    .featured-right-content {
+      position: relative;
+      z-index: 2;
     }
+
+    .nav-arrows {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .arrow-btn {
+      width: 38px;
+      height: 38px;
+      background: #FFFFFF;
+      color: #042736;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow-btn:hover { background: var(--glacier); color: #FFFFFF; }
+
+    .featured-right-content h3 {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--alpine-white);
+      margin-bottom: 1rem;
+    }
+
+    .featured-right-content p {
+      color: rgba(226, 232, 240, 0.8);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ============ LINKS & FOOTER ============ */
+    #links { display: none; }
+    #links.active { display: block; }
+    #home.hidden { display: none; }
 
     .links-grid {
       display: grid;
@@ -554,18 +618,15 @@
     }
 
     .link-card {
-      position: relative;
-      background: transparent;
+      background: var(--surface);
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 1.75rem;
+      padding: 1.25rem 1.5rem;
     }
 
-    .link-card:hover {
-      border-color: var(--glacier);
-    }
+    .link-card:hover { border-color: var(--glacier); }
 
     .link-left {
       display: flex;
@@ -574,54 +635,32 @@
     }
 
     .link-icon {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--glacier);
       font-family: var(--font-stencil);
-      font-size: 0.7rem;
+      font-size: 0.75rem;
     }
 
     .link-name {
-      font-weight: 600;
-      font-size: 1rem;
+      font-weight: 700;
+      font-size: 0.95rem;
       color: var(--heading);
     }
 
-    .link-badge {
-      font-size: 0.62rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: var(--alpine-red);
-      color: var(--alpine-white);
-      padding: 0.15rem 0.4rem;
-      margin-left: 0.5rem;
-    }
-
-    .link-arrow {
-      color: var(--text-dim);
-      font-size: 1.1rem;
-    }
-
-    .link-card:hover .link-arrow {
-      color: var(--glacier);
-    }
-
-    /* ============ FOOTER ============ */
     footer {
       position: relative;
+      background: #021620;
       border-top: 1px solid var(--border);
-      background: var(--bg);
       overflow: hidden;
     }
 
     .footer-inner {
-      position: relative;
-      z-index: 2;
-      padding: 5rem 0 2.5rem;
+      padding: 4rem 0 2rem;
     }
 
     .footer-grid {
@@ -633,385 +672,317 @@
 
     .footer-quote {
       font-family: var(--font-display);
-      font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+      font-size: clamp(2rem, 3.5vw, 3rem);
       text-transform: uppercase;
       color: var(--heading);
       line-height: 1.05;
-      margin-bottom: 1.25rem;
-    }
-
-    .footer-quote .accent {
-      color: var(--glacier);
-    }
-
-    .footer-copy {
-      color: var(--text-dim);
-      max-width: 34ch;
-      margin-bottom: 1.25rem;
-    }
-
-    .footer-view-links {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--glacier);
-      border-bottom: 1px solid var(--glacier);
-      padding-bottom: 2px;
-      background: transparent;
-      border-top: 0;
-      border-left: 0;
-      border-right: 0;
-    }
-
-    .footer-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 2rem;
-    }
-
-    html[data-theme="light"] .footer-card {
-      background: var(--deep-fjord);
-    }
-
-    html[data-theme="light"] .footer-card h3,
-    html[data-theme="light"] .footer-card p {
-      color: var(--ice-white);
-    }
-
-    html[data-theme="dark"] .footer-card {
-      background: rgba(8, 59, 79, 0.6);
-    }
-
-    .footer-card h3 {
-      font-family: var(--font-stencil);
-      font-size: 0.95rem;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: var(--heading);
-      margin-bottom: 0.4rem;
-    }
-
-    .footer-card p {
-      font-size: 0.82rem;
-      color: var(--text-dim);
-      margin-bottom: 1.25rem;
-    }
-
-    .subscribe-row {
-      display: flex;
-      gap: 0.6rem;
-    }
-
-    .subscribe-row input {
-      flex: 1;
-      background: rgba(253, 253, 255, 0.06);
-      border: 1px solid var(--border);
-      color: var(--alpine-white);
-      padding: 0.85rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    .subscribe-row input::-moz-placeholder {
-      color: rgba(226, 232, 240, 0.4);
-    }
-
-    .subscribe-row input::placeholder {
-      color: rgba(226, 232, 240, 0.4);
-    }
-
-    .subscribe-row button {
-      background: var(--glacier);
-      color: var(--abyss-teal);
-      border: 0;
-      padding: 0.85rem 1.3rem;
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
-
-    .subscribe-row button:hover {
-      background: #39BAFF;
+      margin-bottom: 1rem;
     }
 
     .footer-bottom {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
       padding-top: 2rem;
       border-top: 1px solid var(--border);
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       color: var(--text-dim);
-      letter-spacing: 0.02em;
     }
 
-    /* ============ MOBILE MENU ============ */
+    /* Mobile Drawer */
     .mobile-menu {
       position: fixed;
       inset: 0;
       z-index: 200;
       background: var(--bg);
-      padding: 100px 1.5rem 2rem;
+      padding: 80px 1.5rem 2rem;
       display: none;
       flex-direction: column;
-      gap: 0;
+      gap: 1rem;
     }
 
-    .mobile-menu.open {
-      display: flex;
+    .mobile-menu.open { display: flex; }
+
+    /* RESPONSIVE STYLES */
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .featured-grid { grid-template-columns: 1fr; }
     }
 
-    .mobile-menu a {
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      text-transform: uppercase;
-      color: var(--heading);
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .mobile-menu a.accent {
-      color: var(--glacier);
-    }
-
-    .mobile-menu .btn {
-      margin-top: 1.5rem;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .mobile-close {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ============ RESPONSIVE ============ */
-    @media (max-width: 900px) {
-      nav.primary-nav {
-        display: none;
-      }
-
-      .mobile-toggle {
-        display: flex;
-      }
-
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
-
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .links-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        transition: none !important;
-      }
-    }
-
-    /* Non-decorative, functional-only transitions (color/border, no motion/scale/blur) */
-    a,
-    button,
-    .card-tag {
-      transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
+    @media (max-width: 768px) {
+      nav.primary-nav, .btn-shop { display: none; }
+      .mobile-toggle { display: flex; }
+      .grid-4 { grid-template-columns: 1fr; }
+      .links-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Fixed low-opacity Alpine Prism wash (dark mode signature backdrop) -->
-  <div class="prism-wash" aria-hidden="true">
+  <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
+  <div class="bg-polygon-layer" aria-hidden="true">
     <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
-      <polygon points="0,0 420,0 180,340 0,260" fill="rgb(var(--pattern-color))" opacity="0.6" />
-      <polygon points="420,0 900,0 760,300 180,340" fill="rgb(var(--pattern-color))" opacity="0.35" />
-      <polygon points="900,0 1440,0 1440,220 760,300" fill="rgb(var(--pattern-color))" opacity="0.5" />
-      <polygon points="0,260 180,340 260,620 0,700" fill="rgb(var(--pattern-color))" opacity="0.25" />
-      <polygon points="180,340 760,300 640,640 260,620" fill="rgb(var(--pattern-color))" opacity="0.45" />
-      <polygon points="760,300 1440,220 1440,560 640,640" fill="rgb(var(--pattern-color))" opacity="0.3" />
-      <polygon points="0,700 260,620 380,1000 0,1000" fill="rgb(var(--pattern-color))" opacity="0.4" />
-      <polygon points="260,620 640,640 760,1000 380,1000" fill="rgb(var(--pattern-color))" opacity="0.2" />
-      <polygon points="640,640 1440,560 1440,1000 760,1000" fill="rgb(var(--pattern-color))" opacity="0.35" />
+      <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+      <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+      <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+      <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+      <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+      <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+      <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+      <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+      <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
     </svg>
   </div>
 
+  <!-- HEADER / NAVIGATION BAR -->
   <header>
     <div class="nav-inner">
       <div class="brand" onclick="showHome()">
         <div class="brand-mark">AK</div>
         <div>
-          <span class="brand-name">Adam Křivka</span>
-          <span class="brand-role">CS Student · FIT VUT Brno</span>
+          <span class="brand-name">Matterhorn / Portfolio</span>
+          <span class="brand-role">Adam Křivka · CS FIT VUT</span>
         </div>
       </div>
 
-      <nav class="primary-nav" id="primaryNav">
+      <nav class="primary-nav">
         <a href="#work">Work</a>
-        <a href="#lab">Lab</a>
+        <a href="#highlights">Highlights</a>
         <a href="#about">About</a>
-        <a href="#notes">Notes</a>
+        <a href="#lab">Lab</a>
         <a href="/ledger/" class="accent">Ledger</a>
       </nav>
 
       <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">☀</button>
-        <button class="btn btn-primary" id="talkBtn" onclick="showLinks()" style="display:inline-flex;">Let's
-          Talk</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
+        <button class="btn-shop" onclick="showLinks()">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5z"/></svg>
+          Let's Talk
+        </button>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
       </div>
     </div>
   </header>
 
   <main>
-
     <!-- ================= HOME VIEW ================= -->
     <div id="home">
 
+      <!-- HERO SECTION -->
       <section class="hero">
-        <div class="prism-panel" aria-hidden="true">
-          <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" style="opacity:0.07">
-            <polygon points="0,0 500,0 260,420 0,320" fill="var(--glacier)" />
-            <polygon points="500,0 1000,0 820,360 260,420" fill="rgb(var(--pattern-color))" />
-            <polygon points="1000,0 1440,0 1440,300 820,360" fill="rgb(var(--pattern-color))" />
-            <polygon points="0,320 260,420 360,800 0,800" fill="rgb(var(--pattern-color))" />
-            <polygon points="260,420 820,360 700,800 360,800" fill="var(--glacier)" />
-            <polygon points="820,360 1440,300 1440,800 700,800" fill="rgb(var(--pattern-color))" />
+        <div class="section-poly-bg" aria-hidden="true">
+          <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 600,0 350,380 0,280" fill="rgba(0, 168, 255, 0.15)" />
+            <polygon points="600,0 1200,0 950,320 350,380" fill="rgba(4, 39, 54, 0.7)" />
+            <polygon points="1200,0 1440,0 1440,400 950,320" fill="rgba(0, 168, 255, 0.08)" />
+            <polygon points="0,280 350,380 450,600 0,600" fill="rgba(4, 39, 54, 0.5)" />
+            <polygon points="350,380 950,320 850,600 450,600" fill="rgba(0, 168, 255, 0.12)" />
+            <polygon points="950,320 1440,400 1440,600 850,600" fill="rgba(4, 39, 54, 0.8)" />
           </svg>
         </div>
 
         <div class="shell">
-          <div class="eyebrow"><span class="dot"></span>CS Student — FIT, Brno University of Technology</div>
-
+          <span class="eyebrow-label">CS Student in Matterhorn Ski Paradise — FIT VUT Brno</span>
           <h1 class="hero-title">
-            <span>Em Construção</span>
-            <span class="accent">Peço que aguarde.</span>
+            Matterhorn<br>
+            <span style="color: var(--glacier);">Ski Paradise</span>
           </h1>
-
-          <p class="hero-sub">Blending the knowledge gathered over the years with the potential AI offers today.
-            Implementing concepts, shipping ideas, and always trying to make my own life a little easier along the way.
+          <p class="hero-sub">
+            Blending Computer Science fundamentals with practical AI capabilities. Shipping web apps, designing systems, and building tools to make complex tasks simpler.
           </p>
-
           <div class="hero-actions">
-            <a href="/ledger/" class="btn btn-primary">Latest project →</a>
-            <a href="/work-tracker/" class="btn btn-outline">Nothing 2C here</a>
+            <a href="/ledger/" class="btn-glacier">Latest Project →</a>
+            <a href="#work" class="btn-outline-light">View Tickets &amp; Access</a>
           </div>
         </div>
       </section>
 
+      <!-- METRIC STAT STRIP (Matterhorn 360KM Style) -->
+      <div class="stat-strip">
+        <div class="shell">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon">ℹ</div>
+              <div>
+                <div class="stat-value">360KM</div>
+                <span class="stat-desc">Pistes / Code lines</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">ℹ</div>
+              <div>
+                <div class="stat-value">52</div>
+                <span class="stat-desc">Lifts / Modules built</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">☼</div>
+              <div>
+                <div class="stat-value">HIGHEST</div>
+                <span class="stat-desc">Quality &amp; Standards</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">ℹ</div>
+              <div>
+                <div class="stat-value">2</div>
+                <span class="stat-desc">Countries / Languages</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORK / TICKETS SECTION -->
       <section class="section" id="work">
         <div class="shell">
           <div class="section-head">
-            <div>
-              <span class="section-label">Selected Work</span>
-              <h2 class="section-title">Currently Building</h2>
-            </div>
+            <span class="eyebrow-label">Single &amp; Return Tickets</span>
+            <h2 class="section-title">TICKETS</h2>
           </div>
 
-          <div class="grid-3">
-            <article class="card">
-              <a href="/ledger/" class="card-link" aria-label="View Work Ledger"></a>
-              <div class="card-pattern" aria-hidden="true">
-                <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
-                  <polygon points="0,0 260,0 140,220 0,160" fill="var(--glacier)" opacity="0.5" />
-                  <polygon points="260,0 400,0 400,180 140,220" fill="rgb(var(--pattern-color))" opacity="0.3" />
-                  <polygon points="0,160 140,220 180,400 0,400" fill="rgb(var(--pattern-color))" opacity="0.2" />
-                  <polygon points="140,220 400,180 400,400 180,400" fill="var(--glacier)" opacity="0.15" />
-                </svg>
+          <div class="grid-4">
+            <!-- Ticket Card 1 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">Validity 05/01/2026 - 10/31/2026</span>
               </div>
-              <div class="card-body">
-                <span class="card-tag">01 — Live</span>
-                <h3>Work Ledger</h3>
-                <p>HTML + JS — tracks my work for others to follow along.</p>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="card-pattern" aria-hidden="true">
-                <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
-                  <polygon points="400,0 400,240 220,120" fill="rgb(var(--pattern-color))" opacity="0.3" />
-                  <polygon points="0,60 220,120 120,400 0,320" fill="rgb(var(--pattern-color))" opacity="0.18" />
-                  <polygon points="220,120 400,240 400,400 120,400" fill="var(--glacier)" opacity="0.12" />
-                </svg>
-              </div>
-              <div class="card-body">
-                <span class="card-tag">02 — In progress</span>
-                <h3>More to Come</h3>
-                <p>A few projects are still being shaped behind the scenes.</p>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">Single &amp; Return Tickets</span>
+                  <h3>Work Ledger Dashboard</h3>
+                  <div class="ticket-price">from CHF 120.00 / Open Source</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="/ledger/" class="btn-learn-more">LEARN MORE</a>
+                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
+                </div>
               </div>
             </article>
 
-            <article class="card">
-              <div class="card-pattern" aria-hidden="true">
-                <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
-                  <polygon points="0,0 200,0 60,260 0,180" fill="rgb(var(--pattern-color))" opacity="0.25" />
-                  <polygon points="200,0 400,60 260,300 60,260" fill="var(--glacier)" opacity="0.15" />
-                  <polygon points="60,260 260,300 200,400 0,400" fill="rgb(var(--pattern-color))" opacity="0.2" />
-                </svg>
+            <!-- Ticket Card 2 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">Validity 05/01/2026 - 09/06/2026</span>
               </div>
-              <div class="card-body">
-                <span class="card-tag">03 — Standard</span>
-                <h3>Personal Touch</h3>
-                <p>Can't let poor quality out the door — everything's reviewed by hand.</p>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">Single &amp; Return Tickets</span>
+                  <h3>Matterhorn Alpine Crossing</h3>
+                  <div class="ticket-price">from CHF 147.50 / Web System</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="#" class="btn-learn-more">LEARN MORE</a>
+                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
+                </div>
               </div>
             </article>
+
+            <!-- Ticket Card 3 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">Validity 06/13/2026 - 10/11/2026</span>
+              </div>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">1- &amp; Multi-Day Passes</span>
+                  <h3>Bike Pass Basic</h3>
+                  <div class="ticket-price">from CHF 90.00 / Utility</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="#" class="btn-learn-more">LEARN MORE</a>
+                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ALL TICKETS / ALL PROJECTS DARK POLYGON CARD -->
+            <article class="all-tickets-card" onclick="showLinks()">
+              <!-- Poly BG Inside Card -->
+              <div class="section-poly-bg" aria-hidden="true">
+                <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+                  <polygon points="0,0 300,0 180,220 0,160" fill="rgba(0, 168, 255, 0.2)" />
+                  <polygon points="300,0 300,400 180,220" fill="rgba(4, 39, 54, 0.8)" />
+                  <polygon points="0,160 180,220 300,400 0,400" fill="rgba(0, 168, 255, 0.1)" />
+                </svg>
+              </div>
+              <div class="all-tickets-btn">
+                ALL TICKETS →
+              </div>
+            </article>
+
           </div>
         </div>
       </section>
 
+      <!-- FEATURED HIGHLIGHTS SECTION (Piste Highlights Style with Background Polygons) -->
+      <section class="featured-section" id="highlights">
+        <!-- Faceted Dark Polygon Overlay Background -->
+        <div class="section-poly-bg" aria-hidden="true">
+          <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 700,0 450,500 0,500" fill="rgba(0, 168, 255, 0.08)" />
+            <polygon points="700,0 1440,0 1440,300 450,500" fill="rgba(3, 33, 45, 0.95)" />
+            <polygon points="1440,300 1440,500 450,500" fill="rgba(0, 168, 255, 0.05)" />
+          </svg>
+        </div>
+
+        <div class="shell">
+          <div class="section-head">
+            <span class="eyebrow-label">Matterhorn Ski Paradise</span>
+            <h2 class="section-title">PISTE HIGHLIGHTS</h2>
+          </div>
+
+          <div class="featured-grid">
+            <div class="featured-left-card">
+              <img src="https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=800&q=80" alt="Matterhorn Slopes">
+            </div>
+
+            <div class="featured-right-content">
+              <div class="nav-arrows">
+                <button class="arrow-btn" aria-label="Previous">←</button>
+                <button class="arrow-btn" aria-label="Next">→</button>
+              </div>
+              <h3>The most beautiful slopes in Zermatt</h3>
+              <p>
+                One of the things that makes skiing in Zermatt such a special experience is the breathtaking scenery. The following pistes afford particularly attractive views of the Matterhorn: Rothorn - Sunnegga (pistes 11 and 7), Tufternkumme (piste 15), Hirli area (pistes 52 and 54).
+              </p>
+              <button class="btn-glacier" onclick="showLinks()">Explore Highlights →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIENCES / ABOUT SECTION -->
       <section class="section" id="about">
         <div class="shell">
           <div class="section-head">
-            <div>
-              <span class="section-label">About</span>
-              <h2 class="section-title">Adam Křivka</h2>
-            </div>
+            <span class="eyebrow-label">About Developer</span>
+            <h2 class="section-title">EXPERIENCES</h2>
           </div>
 
-          <div class="about-grid">
-            <div class="about-copy">
-              <p><strong>Computer Science student at FIT, Brno University of Technology</strong>, working at the
-                intersection of practical software and applied AI.</p>
-              <p>Most of what's here is a work in progress — small tools, experiments, and the occasional finished
-                project — built to solve real problems first, and to learn from second.</p>
-            </div>
-            <div class="stat-list">
-              <div class="stat-row"><span class="stat-num">FIT</span><span class="stat-label">VUT Brno — Computer
-                  Science</span></div>
-              <div class="stat-row"><span class="stat-num">01</span><span class="stat-label">Project shipped — Work
-                  Ledger</span></div>
-              <div class="stat-row"><span class="stat-num">∞</span><span class="stat-label">Ideas in the lab</span>
-              </div>
-            </div>
+          <div style="max-width: 720px; font-size: 1.05rem; line-height: 1.7; color: var(--text-dim);">
+            <p style="margin-bottom: 1rem;">
+              <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of Technology</strong>, working at the intersection of web technology and modern engineering.
+            </p>
+            <p>
+              Focused on crafting robust digital solutions, performing continuous experimental research in software systems, and shipping functional tools that solve real-world problems.
+            </p>
           </div>
         </div>
       </section>
 
-      <section class="section" id="lab" style="padding-top:0;">
+      <!-- LAB / NOTES SECTION -->
+      <section class="section" id="lab" style="padding-top: 0;">
         <div class="shell">
           <div class="section-head">
-            <div>
-              <span class="section-label">Lab</span>
-              <h2 class="section-title">Notes &amp; Experiments</h2>
-            </div>
+            <span class="eyebrow-label">Research &amp; Notes</span>
+            <h2 class="section-title">LAB NOTES</h2>
           </div>
-          <p id="notes" style="color:var(--text-dim); max-width:60ch;">Nothing published here yet — this is where
-            write-ups on AI experiments and small builds will land as they're ready.</p>
+          <p style="color: var(--text-dim);">
+            Write-ups on system architecture, web components, and experimental AI projects will be documented here as they launch.
+          </p>
         </div>
       </section>
 
@@ -1019,103 +990,89 @@
 
     <!-- ================= LINKS VIEW ================= -->
     <div id="links">
-      <section class="section" style="padding-top:calc(76px + 4rem);">
+      <section class="section" style="padding-top: calc(68px + 4rem);">
         <div class="shell">
-          <div class="section-head">
+          <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-              <span class="section-label">Elsewhere</span>
-              <h2 class="section-title">Caught Your Eye?</h2>
+              <span class="eyebrow-label">Elsewhere</span>
+              <h2 class="section-title">CONNECT WITH ME</h2>
             </div>
-            <button class="btn btn-outline" onclick="showHome()">← Back</button>
+            <button class="btn-outline-light" onclick="showHome()">← Back</button>
           </div>
 
           <div class="links-grid">
             <a class="link-card" href="https://github.com/krivkaadam" target="_blank" rel="noreferrer">
-              <div class="link-left">
-                <div class="link-icon">GH</div><span class="link-name">GitHub</span>
-              </div>
-              <span class="link-arrow">↗</span>
+              <div class="link-left"><div class="link-icon">GH</div><span class="link-name">GitHub</span></div>
+              <span>↗</span>
             </a>
             <a class="link-card" href="https://x.com/krivkaadam" target="_blank" rel="noreferrer">
-              <div class="link-left">
-                <div class="link-icon">X</div><span class="link-name">Twitter / X</span>
-              </div>
-              <span class="link-arrow">↗</span>
+              <div class="link-left"><div class="link-icon">X</div><span class="link-name">Twitter / X</span></div>
+              <span>↗</span>
             </a>
             <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
-              <div class="link-left">
-                <div class="link-icon">IG</div><span class="link-name">Instagram</span>
-              </div>
-              <span class="link-arrow">↗</span>
-            </a>
-            <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
-              <div class="link-left">
-                <div class="link-icon">FB</div><span class="link-name">Facebook</span>
-              </div>
-              <span class="link-arrow">↗</span>
-            </a>
-            <a class="link-card" href="#" onclick="return false;">
-              <div class="link-left">
-                <div class="link-icon">IN</div><span class="link-name">LinkedIn<span
-                        class="link-badge">TBD</span></span>
-              </div>
-              <span class="link-arrow">↗</span>
+              <div class="link-left"><div class="link-icon">IG</div><span class="link-name">Instagram</span></div>
+              <span>↗</span>
             </a>
             <a class="link-card" href="mailto:krivkaad@gmail.com">
-              <div class="link-left">
-                <div class="link-icon">@</div><span class="link-name">Email Me</span>
-              </div>
-              <span class="link-arrow">↗</span>
+              <div class="link-left"><div class="link-icon">@</div><span class="link-name">Email Me</span></div>
+              <span>↗</span>
             </a>
           </div>
         </div>
       </section>
     </div>
-
   </main>
 
+  <!-- FOOTER SECTION WITH FACETED POLYGONS -->
   <footer id="siteFooter">
-    <div class="prism-panel" aria-hidden="true" style="opacity:0.05;">
-      <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMid slice">
-        <polygon points="0,500 300,500 500,220 0,150" fill="rgb(var(--pattern-color))" />
-        <polygon points="500,220 900,120 1000,500 300,500" fill="var(--glacier)" />
-        <polygon points="900,120 1440,0 1440,500 1000,500" fill="rgb(var(--pattern-color))" />
+    <div class="section-poly-bg" aria-hidden="true">
+      <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMid slice">
+        <polygon points="0,300 400,300 600,100 0,50" fill="rgba(0, 168, 255, 0.08)" />
+        <polygon points="600,100 1000,0 1440,300 400,300" fill="rgba(4, 39, 54, 0.9)" />
       </svg>
     </div>
+
     <div class="shell footer-inner">
       <div class="footer-grid">
         <div>
-          <h2 class="footer-quote">Built slowly.<br>Shipped <span class="accent">deliberately.</span></h2>
-          <p class="footer-copy">Open for thoughtful projects and any collaboration worth the time.</p>
-          <button class="footer-view-links" onclick="showLinks()">View all links →</button>
+          <h2 class="footer-quote">
+            BUILT SLOWLY.<br>
+            SHIPPED <span style="color: var(--glacier);">DELIBERATELY.</span>
+          </h2>
+          <p style="color: var(--text-dim); margin-bottom: 1.5rem;">
+            Open for thoughtful projects and technical collaboration.
+          </p>
+          <button class="btn-glacier" onclick="showLinks()">View All Links →</button>
         </div>
-        <div class="footer-card">
-          <h3>Stay in touch</h3>
-          <p>No mailing list yet — this box is just here for when there is one.</p>
-          <div class="subscribe-row">
-            <input type="email" placeholder="enter@email.com">
-            <button type="button">Join</button>
+
+        <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid var(--border); padding: 2rem;">
+          <h3 style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">Stay In Touch</h3>
+          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">Subscribe to receive updates on upcoming builds and releases.</p>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="email" placeholder="enter@email.com" style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 0.8rem; color: #fff;">
+            <button type="button" style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
           </div>
         </div>
       </div>
+
       <div class="footer-bottom">
         <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
-        <span>Brno, Czech Republic</span>
+        <span>Matterhorn / Zermatt / FIT VUT</span>
       </div>
     </div>
   </footer>
 
+  <!-- MOBILE MENU DRAWER -->
   <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-close" id="mobileClose" aria-label="Close menu">✕</button>
-    <a href="#" onclick="showHome(); closeMobile(); return false;">Home</a>
-    <a href="#work" onclick="closeMobile();">Work</a>
-    <a href="#lab" onclick="closeMobile();">Lab</a>
-    <a href="#about" onclick="closeMobile();">About</a>
-    <a href="/ledger/" class="accent">Ledger</a>
-    <button class="btn btn-primary" onclick="showLinks(); closeMobile();">Let's Talk</button>
+    <button style="align-self: flex-end; background: transparent; color: #fff; font-size: 1.5rem;" id="mobileClose">✕</button>
+    <a href="#" onclick="showHome(); closeMobile(); return false;" style="font-family: var(--font-display); font-size: 1.8rem;">HOME</a>
+    <a href="#work" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">WORK</a>
+    <a href="#highlights" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">HIGHLIGHTS</a>
+    <a href="#about" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">ABOUT</a>
+    <button class="btn-glacier" onclick="showLinks(); closeMobile();" style="margin-top: 1rem;">LET'S TALK</button>
   </div>
-  <script>
 
+  <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const homeEl = document.getElementById('home');
@@ -1128,6 +1085,7 @@
       footerEl.style.display = 'none';
       window.scrollTo(0, 0);
     }
+
     function showHome() {
       homeEl.classList.remove('hidden');
       linksEl.classList.remove('active');
@@ -1152,6 +1110,7 @@
     });
     applyThemeIcon();
   </script>
+
 </body>
 
 </html>
