@@ -896,34 +896,10 @@
         1 0 0 0 0
         0 1 0 0 0
         0 0 1 0 0
-        0 0 0 15 -10"
+        0 0 0 15 -11"
       result="speckles" />
 
     <!-- 3. Punch sparse holes out of the text (reveals background behind) -->
-    <feComposite in="SourceGraphic" in2="speckles" operator="out" />
-  </filter>
-</svg>
-
-<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
-  <filter id="distress-speckles">
-    <feTurbulence
-      type="fractalNoise"
-      baseFrequency="0.8"
-      numOctaves="3"
-      seed="7"
-      result="noise" />
-
-    <feColorMatrix
-      in="noise"
-      type="matrix"
-      values="
-        1 0 0 0 0
-        0 1 0 0 0
-        0 0 1 0 0
-        0 0 0 18 -9"
-      result="speckles" />
-
-    <!-- Subtract speckle dots directly out of the text geometry -->
     <feComposite in="SourceGraphic" in2="speckles" operator="out" />
   </filter>
 </svg>
@@ -1055,7 +1031,7 @@
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">Selected Work</span>
-            <h2 class="section-title">CURRENTLY BUILDING</h2>
+            <h2 class="section-title speckled">CURRENTLY BUILDING</h2>
           </div>
 
           <div class="grid-4">
@@ -1177,7 +1153,7 @@
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">About Me</span>
-            <h2 class="section-title">ADAM KŘIVKA</h2>
+            <h2 class="section-title speckled">ADAM KŘIVKA</h2>
           </div>
 
           <div style="max-width: 720px; font-size: 1.05rem; line-height: 1.7; color: var(--text-dim);">
@@ -1198,7 +1174,7 @@
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">Lab &amp; Research</span>
-            <h2 class="section-title">NOTES &amp; EXPERIMENTS</h2>
+            <h2 class="section-title speckled">NOTES &amp; EXPERIMENTS</h2>
           </div>
           <p style="color: var(--text-dim);">
             Nothing published here yet - this is where write-ups on AI experiments and small builds will land as they're
@@ -1300,7 +1276,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:41:29</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:43:29</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
