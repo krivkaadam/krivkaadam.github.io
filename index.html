@@ -878,15 +878,18 @@
 
 <body>
   <!-- GLOBAL DISTRESS FILTER DEFINITION -->
-  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+  <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
   <filter id="distress-speckles">
+    <!-- 1. Fine-grained noise base -->
     <feTurbulence
       type="fractalNoise"
-      baseFrequency="0.8"
-      numOctaves="3"
+      baseFrequency="0.5"
+      numOctaves="1"
       seed="7"
       result="noise" />
 
+    <!-- 2. High negative offset to isolate ONLY extreme noise peaks -->
     <feColorMatrix
       in="noise"
       type="matrix"
@@ -897,10 +900,12 @@
         0 0 0 18 -9"
       result="speckles" />
 
-    <!-- Subtract speckle dots directly out of the text geometry -->
+    <!-- 3. Punch sparse holes out of the text (reveals background behind) -->
     <feComposite in="SourceGraphic" in2="speckles" operator="out" />
   </filter>
 </svg>
+
+
 
 
 
@@ -1274,7 +1279,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:31:55</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:34:07</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
