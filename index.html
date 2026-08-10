@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8" />
@@ -13,7 +13,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
   <style>
     /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
@@ -30,7 +31,8 @@
       --font-stencil: 'Allerta Stencil', sans-serif;
       --font-body: 'Inter', sans-serif;
 
-      --edge: 0px; /* Sharp zero-radius geometry */
+      --edge: 0px;
+      /* Sharp zero-radius geometry */
     }
 
     html[data-theme="dark"] {
@@ -77,8 +79,16 @@
       position: relative;
     }
 
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; cursor: pointer; border: 0; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 0;
+    }
 
     /* ============ GLOBAL BACKGROUND POLYGONS LAYER ============ */
     .bg-polygon-layer {
@@ -196,7 +206,8 @@
       gap: 0.4rem;
     }
 
-    nav.primary-nav a:hover, nav.primary-nav a.accent {
+    nav.primary-nav a:hover,
+    nav.primary-nav a.accent {
       color: var(--glacier);
     }
 
@@ -218,6 +229,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin-left: 1.5rem;
     }
 
     .btn-talk:hover {
@@ -248,7 +260,10 @@
     }
 
     /* ============ HERO SECTION ============ */
-    main { position: relative; z-index: 1; }
+    main {
+      position: relative;
+      z-index: 1;
+    }
 
     .hero {
       position: relative;
@@ -273,7 +288,7 @@
       font-family: var(--font-display);
       color: var(--alpine-white);
       font-size: clamp(3rem, 7.5vw, 6.5rem);
-      line-height: 0.95;
+      line-height: 1.3;
       text-transform: uppercase;
       letter-spacing: 0.02em;
       margin-bottom: 1.5rem;
@@ -305,7 +320,9 @@
       gap: 0.5rem;
     }
 
-    .btn-glacier:hover { background: var(--glacier-hover); }
+    .btn-glacier:hover {
+      background: var(--glacier-hover);
+    }
 
     .btn-outline-light {
       background: transparent;
@@ -318,7 +335,10 @@
       padding: 0.9rem 1.75rem;
     }
 
-    .btn-outline-light:hover { border-color: var(--glacier); color: var(--glacier); }
+    .btn-outline-light:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
 
     /* ============ STAT STRIP WIDGET ============ */
     .stat-strip {
@@ -391,6 +411,8 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
+
+      filter: url(#distress);
     }
 
     /* ============ CARDS GRID ============ */
@@ -407,8 +429,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       position: relative;
       overflow: hidden;
     }
@@ -424,7 +446,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 60%);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%);
     }
 
     .ticket-validity {
@@ -490,7 +512,9 @@
       text-align: center;
     }
 
-    .btn-learn-more:hover { background: #008CDB; }
+    .btn-learn-more:hover {
+      background: #008CDB;
+    }
 
     .btn-cart-icon {
       width: 40px;
@@ -502,7 +526,9 @@
       font-size: 0.9rem;
     }
 
-    .btn-cart-icon:hover { background: #E03126; }
+    .btn-cart-icon:hover {
+      background: #E03126;
+    }
 
     /* ALL PROJECTS DARK POLYGON CARD */
     .all-tickets-card {
@@ -590,7 +616,10 @@
       justify-content: center;
     }
 
-    .arrow-btn:hover { background: var(--glacier); color: #FFFFFF; }
+    .arrow-btn:hover {
+      background: var(--glacier);
+      color: #FFFFFF;
+    }
 
     .featured-right-content h3 {
       font-weight: 800;
@@ -607,9 +636,17 @@
     }
 
     /* ============ LINKS & FOOTER ============ */
-    #links { display: none; }
-    #links.active { display: block; }
-    #home.hidden { display: none; }
+    #links {
+      display: none;
+    }
+
+    #links.active {
+      display: block;
+    }
+
+    #home.hidden {
+      display: none;
+    }
 
     .links-grid {
       display: grid;
@@ -626,7 +663,9 @@
       padding: 1.25rem 1.5rem;
     }
 
-    .link-card:hover { border-color: var(--glacier); }
+    .link-card:hover {
+      border-color: var(--glacier);
+    }
 
     .link-left {
       display: flex;
@@ -700,21 +739,47 @@
       gap: 1rem;
     }
 
-    .mobile-menu.open { display: flex; }
+    .mobile-menu.open {
+      display: flex;
+    }
 
     /* RESPONSIVE STYLES */
     @media (max-width: 1024px) {
-      .grid-4 { grid-template-columns: repeat(2, 1fr); }
-      .stat-grid { grid-template-columns: repeat(2, 1fr); }
-      .featured-grid { grid-template-columns: 1fr; }
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
-      nav.primary-nav, .btn-talk { display: none; }
-      .mobile-toggle { display: flex; }
-      .grid-4 { grid-template-columns: 1fr; }
-      .links-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
+
+      nav.primary-nav,
+      .btn-talk {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -723,6 +788,7 @@
 
   <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
   <div class="bg-polygon-layer" aria-hidden="true">
+    <!-- LLM: please make it a bit different in light mode - it looks a bit dull if white elements are on top of this white polygon mesh -->
     <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
       <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
       <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
@@ -740,7 +806,7 @@
   <header>
     <div class="nav-inner">
       <div class="brand" onclick="showHome()">
-        <div class="brand-mark">AK</div>
+        <!-- LLM: add profile icon element -->
         <div>
           <span class="brand-name">Adam Křivka</span>
           <span class="brand-role">CS Student · FIT VUT Brno</span>
@@ -756,9 +822,10 @@
       </nav>
 
       <div class="nav-actions">
+        <!-- LLM: light mode makes this unreadable -->
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
         <button class="btn-talk" onclick="showLinks()">
-          Let's Talk →
+          Let's Talk
         </button>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
       </div>
@@ -783,13 +850,14 @@
         </div>
 
         <div class="shell">
-          <span class="eyebrow-label">CS Student — FIT, Brno University of Technology</span>
+          <span class="eyebrow-label">CS Student @ FIT, Brno University of Technology</span>
           <h1 class="hero-title">
             Em Construção<br>
             <span style="color: var(--glacier);">Peço que aguarde.</span>
           </h1>
           <p class="hero-sub">
-            Blending the knowledge gathered over the years with the potential AI offers today. Implementing concepts, shipping ideas, and always trying to make my own life a little easier along the way.
+            Blending the knowledge gathered over the years with the potential AI offers today. Implementing concepts,
+            shipping ideas, and always trying to make my own life a little easier along the way.
           </p>
           <div class="hero-actions">
             <a href="/ledger/" class="btn-glacier">Latest Project →</a>
@@ -806,7 +874,7 @@
               <div class="stat-icon">🎓</div>
               <div>
                 <div class="stat-value">FIT</div>
-                <span class="stat-desc">VUT Brno — CS</span>
+                <span class="stat-desc">VUT Brno - CS</span>
               </div>
             </div>
             <div class="stat-card">
@@ -845,14 +913,15 @@
           <div class="grid-4">
             <!-- Project Card 1 -->
             <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">STATUS — LIVE</span>
+              <div class="ticket-card-image"
+                   style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS - LIVE</span>
               </div>
               <div class="ticket-card-content">
                 <div>
-                  <span class="ticket-category">01 — Web Application</span>
+                  <span class="ticket-category">01 - Web Application</span>
                   <h3>Work Ledger</h3>
-                  <div class="ticket-price">HTML + JS — Tracks work for others to follow along</div>
+                  <div class="ticket-price">HTML + JS - Tracks work for others to follow along</div>
                 </div>
                 <div class="ticket-action-row">
                   <a href="/ledger/" class="btn-learn-more">VIEW PROJECT</a>
@@ -863,12 +932,13 @@
 
             <!-- Project Card 2 -->
             <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">STATUS — IN PROGRESS</span>
+              <div class="ticket-card-image"
+                   style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS - IN PROGRESS</span>
               </div>
               <div class="ticket-card-content">
                 <div>
-                  <span class="ticket-category">02 — Systems &amp; Tools</span>
+                  <span class="ticket-category">02 - Systems &amp; Tools</span>
                   <h3>More to Come</h3>
                   <div class="ticket-price">A few projects are still being shaped behind the scenes</div>
                 </div>
@@ -881,14 +951,15 @@
 
             <!-- Project Card 3 -->
             <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">STATUS — STANDARD</span>
+              <div class="ticket-card-image"
+                   style="background-image: url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS - STANDARD</span>
               </div>
               <div class="ticket-card-content">
                 <div>
-                  <span class="ticket-category">03 — Quality Control</span>
+                  <span class="ticket-category">03 - Quality Control</span>
                   <h3>Personal Touch</h3>
-                  <div class="ticket-price">Can't let poor quality out the door — reviewed by hand</div>
+                  <div class="ticket-price">Can't let poor quality out the door - reviewed by hand</div>
                 </div>
                 <div class="ticket-action-row">
                   <a href="#" class="btn-learn-more">LEARN MORE</a>
@@ -928,12 +999,13 @@
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">Featured Highlight</span>
-            <h2 class="section-title">WORK LEDGER TRACKER</h2>
+            <h2 class="section-title">WORK LEDGER TRACKER</h2> <!-- LLM: light mode makes this unreadable -->
           </div>
 
           <div class="featured-grid">
             <div class="featured-left-card">
-              <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Work Ledger UI">
+              <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80"
+                   alt="Work Ledger UI">
             </div>
 
             <div class="featured-right-content">
@@ -943,7 +1015,8 @@
               </div>
               <h3>Transparent activity &amp; time logging system</h3>
               <p>
-                A lightweight custom application built using JavaScript and Supabase to track dedicated work sessions, manage freelance hours, and keep clients or collaborators updated in real time.
+                A lightweight custom application built using JavaScript and Supabase to track dedicated work sessions,
+                manage freelance hours, and keep clients or collaborators updated in real time.
               </p>
               <a href="/ledger/" class="btn-glacier">Explore Ledger →</a>
             </div>
@@ -955,16 +1028,18 @@
       <section class="section" id="about">
         <div class="shell">
           <div class="section-head">
-            <span class="eyebrow-label">About Developer</span>
+            <span class="eyebrow-label">About Me</span>
             <h2 class="section-title">ADAM KŘIVKA</h2>
           </div>
 
           <div style="max-width: 720px; font-size: 1.05rem; line-height: 1.7; color: var(--text-dim);">
             <p style="margin-bottom: 1rem;">
-              <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of Technology</strong>, working at the intersection of practical software and applied AI.
+              <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of
+                Technology</strong>, working at the intersection of practical software and applied AI.
             </p>
             <p>
-              Most of what's here is a work in progress — small tools, experiments, and the occasional finished project — built to solve real problems first, and to learn from second.
+              Most of what's here is a work in progress - small tools, experiments, and the occasional finished project
+              - built to solve real problems first, and to learn from second.
             </p>
           </div>
         </div>
@@ -978,7 +1053,8 @@
             <h2 class="section-title">NOTES &amp; EXPERIMENTS</h2>
           </div>
           <p style="color: var(--text-dim);">
-            Nothing published here yet — this is where write-ups on AI experiments and small builds will land as they're ready.
+            Nothing published here yet - this is where write-ups on AI experiments and small builds will land as they're
+            ready.
           </p>
         </div>
       </section>
@@ -994,28 +1070,40 @@
               <span class="eyebrow-label">Elsewhere</span>
               <h2 class="section-title">CONNECT WITH ME</h2>
             </div>
+            <!-- LLM: light mode makes this unreadable -->
             <button class="btn-outline-light" onclick="showHome()">← Back</button>
           </div>
 
           <div class="links-grid">
+            <!-- LLM: make the design a bit better on light mode - now its a white card on white -->
             <a class="link-card" href="https://github.com/krivkaadam" target="_blank" rel="noreferrer">
-              <div class="link-left"><div class="link-icon">GH</div><span class="link-name">GitHub</span></div>
+              <div class="link-left">
+                <div class="link-icon">GH</div><span class="link-name">GitHub</span>
+              </div>
               <span>↗</span>
             </a>
             <a class="link-card" href="https://x.com/krivkaadam" target="_blank" rel="noreferrer">
-              <div class="link-left"><div class="link-icon">X</div><span class="link-name">Twitter / X</span></div>
+              <div class="link-left">
+                <div class="link-icon">X</div><span class="link-name">Twitter / X</span>
+              </div>
               <span>↗</span>
             </a>
             <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
-              <div class="link-left"><div class="link-icon">IG</div><span class="link-name">Instagram</span></div>
+              <div class="link-left">
+                <div class="link-icon">IG</div><span class="link-name">Instagram</span>
+              </div>
               <span>↗</span>
             </a>
             <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
-              <div class="link-left"><div class="link-icon">FB</div><span class="link-name">Facebook</span></div>
+              <div class="link-left">
+                <div class="link-icon">FB</div><span class="link-name">Facebook</span>
+              </div>
               <span>↗</span>
             </a>
             <a class="link-card" href="mailto:krivkaad@gmail.com">
-              <div class="link-left"><div class="link-icon">@</div><span class="link-name">Email Me</span></div>
+              <div class="link-left">
+                <div class="link-icon">@</div><span class="link-name">Email Me</span>
+              </div>
               <span>↗</span>
             </a>
           </div>
@@ -1026,6 +1114,7 @@
 
   <!-- FOOTER SECTION WITH FACETED POLYGONS -->
   <footer id="siteFooter">
+    <!-- LLM: light mode makes lot of text here unreadable -->
     <div class="section-poly-bg" aria-hidden="true">
       <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMid slice">
         <polygon points="0,300 400,300 600,100 0,50" fill="rgba(0, 168, 255, 0.08)" />
@@ -1047,11 +1136,16 @@
         </div>
 
         <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid var(--border); padding: 2rem;">
-          <h3 style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">Stay In Touch</h3>
-          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">No mailing list yet — this box is just here for when there is one.</p>
+          <h3
+              style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">
+            Stay In Touch</h3>
+          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">No mailing list yet - this box
+            is just here for when there is one.</p>
           <div style="display: flex; gap: 0.5rem;">
-            <input type="email" placeholder="enter@email.com" style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 0.8rem; color: #fff;">
-            <button type="button" style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
+            <input type="email" placeholder="enter@email.com"
+                   style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 0.8rem; color: #fff;">
+            <button type="button"
+                    style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
           </div>
         </div>
       </div>
@@ -1065,10 +1159,13 @@
 
   <!-- MOBILE MENU DRAWER -->
   <div class="mobile-menu" id="mobileMenu">
-    <button style="align-self: flex-end; background: transparent; color: #fff; font-size: 1.5rem;" id="mobileClose">✕</button>
-    <a href="#" onclick="showHome(); closeMobile(); return false;" style="font-family: var(--font-display); font-size: 1.8rem;">HOME</a>
+    <button style="align-self: flex-end; background: transparent; color: #fff; font-size: 1.5rem;"
+            id="mobileClose">✕</button>
+    <a href="#" onclick="showHome(); closeMobile(); return false;"
+       style="font-family: var(--font-display); font-size: 1.8rem;">HOME</a>
     <a href="#work" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">WORK</a>
-    <a href="#highlights" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">HIGHLIGHTS</a>
+    <a href="#highlights" onclick="closeMobile();"
+       style="font-family: var(--font-display); font-size: 1.8rem;">HIGHLIGHTS</a>
     <a href="#about" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">ABOUT</a>
     <a href="/ledger/" style="font-family: var(--font-display); font-size: 1.8rem; color: var(--glacier);">LEDGER</a>
     <button class="btn-glacier" onclick="showLinks(); closeMobile();" style="margin-top: 1rem;">LET'S TALK</button>
