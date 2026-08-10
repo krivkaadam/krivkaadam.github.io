@@ -29,9 +29,6 @@
       filter: url(#distress-speckles);
     }
 
-    
-
-
     /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
     :root {
       --abyss-teal: #03212d;
@@ -48,7 +45,6 @@
       --font-body: 'Inter', sans-serif;
 
       --edge: 0px;
-      /* Sharp zero-radius geometry */
     }
 
     html[data-theme="dark"] {
@@ -104,6 +100,35 @@
       font-family: inherit;
       cursor: pointer;
       border: 0;
+    }
+
+    /* Helper SVG Icon Styling */
+    .icon-arrow {
+      width: 1.1em;
+      height: 1.1em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.2s ease;
+    }
+
+    a:hover .icon-arrow,
+    button:hover .icon-arrow,
+    .all-tickets-card:hover .icon-arrow {
+      transform: translateX(4px);
+    }
+
+    .icon-external {
+      width: 1em;
+      height: 1em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.2s ease;
+    }
+
+    a:hover .icon-external {
+      transform: translate(2px, -2px);
     }
 
     /* ============ GLOBAL BACKGROUND POLYGONS LAYER ============ */
@@ -186,6 +211,7 @@
       font-family: var(--font-stencil);
       font-size: 0.9rem;
       font-weight: 700;
+      overflow: hidden;
     }
 
     .brand-name {
@@ -252,57 +278,6 @@
       background: #E03126;
     }
 
-    .theme-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      background: transparent;
-      color: rgba(255, 255, 255, 0.8);
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-      transition: border-color 0.15s ease, color 0.15s ease;
-    }
-
-    .theme-toggle:hover {
-      border-color: var(--glacier);
-      color: var(--glacier);
-    }
-
-    .theme-toggle .tt-icon {
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    :root:not([data-theme="light"]) .theme-toggle .tt-moon {
-      display: inline-flex;
-    }
-
-    :root[data-theme="light"] .theme-toggle .tt-sun {
-      display: inline;
-    }
-
-    .tt-icon.tt-moon {
-      align-items: center;
-      justify-content: center;
-    }
-
-    .moon-crescent {
-      display: inline-block;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: currentColor;
-      transform: rotate(30deg);
-      -webkit-mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
-      mask-image: radial-gradient(circle at 62% 32%, transparent 43%, #000 44%);
-    }
-
     header .mobile-toggle {
       display: none;
       width: 40px;
@@ -335,7 +310,6 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--glacier);
-      margin-bottom: 0.5rem;
       display: block;
     }
 
@@ -372,7 +346,7 @@
       padding: 0.9rem 1.75rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .btn-glacier:hover {
@@ -582,6 +556,10 @@
       text-transform: uppercase;
       padding: 0.75rem;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
     }
 
     .btn-learn-more:hover {
@@ -631,13 +609,15 @@
       color: var(--alpine-white);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     /* ============ PROFILE PICTURE ============ */
     .pfp {
-      width: -webkit-fill-available;
-    height: -webkit-fill-available;
+      width: 100%;
+      height: 100%;
+      -o-object-fit: cover;
+         object-fit: cover;
     }
 
     /* ============ FEATURED HIGHLIGHTS SECTION ============ */
@@ -725,6 +705,13 @@
     /* ============ LINKS & FOOTER ============ */
     #links {
       display: none;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f0f4f8 50%, #03212d 50%);
+    }
+
+    html[data-theme="dark"] #links {
+      background: linear-gradient(135deg, #021822 50%, #072e3d 50%);
     }
 
     #links.active {
@@ -735,26 +722,55 @@
       display: none;
     }
 
+    .links-polygon-mesh {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .links-polygon-mesh svg {
+      width: 100%;
+      height: 100%;
+    }
+
     .links-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.25rem;
+      position: relative;
+      z-index: 2;
     }
 
     .link-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #053344 0%, #021a24 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1.25rem 1.5rem;
-      box-shadow: 0 4px 16px rgba(4, 39, 54, 0.06);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .link-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 168, 255, 0.15) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .link-card:hover {
+      transform: translateY(-2px);
       border-color: var(--glacier);
-      box-shadow: 0 6px 20px rgba(0, 168, 255, 0.15);
+      box-shadow: 0 12px 30px rgba(0, 168, 255, 0.25);
     }
 
     .link-left {
@@ -766,8 +782,8 @@
     .link-icon {
       width: 40px;
       height: 40px;
-      border: 1px solid var(--border);
-      background: rgba(0, 168, 255, 0.05);
+      border: 1px solid var(--glacier);
+      background: rgba(0, 168, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -779,7 +795,11 @@
     .link-name {
       font-weight: 700;
       font-size: 0.95rem;
-      color: var(--heading);
+      color: var(--alpine-white);
+    }
+
+    .link-card .icon-external {
+      color: var(--glacier);
     }
 
     footer {
@@ -791,7 +811,7 @@
     }
 
     .footer-inner {
-      padding: 4rem 0 2rem;
+      padding: 4rem clamp(1.25rem, 4vw, 3rem) 2rem;
     }
 
     .footer-grid {
@@ -812,7 +832,10 @@
 
     .footer-bottom {
       display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
       justify-content: space-between;
+      align-items: center;
       padding-top: 2rem;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       font-size: 0.75rem;
@@ -872,40 +895,46 @@
       .footer-grid {
         grid-template-columns: 1fr;
       }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer-sep {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
   <!-- GLOBAL DISTRESS FILTER DEFINITION -->
-<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
-  <filter id="distress-speckles">
-    <!-- 1. Fine-grained noise base -->
-    <feTurbulence
-      type="fractalNoise"
-      baseFrequency="0.9"
-      numOctaves="8"
-      seed="7"
-      result="noise" />
+  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+    <filter id="distress-speckles">
+      <!-- 1. Fine-grained noise base -->
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.9"
+        numOctaves="8"
+        seed="7"
+        result="noise" />
 
-    <!-- 2. High negative offset to isolate ONLY extreme noise peaks -->
-    <feColorMatrix
-      in="noise"
-      type="matrix"
-      values="
-        1 0 0 0 0
-        0 1 0 0 0
-        0 0 1 0 0
-        0 0 0 15 -11"
-      result="speckles" />
+      <!-- 2. High negative offset to isolate ONLY extreme noise peaks -->
+      <feColorMatrix
+        in="noise"
+        type="matrix"
+        values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 15 -11"
+        result="speckles" />
 
-    <!-- 3. Punch sparse holes out of the text (reveals background behind) -->
-    <feComposite in="SourceGraphic" in2="speckles" operator="out" />
-  </filter>
-</svg>
-
-
-
+      <!-- 3. Punch sparse holes out of the text (reveals background behind) -->
+      <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+    </filter>
+  </svg>
 
   <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
   <div class="bg-polygon-layer" aria-hidden="true">
@@ -927,7 +956,7 @@
     <div class="nav-inner">
       <div class="brand" onclick="showHome()">
         <div class="brand-mark">
-          <img class="pfp" src="/assets/PP-5ejkYVBL.jpg" />
+          <img class="pfp" src="/assets/PP-5ejkYVBL.jpg" alt="Adam Křivka" />
         </div>
         <div>
           <span class="brand-name">Adam Křivka</span>
@@ -944,10 +973,6 @@
       </nav>
 
       <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
-          <span class="tt-icon tt-sun">☀</span>
-          <span class="tt-icon tt-moon"><span class="moon-crescent"></span></span>
-        </button>
         <button class="btn-talk" onclick="showLinks()">
           Let's Talk
         </button>
@@ -984,7 +1009,10 @@
             shipping ideas, and always trying to make my own life a little easier along the way.
           </p>
           <div class="hero-actions">
-            <a href="/ledger/" class="btn-glacier">Latest Project →</a>
+            <a href="/ledger/" class="btn-glacier">
+              Latest Project 
+              <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
             <a href="/work-tracker/" class="btn-outline-light">Nothing 2C Here</a>
           </div>
         </div>
@@ -1002,17 +1030,17 @@
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">🚀</div>
+              <div class="stat-icon">⚡</div>
               <div>
-                <div class="stat-value">01</div>
-                <span class="stat-desc">Project Shipped</span>
+                <div class="stat-value">Supabase</div>
+                <span class="stat-desc">Realtime DB &amp; Auth</span>
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">💡</div>
+              <div class="stat-icon">💻</div>
               <div>
-                <div class="stat-value">∞</div>
-                <span class="stat-desc">Ideas in the Lab</span>
+                <div class="stat-value">Fullstack</div>
+                <span class="stat-desc">React · Vite · Tailwind</span>
               </div>
             </div>
             <div class="stat-card">
@@ -1048,8 +1076,13 @@
                   <div class="ticket-price">HTML + JS - Tracks work for others to follow along</div>
                 </div>
                 <div class="ticket-action-row">
-                  <a href="/ledger/" class="btn-learn-more">VIEW PROJECT</a>
-                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
+                  <a href="/ledger/" class="btn-learn-more">
+                    VIEW PROJECT
+                    <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                  </button>
                 </div>
               </div>
             </article>
@@ -1067,8 +1100,13 @@
                   <div class="ticket-price">A few projects are still being shaped behind the scenes</div>
                 </div>
                 <div class="ticket-action-row">
-                  <a href="#" class="btn-learn-more">LEARN MORE</a>
-                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
+                  <a href="#" class="btn-learn-more">
+                    LEARN MORE
+                    <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                  </button>
                 </div>
               </div>
             </article>
@@ -1086,8 +1124,13 @@
                   <div class="ticket-price">Can't let poor quality out the door - reviewed by hand</div>
                 </div>
                 <div class="ticket-action-row">
-                  <a href="#" class="btn-learn-more">LEARN MORE</a>
-                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
+                  <a href="#" class="btn-learn-more">
+                    LEARN MORE
+                    <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                  </button>
                 </div>
               </div>
             </article>
@@ -1102,7 +1145,8 @@
                 </svg>
               </div>
               <div class="all-tickets-btn">
-                ALL PROJECTS →
+                ALL PROJECTS 
+                <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
             </article>
 
@@ -1134,15 +1178,22 @@
 
             <div class="featured-right-content">
               <div class="nav-arrows">
-                <button class="arrow-btn" aria-label="Previous">←</button>
-                <button class="arrow-btn" aria-label="Next">→</button>
+                <button class="arrow-btn" aria-label="Previous">
+                  <svg class="icon-arrow" viewBox="0 0 24 24" style="transform: rotate(180deg);"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="arrow-btn" aria-label="Next">
+                  <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
               </div>
               <h3>Transparent activity &amp; time logging system</h3>
               <p>
                 A lightweight custom application built using JavaScript and Supabase to track dedicated work sessions,
                 manage freelance hours, and keep clients or collaborators updated in real time.
               </p>
-              <a href="/ledger/" class="btn-glacier">Explore Ledger →</a>
+              <a href="/ledger/" class="btn-glacier">
+                Explore Ledger 
+                <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
             </div>
           </div>
         </div>
@@ -1187,14 +1238,27 @@
 
     <!-- ================= LINKS VIEW ================= -->
     <div id="links">
-      <section class="section" style="padding-top: calc(68px + 4rem);">
+      <!-- Polygonal Mesh Background for Links Section -->
+      <div class="links-polygon-mesh" aria-hidden="true">
+        <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+          <polygon points="0,0 720,0 480,450 0,380" fill="rgba(3, 33, 45, 0.85)" />
+          <polygon points="720,0 1440,0 1440,500 480,450" fill="rgba(0, 168, 255, 0.12)" />
+          <polygon points="0,380 480,450 320,800 0,800" fill="rgba(0, 168, 255, 0.08)" />
+          <polygon points="480,450 1440,500 1440,800 320,800" fill="rgba(4, 39, 54, 0.9)" />
+        </svg>
+      </div>
+
+      <section class="section" style="padding-top: calc(68px + 4rem); position: relative; z-index: 2;">
         <div class="shell">
           <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
               <span class="eyebrow-label">Elsewhere</span>
-              <h2 class="section-title">CONNECT WITH ME</h2>
+              <h2 class="section-title" style="color: var(--heading);">CONNECT WITH ME</h2>
             </div>
-            <button class="btn-outline" onclick="showHome()">← Back</button>
+            <button class="btn-outline" onclick="showHome()">
+              <svg class="icon-arrow" viewBox="0 0 24 24" style="transform: rotate(180deg);"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Back
+            </button>
           </div>
 
           <div class="links-grid">
@@ -1202,31 +1266,31 @@
               <div class="link-left">
                 <div class="link-icon">GH</div><span class="link-name">GitHub</span>
               </div>
-              <span>↗</span>
+              <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
             </a>
             <a class="link-card" href="https://x.com/krivkaadam" target="_blank" rel="noreferrer">
               <div class="link-left">
                 <div class="link-icon">X</div><span class="link-name">Twitter / X</span>
               </div>
-              <span>↗</span>
+              <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
             </a>
             <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
               <div class="link-left">
                 <div class="link-icon">IG</div><span class="link-name">Instagram</span>
               </div>
-              <span>↗</span>
+              <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
             </a>
             <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
               <div class="link-left">
                 <div class="link-icon">FB</div><span class="link-name">Facebook</span>
               </div>
-              <span>↗</span>
+              <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
             </a>
             <a class="link-card" href="mailto:krivkaad@gmail.com">
               <div class="link-left">
                 <div class="link-icon">@</div><span class="link-name">Email Me</span>
               </div>
-              <span>↗</span>
+              <svg class="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
             </a>
           </div>
         </div>
@@ -1253,7 +1317,10 @@
           <p style="color: rgba(226, 232, 240, 0.75); margin-bottom: 1.5rem;">
             Open for thoughtful projects and technical collaboration.
           </p>
-          <button class="btn-glacier" onclick="showLinks()">View All Links →</button>
+          <button class="btn-glacier" onclick="showLinks()">
+            View All Links 
+            <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
 
         <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); padding: 2rem;">
@@ -1276,7 +1343,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 18:43:29</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 19:39:03</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
@@ -1324,19 +1391,6 @@
     document.getElementById('mobileToggle').addEventListener('click', () => mobileMenu.classList.add('open'));
     document.getElementById('mobileClose').addEventListener('click', closeMobile);
     function closeMobile() { mobileMenu.classList.remove('open'); }
-
-    const root = document.documentElement;
-    const themeToggle = document.getElementById('themeToggle');
-    function applyThemeIcon() {
-      const isLight = root.getAttribute('data-theme') === 'light';
-      themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
-    }
-    themeToggle.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      applyThemeIcon();
-    });
-    applyThemeIcon();
   </script>
 
 </body>
