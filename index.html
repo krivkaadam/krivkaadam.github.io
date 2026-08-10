@@ -823,6 +823,19 @@
 
 <body>
 
+  <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+  <svg style="display: none;" aria-hidden="true">
+    <filter id="distress-speckles" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="
+          0 0 0 0 0
+          0 0 0 0 0
+          0 0 0 0 0
+          18 18 18 0 -9" result="speckleMask" />
+      <feComposite in="SourceGraphic" in2="speckleMask" operator="out" />
+    </filter>
+  </svg>
+
   <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
   <div class="bg-polygon-layer" aria-hidden="true">
     <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
