@@ -206,7 +206,7 @@
       gap: 0.5rem;
     }
 
-    .btn-shop {
+    .btn-talk {
       background: var(--alpine-red);
       color: var(--alpine-white);
       padding: 0 1.25rem;
@@ -220,7 +220,7 @@
       gap: 0.5rem;
     }
 
-    .btn-shop:hover {
+    .btn-talk:hover {
       background: #E03126;
     }
 
@@ -320,7 +320,7 @@
 
     .btn-outline-light:hover { border-color: var(--glacier); color: var(--glacier); }
 
-    /* ============ STAT STRIP WIDGET (Matterhorn 360KM Style) ============ */
+    /* ============ STAT STRIP WIDGET ============ */
     .stat-strip {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -393,7 +393,7 @@
       line-height: 1;
     }
 
-    /* ============ CARDS GRID (Ticket Cards Style) ============ */
+    /* ============ CARDS GRID ============ */
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -504,7 +504,7 @@
 
     .btn-cart-icon:hover { background: #E03126; }
 
-    /* ALL TICKETS / ALL PROJECTS DARK POLYGON CARD */
+    /* ALL PROJECTS DARK POLYGON CARD */
     .all-tickets-card {
       background: linear-gradient(135deg, #053344 0%, #021a24 100%);
       position: relative;
@@ -536,7 +536,7 @@
       gap: 0.5rem;
     }
 
-    /* ============ FEATURED HIGHLIGHTS SECTION (Piste Highlights Style) ============ */
+    /* ============ FEATURED HIGHLIGHTS SECTION ============ */
     .featured-section {
       background: #042432;
       position: relative;
@@ -710,7 +710,7 @@
     }
 
     @media (max-width: 768px) {
-      nav.primary-nav, .btn-shop { display: none; }
+      nav.primary-nav, .btn-talk { display: none; }
       .mobile-toggle { display: flex; }
       .grid-4 { grid-template-columns: 1fr; }
       .links-grid { grid-template-columns: 1fr; }
@@ -742,8 +742,8 @@
       <div class="brand" onclick="showHome()">
         <div class="brand-mark">AK</div>
         <div>
-          <span class="brand-name">Matterhorn / Portfolio</span>
-          <span class="brand-role">Adam Křivka · CS FIT VUT</span>
+          <span class="brand-name">Adam Křivka</span>
+          <span class="brand-role">CS Student · FIT VUT Brno</span>
         </div>
       </div>
 
@@ -757,9 +757,8 @@
 
       <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
-        <button class="btn-shop" onclick="showLinks()">
-          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 13H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5z"/></svg>
-          Let's Talk
+        <button class="btn-talk" onclick="showLinks()">
+          Let's Talk →
         </button>
         <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
       </div>
@@ -784,123 +783,122 @@
         </div>
 
         <div class="shell">
-          <span class="eyebrow-label">CS Student in Matterhorn Ski Paradise — FIT VUT Brno</span>
+          <span class="eyebrow-label">CS Student — FIT, Brno University of Technology</span>
           <h1 class="hero-title">
-            Matterhorn<br>
-            <span style="color: var(--glacier);">Ski Paradise</span>
+            Em Construção<br>
+            <span style="color: var(--glacier);">Peço que aguarde.</span>
           </h1>
           <p class="hero-sub">
-            Blending Computer Science fundamentals with practical AI capabilities. Shipping web apps, designing systems, and building tools to make complex tasks simpler.
+            Blending the knowledge gathered over the years with the potential AI offers today. Implementing concepts, shipping ideas, and always trying to make my own life a little easier along the way.
           </p>
           <div class="hero-actions">
             <a href="/ledger/" class="btn-glacier">Latest Project →</a>
-            <a href="#work" class="btn-outline-light">View Tickets &amp; Access</a>
+            <a href="/work-tracker/" class="btn-outline-light">Nothing 2C Here</a>
           </div>
         </div>
       </section>
 
-      <!-- METRIC STAT STRIP (Matterhorn 360KM Style) -->
+      <!-- METRIC STAT STRIP -->
       <div class="stat-strip">
         <div class="shell">
           <div class="stat-grid">
             <div class="stat-card">
-              <div class="stat-icon">ℹ</div>
+              <div class="stat-icon">🎓</div>
               <div>
-                <div class="stat-value">360KM</div>
-                <span class="stat-desc">Pistes / Code lines</span>
+                <div class="stat-value">FIT</div>
+                <span class="stat-desc">VUT Brno — CS</span>
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">ℹ</div>
+              <div class="stat-icon">🚀</div>
               <div>
-                <div class="stat-value">52</div>
-                <span class="stat-desc">Lifts / Modules built</span>
+                <div class="stat-value">01</div>
+                <span class="stat-desc">Project Shipped</span>
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">☼</div>
+              <div class="stat-icon">💡</div>
               <div>
-                <div class="stat-value">HIGHEST</div>
-                <span class="stat-desc">Quality &amp; Standards</span>
+                <div class="stat-value">∞</div>
+                <span class="stat-desc">Ideas in the Lab</span>
               </div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon">ℹ</div>
+              <div class="stat-icon">⚙</div>
               <div>
-                <div class="stat-value">2</div>
-                <span class="stat-desc">Countries / Languages</span>
+                <div class="stat-value">100%</div>
+                <span class="stat-desc">Hands-on Code</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- WORK / TICKETS SECTION -->
+      <!-- WORK / PROJECTS SECTION -->
       <section class="section" id="work">
         <div class="shell">
           <div class="section-head">
-            <span class="eyebrow-label">Single &amp; Return Tickets</span>
-            <h2 class="section-title">TICKETS</h2>
+            <span class="eyebrow-label">Selected Work</span>
+            <h2 class="section-title">CURRENTLY BUILDING</h2>
           </div>
 
           <div class="grid-4">
-            <!-- Ticket Card 1 -->
+            <!-- Project Card 1 -->
             <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">Validity 05/01/2026 - 10/31/2026</span>
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS — LIVE</span>
               </div>
               <div class="ticket-card-content">
                 <div>
-                  <span class="ticket-category">Single &amp; Return Tickets</span>
-                  <h3>Work Ledger Dashboard</h3>
-                  <div class="ticket-price">from CHF 120.00 / Open Source</div>
+                  <span class="ticket-category">01 — Web Application</span>
+                  <h3>Work Ledger</h3>
+                  <div class="ticket-price">HTML + JS — Tracks work for others to follow along</div>
                 </div>
                 <div class="ticket-action-row">
-                  <a href="/ledger/" class="btn-learn-more">LEARN MORE</a>
-                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
+                  <a href="/ledger/" class="btn-learn-more">VIEW PROJECT</a>
+                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
                 </div>
               </div>
             </article>
 
-            <!-- Ticket Card 2 -->
+            <!-- Project Card 2 -->
             <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">Validity 05/01/2026 - 09/06/2026</span>
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS — IN PROGRESS</span>
               </div>
               <div class="ticket-card-content">
                 <div>
-                  <span class="ticket-category">Single &amp; Return Tickets</span>
-                  <h3>Matterhorn Alpine Crossing</h3>
-                  <div class="ticket-price">from CHF 147.50 / Web System</div>
-                </div>
-                <div class="ticket-action-row">
-                  <a href="#" class="btn-learn-more">LEARN MORE</a>
-                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
-                </div>
-              </div>
-            </article>
-
-            <!-- Ticket Card 3 -->
-            <article class="ticket-card">
-              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=80');">
-                <span class="ticket-validity">Validity 06/13/2026 - 10/11/2026</span>
-              </div>
-              <div class="ticket-card-content">
-                <div>
-                  <span class="ticket-category">1- &amp; Multi-Day Passes</span>
-                  <h3>Bike Pass Basic</h3>
-                  <div class="ticket-price">from CHF 90.00 / Utility</div>
+                  <span class="ticket-category">02 — Systems &amp; Tools</span>
+                  <h3>More to Come</h3>
+                  <div class="ticket-price">A few projects are still being shaped behind the scenes</div>
                 </div>
                 <div class="ticket-action-row">
                   <a href="#" class="btn-learn-more">LEARN MORE</a>
-                  <button class="btn-cart-icon" aria-label="Add to cart">🛒</button>
+                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
                 </div>
               </div>
             </article>
 
-            <!-- ALL TICKETS / ALL PROJECTS DARK POLYGON CARD -->
+            <!-- Project Card 3 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image" style="background-image: url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80');">
+                <span class="ticket-validity">STATUS — STANDARD</span>
+              </div>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">03 — Quality Control</span>
+                  <h3>Personal Touch</h3>
+                  <div class="ticket-price">Can't let poor quality out the door — reviewed by hand</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="#" class="btn-learn-more">LEARN MORE</a>
+                  <button class="btn-cart-icon" aria-label="Open project">↗</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ALL PROJECTS DARK POLYGON CARD -->
             <article class="all-tickets-card" onclick="showLinks()">
-              <!-- Poly BG Inside Card -->
               <div class="section-poly-bg" aria-hidden="true">
                 <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
                   <polygon points="0,0 300,0 180,220 0,160" fill="rgba(0, 168, 255, 0.2)" />
@@ -909,7 +907,7 @@
                 </svg>
               </div>
               <div class="all-tickets-btn">
-                ALL TICKETS →
+                ALL PROJECTS →
               </div>
             </article>
 
@@ -917,9 +915,8 @@
         </div>
       </section>
 
-      <!-- FEATURED HIGHLIGHTS SECTION (Piste Highlights Style with Background Polygons) -->
+      <!-- FEATURED HIGHLIGHTS SECTION -->
       <section class="featured-section" id="highlights">
-        <!-- Faceted Dark Polygon Overlay Background -->
         <div class="section-poly-bg" aria-hidden="true">
           <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMid slice">
             <polygon points="0,0 700,0 450,500 0,500" fill="rgba(0, 168, 255, 0.08)" />
@@ -930,13 +927,13 @@
 
         <div class="shell">
           <div class="section-head">
-            <span class="eyebrow-label">Matterhorn Ski Paradise</span>
-            <h2 class="section-title">PISTE HIGHLIGHTS</h2>
+            <span class="eyebrow-label">Featured Highlight</span>
+            <h2 class="section-title">WORK LEDGER TRACKER</h2>
           </div>
 
           <div class="featured-grid">
             <div class="featured-left-card">
-              <img src="https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=800&q=80" alt="Matterhorn Slopes">
+              <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Work Ledger UI">
             </div>
 
             <div class="featured-right-content">
@@ -944,30 +941,30 @@
                 <button class="arrow-btn" aria-label="Previous">←</button>
                 <button class="arrow-btn" aria-label="Next">→</button>
               </div>
-              <h3>The most beautiful slopes in Zermatt</h3>
+              <h3>Transparent activity &amp; time logging system</h3>
               <p>
-                One of the things that makes skiing in Zermatt such a special experience is the breathtaking scenery. The following pistes afford particularly attractive views of the Matterhorn: Rothorn - Sunnegga (pistes 11 and 7), Tufternkumme (piste 15), Hirli area (pistes 52 and 54).
+                A lightweight custom application built using JavaScript and Supabase to track dedicated work sessions, manage freelance hours, and keep clients or collaborators updated in real time.
               </p>
-              <button class="btn-glacier" onclick="showLinks()">Explore Highlights →</button>
+              <a href="/ledger/" class="btn-glacier">Explore Ledger →</a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- EXPERIENCES / ABOUT SECTION -->
+      <!-- ABOUT SECTION -->
       <section class="section" id="about">
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">About Developer</span>
-            <h2 class="section-title">EXPERIENCES</h2>
+            <h2 class="section-title">ADAM KŘIVKA</h2>
           </div>
 
           <div style="max-width: 720px; font-size: 1.05rem; line-height: 1.7; color: var(--text-dim);">
             <p style="margin-bottom: 1rem;">
-              <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of Technology</strong>, working at the intersection of web technology and modern engineering.
+              <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of Technology</strong>, working at the intersection of practical software and applied AI.
             </p>
             <p>
-              Focused on crafting robust digital solutions, performing continuous experimental research in software systems, and shipping functional tools that solve real-world problems.
+              Most of what's here is a work in progress — small tools, experiments, and the occasional finished project — built to solve real problems first, and to learn from second.
             </p>
           </div>
         </div>
@@ -977,11 +974,11 @@
       <section class="section" id="lab" style="padding-top: 0;">
         <div class="shell">
           <div class="section-head">
-            <span class="eyebrow-label">Research &amp; Notes</span>
-            <h2 class="section-title">LAB NOTES</h2>
+            <span class="eyebrow-label">Lab &amp; Research</span>
+            <h2 class="section-title">NOTES &amp; EXPERIMENTS</h2>
           </div>
           <p style="color: var(--text-dim);">
-            Write-ups on system architecture, web components, and experimental AI projects will be documented here as they launch.
+            Nothing published here yet — this is where write-ups on AI experiments and small builds will land as they're ready.
           </p>
         </div>
       </section>
@@ -1011,6 +1008,10 @@
             </a>
             <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
               <div class="link-left"><div class="link-icon">IG</div><span class="link-name">Instagram</span></div>
+              <span>↗</span>
+            </a>
+            <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
+              <div class="link-left"><div class="link-icon">FB</div><span class="link-name">Facebook</span></div>
               <span>↗</span>
             </a>
             <a class="link-card" href="mailto:krivkaad@gmail.com">
@@ -1047,7 +1048,7 @@
 
         <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid var(--border); padding: 2rem;">
           <h3 style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">Stay In Touch</h3>
-          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">Subscribe to receive updates on upcoming builds and releases.</p>
+          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">No mailing list yet — this box is just here for when there is one.</p>
           <div style="display: flex; gap: 0.5rem;">
             <input type="email" placeholder="enter@email.com" style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 0.8rem; color: #fff;">
             <button type="button" style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
@@ -1057,7 +1058,7 @@
 
       <div class="footer-bottom">
         <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
-        <span>Matterhorn / Zermatt / FIT VUT</span>
+        <span>Brno, Czech Republic</span>
       </div>
     </div>
   </footer>
@@ -1069,6 +1070,7 @@
     <a href="#work" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">WORK</a>
     <a href="#highlights" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">HIGHLIGHTS</a>
     <a href="#about" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">ABOUT</a>
+    <a href="/ledger/" style="font-family: var(--font-display); font-size: 1.8rem; color: var(--glacier);">LEDGER</a>
     <button class="btn-glacier" onclick="showLinks(); closeMobile();" style="margin-top: 1rem;">LET'S TALK</button>
   </div>
 
