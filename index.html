@@ -908,6 +908,127 @@
         display: none;
       }
     }
+
+
+    /*============ABOUT SECTION (SIDE-BY-SIDE WITH VERTICAL PHOTO)============ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3.5rem;
+      align-items: stretch;
+    }
+
+    .about-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    /* Paragraph Staggering / Offsets */
+    .about-text p {
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .about-text .offset-right-sm {
+      padding-left: 2rem;
+      border-left: 2px solid rgba(0, 168, 255, 0.25);
+    }
+
+    .about-text .offset-right-lg {
+      padding-left: 3.5rem;
+    }
+
+    .about-text .highlight-quote {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      color: var(--heading);
+      letter-spacing: 0.03em;
+      line-height: 1.25;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--glacier);
+      margin: 0.5rem 0;
+    }
+
+    /* Tall Vertical Image Container */
+    .about-photo-container {
+      position: relative;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      /* Angular cut-corner matching your Matterhorn motif */
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    }
+
+    .about-photo-container img {
+      width: 100%;
+      height: 100%;
+      -o-object-fit: cover;
+         object-fit: cover;
+      -o-object-position: center;
+         object-position: center;
+      display: block;
+      filter: brightness(0.92) contrast(1.05);
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+
+    .about-photo-container:hover img {
+      transform: scale(1.03);
+      filter: brightness(1) contrast(1.05);
+    }
+
+    /* Decorative Badge Over Photo */
+    .about-photo-badge {
+      position: absolute;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      right: 1.25rem;
+      background: rgba(4, 39, 54, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.75rem 1rem;
+      z-index: 2;
+    }
+
+    .about-photo-badge span {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glacier);
+    }
+
+    .about-photo-badge strong {
+      display: block;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      font-family: var(--font-body);
+    }
+
+    /* Mobile Responsive Collapse */
+    @media (max-width: 992px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-photo-container {
+        height: 480px;
+        min-height: auto;
+      }
+
+      .about-text .offset-right-sm,
+      .about-text .offset-right-lg {
+        padding-left: 1rem;
+      }
+    }
   </style>
 </head>
 
@@ -1238,127 +1359,7 @@
         </div>
       </section>
 
-      <!-- ============ ABOUT SECTION (SIDE-BY-SIDE WITH VERTICAL PHOTO) ============ -->
-      <style>
-        .about-grid {
-          display: grid;
-          grid-template-columns: 1fr 340px;
-          gap: 3.5rem;
-          align-items: stretch;
-        }
 
-        .about-text {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          font-size: 1.05rem;
-          line-height: 1.7;
-          color: var(--text-dim);
-        }
-
-        /* Paragraph Staggering / Offsets */
-        .about-text p {
-          position: relative;
-          transition: transform 0.2s ease;
-        }
-
-        .about-text .offset-right-sm {
-          padding-left: 2rem;
-          border-left: 2px solid rgba(0, 168, 255, 0.25);
-        }
-
-        .about-text .offset-right-lg {
-          padding-left: 3.5rem;
-        }
-
-        .about-text .highlight-quote {
-          font-family: var(--font-display);
-          font-size: 1.6rem;
-          text-transform: uppercase;
-          color: var(--heading);
-          letter-spacing: 0.03em;
-          line-height: 1.25;
-          padding-left: 1.5rem;
-          border-left: 3px solid var(--glacier);
-          margin: 0.5rem 0;
-        }
-
-        /* Tall Vertical Image Container */
-        .about-photo-container {
-          position: relative;
-          height: 100%;
-          min-height: 520px;
-          border: 1px solid var(--border);
-          overflow: hidden;
-          background: var(--surface);
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-          /* Angular cut-corner matching your Matterhorn motif */
-          clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
-        }
-
-        .about-photo-container img {
-          width: 100%;
-          height: 100%;
-          -o-object-fit: cover;
-             object-fit: cover;
-          -o-object-position: center;
-             object-position: center;
-          display: block;
-          filter: brightness(0.92) contrast(1.05);
-          transition: transform 0.4s ease, filter 0.4s ease;
-        }
-
-        .about-photo-container:hover img {
-          transform: scale(1.03);
-          filter: brightness(1) contrast(1.05);
-        }
-
-        /* Decorative Badge Over Photo */
-        .about-photo-badge {
-          position: absolute;
-          bottom: 1.25rem;
-          left: 1.25rem;
-          right: 1.25rem;
-          background: rgba(4, 39, 54, 0.85);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          padding: 0.75rem 1rem;
-          z-index: 2;
-        }
-
-        .about-photo-badge span {
-          display: block;
-          font-size: 0.65rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--glacier);
-        }
-
-        .about-photo-badge strong {
-          display: block;
-          font-size: 0.85rem;
-          color: #FFFFFF;
-          font-family: var(--font-body);
-        }
-
-        /* Mobile Responsive Collapse */
-        @media (max-width: 992px) {
-          .about-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .about-photo-container {
-            height: 480px;
-            min-height: auto;
-          }
-
-          .about-text .offset-right-sm,
-          .about-text .offset-right-lg {
-            padding-left: 1rem;
-          }
-        }
-      </style>
 
       <section class="section" id="about">
         <div class="shell">
@@ -1433,11 +1434,10 @@
             <!-- RIGHT COLUMN: TALL VERTICAL PHOTO CONTAINER -->
             <div class="about-photo-container">
               <!-- REPLACE THIS IMAGE URL WITH YOUR VERTICAL PHOTO -->
-              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"
-                   alt="Adam Křivka - Porto / Surfing">
+              <img src="/assets/AboutMeBanner-B6gIBIIl.jpg">
 
               <div class="about-photo-badge">
-                <span>Porto, Portugal</span>
+                <span>Praia do Magoito</span>
                 <strong>Erasmus @ FCUP · Surf &amp; Sun</strong>
               </div>
             </div>
@@ -1594,7 +1594,9 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.1.0</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 21:51:08</span></span>
+        <span class="footer-item">no personal data collected :&#41;</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 22:08:49</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
