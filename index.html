@@ -28,6 +28,7 @@
       --ice-white: #E2E8F0;
 
       --font-display: 'Anton', sans-serif;
+      --font-titles: 'MyDisplay', sans-serif;
       --font-stencil: 'Allerta Stencil', sans-serif;
       --font-body: 'Inter', sans-serif;
 
@@ -56,11 +57,11 @@
       --card-text: #042736;
       --heading: #042736;
       --text: #083B4F;
-      --text-dim: rgba(8, 59, 79, 0.7);
-      --border: rgba(4, 39, 54, 0.15);
-      --poly-fill-1: rgba(0, 168, 255, 0.18);
-      --poly-fill-2: rgba(8, 59, 79, 0.08);
-      --poly-fill-3: rgba(4, 39, 54, 0.03);
+      --text-dim: rgba(8, 59, 79, 0.75);
+      --border: rgba(4, 39, 54, 0.14);
+      --poly-fill-1: rgba(0, 168, 255, 0.14);
+      --poly-fill-2: rgba(8, 59, 79, 0.06);
+      --poly-fill-3: rgba(0, 168, 255, 0.05);
     }
 
     * {
@@ -236,25 +237,30 @@
       background: #E03126;
     }
 
-    .theme-toggle {
+    header .theme-toggle {
       width: 38px;
       height: 38px;
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--heading);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--alpine-white);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
     }
 
-    .mobile-toggle {
+    header .theme-toggle:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
+
+    header .mobile-toggle {
       display: none;
       width: 40px;
       height: 40px;
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--heading);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--alpine-white);
       align-items: center;
       justify-content: center;
     }
@@ -288,7 +294,7 @@
       font-family: var(--font-display);
       color: var(--alpine-white);
       font-size: clamp(3rem, 7.5vw, 6.5rem);
-      line-height: 1.3;
+      line-height: 1.1;
       text-transform: uppercase;
       letter-spacing: 0.02em;
       margin-bottom: 1.5rem;
@@ -336,6 +342,25 @@
     }
 
     .btn-outline-light:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--heading);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline:hover {
       border-color: var(--glacier);
       color: var(--glacier);
     }
@@ -405,14 +430,12 @@
     }
 
     .section-title {
-      font-family: var(--font-display);
+      font-family: var(--font-titles);
       font-size: clamp(2.2rem, 4vw, 3.2rem);
       color: var(--heading);
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-
-      filter: url(#distress);
     }
 
     /* ============ CARDS GRID ============ */
@@ -429,8 +452,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(4, 39, 54, 0.12);
+      box-shadow: 0 10px 30px rgba(4, 39, 54, 0.08);
       position: relative;
       overflow: hidden;
     }
@@ -565,11 +588,20 @@
     /* ============ FEATURED HIGHLIGHTS SECTION ============ */
     .featured-section {
       background: #042432;
+      color: var(--alpine-white);
       position: relative;
       padding: 4.5rem 0;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       overflow: hidden;
+    }
+
+    .featured-section .section-title {
+      color: var(--alpine-white);
+    }
+
+    .featured-section .eyebrow-label {
+      color: var(--glacier);
     }
 
     .featured-grid {
@@ -629,7 +661,7 @@
     }
 
     .featured-right-content p {
-      color: rgba(226, 232, 240, 0.8);
+      color: rgba(226, 232, 240, 0.85);
       font-size: 0.95rem;
       line-height: 1.6;
       margin-bottom: 1.5rem;
@@ -651,7 +683,7 @@
     .links-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .link-card {
@@ -661,10 +693,13 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.25rem 1.5rem;
+      box-shadow: 0 4px 16px rgba(4, 39, 54, 0.06);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     .link-card:hover {
       border-color: var(--glacier);
+      box-shadow: 0 6px 20px rgba(0, 168, 255, 0.15);
     }
 
     .link-left {
@@ -677,6 +712,7 @@
       width: 40px;
       height: 40px;
       border: 1px solid var(--border);
+      background: rgba(0, 168, 255, 0.05);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -694,6 +730,7 @@
     footer {
       position: relative;
       background: #021620;
+      color: var(--ice-white);
       border-top: 1px solid var(--border);
       overflow: hidden;
     }
@@ -713,7 +750,7 @@
       font-family: var(--font-display);
       font-size: clamp(2rem, 3.5vw, 3rem);
       text-transform: uppercase;
-      color: var(--heading);
+      color: var(--alpine-white);
       line-height: 1.05;
       margin-bottom: 1rem;
     }
@@ -722,9 +759,9 @@
       display: flex;
       justify-content: space-between;
       padding-top: 2rem;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
       font-size: 0.75rem;
-      color: var(--text-dim);
+      color: rgba(226, 232, 240, 0.65);
     }
 
     /* Mobile Drawer */
@@ -765,7 +802,7 @@
         display: none;
       }
 
-      .mobile-toggle {
+      header .mobile-toggle {
         display: flex;
       }
 
@@ -788,7 +825,6 @@
 
   <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
   <div class="bg-polygon-layer" aria-hidden="true">
-    <!-- LLM: please make it a bit different in light mode - it looks a bit dull if white elements are on top of this white polygon mesh -->
     <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
       <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
       <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
@@ -806,7 +842,7 @@
   <header>
     <div class="nav-inner">
       <div class="brand" onclick="showHome()">
-        <!-- LLM: add profile icon element -->
+        <div class="brand-mark">AK</div>
         <div>
           <span class="brand-name">Adam Křivka</span>
           <span class="brand-role">CS Student · FIT VUT Brno</span>
@@ -822,7 +858,6 @@
       </nav>
 
       <div class="nav-actions">
-        <!-- LLM: light mode makes this unreadable -->
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀</button>
         <button class="btn-talk" onclick="showLinks()">
           Let's Talk
@@ -999,7 +1034,7 @@
         <div class="shell">
           <div class="section-head">
             <span class="eyebrow-label">Featured Highlight</span>
-            <h2 class="section-title">WORK LEDGER TRACKER</h2> <!-- LLM: light mode makes this unreadable -->
+            <h2 class="section-title">WORK LEDGER TRACKER</h2>
           </div>
 
           <div class="featured-grid">
@@ -1070,12 +1105,10 @@
               <span class="eyebrow-label">Elsewhere</span>
               <h2 class="section-title">CONNECT WITH ME</h2>
             </div>
-            <!-- LLM: light mode makes this unreadable -->
-            <button class="btn-outline-light" onclick="showHome()">← Back</button>
+            <button class="btn-outline" onclick="showHome()">← Back</button>
           </div>
 
           <div class="links-grid">
-            <!-- LLM: make the design a bit better on light mode - now its a white card on white -->
             <a class="link-card" href="https://github.com/krivkaadam" target="_blank" rel="noreferrer">
               <div class="link-left">
                 <div class="link-icon">GH</div><span class="link-name">GitHub</span>
@@ -1114,7 +1147,6 @@
 
   <!-- FOOTER SECTION WITH FACETED POLYGONS -->
   <footer id="siteFooter">
-    <!-- LLM: light mode makes lot of text here unreadable -->
     <div class="section-poly-bg" aria-hidden="true">
       <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMid slice">
         <polygon points="0,300 400,300 600,100 0,50" fill="rgba(0, 168, 255, 0.08)" />
@@ -1129,21 +1161,21 @@
             BUILT SLOWLY.<br>
             SHIPPED <span style="color: var(--glacier);">DELIBERATELY.</span>
           </h2>
-          <p style="color: var(--text-dim); margin-bottom: 1.5rem;">
+          <p style="color: rgba(226, 232, 240, 0.75); margin-bottom: 1.5rem;">
             Open for thoughtful projects and technical collaboration.
           </p>
           <button class="btn-glacier" onclick="showLinks()">View All Links →</button>
         </div>
 
-        <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid var(--border); padding: 2rem;">
+        <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); padding: 2rem;">
           <h3
               style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">
             Stay In Touch</h3>
-          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1.25rem;">No mailing list yet - this box
-            is just here for when there is one.</p>
+          <p style="font-size: 0.82rem; color: rgba(226, 232, 240, 0.7); margin-bottom: 1.25rem;">No mailing list yet -
+            this box is just here for when there is one.</p>
           <div style="display: flex; gap: 0.5rem;">
             <input type="email" placeholder="enter@email.com"
-                   style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid var(--border); padding: 0.8rem; color: #fff;">
+                   style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.8rem; color: #fff;">
             <button type="button"
                     style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
           </div>
