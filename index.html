@@ -706,11 +706,16 @@
     }
 
     /* ============ LINKS & FOOTER ============ */
+    body.overlay-open {
+      overflow: hidden;
+    }
+
     #links {
       display: none;
-      position: relative;
-      overflow: hidden;
-      /* Forces a consistent, rich dark background for the view */
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      overflow-y: auto;
       background: #021822;
       color: #E2E8F0;
       min-height: 100vh;
@@ -1026,28 +1031,28 @@
             <div class="stat-card">
               <div class="stat-icon">🎓</div>
               <div>
-                <div class="stat-value">FIT</div>
+                <div class="stat-value speckled">FIT</div>
                 <span class="stat-desc">VUT Brno - CS</span>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">⚡</div>
               <div>
-                <div class="stat-value">Supabase</div>
+                <div class="stat-value speckled">Supabase</div>
                 <span class="stat-desc">Realtime DB &amp; Auth</span>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">💻</div>
               <div>
-                <div class="stat-value">Fullstack</div>
+                <div class="stat-value speckled">Fullstack</div>
                 <span class="stat-desc">React · Vite · Tailwind</span>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon">⚙</div>
               <div>
-                <div class="stat-value">100%</div>
+                <div class="stat-value speckled">100%</div>
                 <span class="stat-desc">Hands-on Code</span>
               </div>
             </div>
@@ -1403,7 +1408,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">v<span id="footer-version">0.1.0</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 20:06:42</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-10 20:14:47</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
@@ -1437,6 +1442,7 @@
       homeEl.classList.add('hidden');
       linksEl.classList.add('active');
       footerEl.style.display = 'none';
+      document.body.classList.add('overlay-open');
       window.scrollTo(0, 0);
     }
 
@@ -1444,6 +1450,7 @@
       homeEl.classList.remove('hidden');
       linksEl.classList.remove('active');
       footerEl.style.display = '';
+      document.body.classList.remove('overlay-open');
       window.scrollTo(0, 0);
     }
 
