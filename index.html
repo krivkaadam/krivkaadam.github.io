@@ -494,6 +494,7 @@
       box-shadow: 0 10px 30px rgba(4, 39, 54, 0.08);
       position: relative;
       overflow: hidden;
+      cursor: default;
     }
 
     .ticket-card-image {
@@ -501,6 +502,17 @@
       background-size: cover;
       background-position: center;
       position: relative;
+      transform: scale(1);
+      transition: transform 260ms ease, filter 260ms ease, box-shadow 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
+    }
+
+    .ticket-card:hover .ticket-card-image,
+    .featured-left-card:hover img,
+    .about-photo-container:hover img {
+      transform: scale(1.05);
+      filter: saturate(1.06) brightness(1.02);
     }
 
     .ticket-card-image::after {
@@ -512,8 +524,8 @@
 
     .ticket-validity {
       position: absolute;
-      top: 0.75rem;
-      left: 0.75rem;
+      top: 1rem;
+      left: 1rem;
       z-index: 2;
       font-size: 0.65rem;
       font-weight: 700;
@@ -523,7 +535,7 @@
     }
 
     .ticket-card-content {
-      padding: 1.25rem;
+      padding: 1.75rem;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
@@ -532,32 +544,32 @@
 
     .ticket-category {
       font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font-weight: 500;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #0084C7;
+      color: #00ace1;
       margin-bottom: 0.3rem;
       display: block;
     }
 
     .ticket-card h3 {
       font-family: var(--font-body);
-      font-weight: 800;
-      font-size: 1.15rem;
-      color: #042736;
+      font-weight: 1000;
+      font-size: 1rem;
+      color: #245685;
       line-height: 1.2;
       margin-bottom: 1rem;
     }
 
     .ticket-price {
       font-size: 0.8rem;
-      color: #556B75;
+      color: #222222;
       margin-bottom: 1.25rem;
     }
 
     .ticket-action-row {
       display: flex;
-      gap: 2px;
+      gap: 8px;
       margin-top: auto;
     }
 
@@ -666,6 +678,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      cursor: default;
     }
 
     .featured-left-card img {
@@ -674,6 +687,9 @@
       -o-object-fit: cover;
          object-fit: cover;
       display: block;
+      transition: transform 260ms ease, filter 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
     }
 
     .featured-right-content {
@@ -975,6 +991,7 @@
       overflow: hidden;
       background: var(--surface);
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      cursor: default;
       /* Angular cut-corner matching your Matterhorn motif */
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
     }
@@ -988,12 +1005,9 @@
          object-position: center;
       display: block;
       filter: brightness(0.92) contrast(1.05);
-      transition: transform 0.4s ease, filter 0.4s ease;
-    }
-
-    .about-photo-container:hover img {
-      transform: scale(1.03);
-      filter: brightness(1) contrast(1.05);
+      transition: transform 260ms ease, filter 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
     }
 
     /* Decorative Badge Over Photo */
@@ -1434,7 +1448,7 @@
 
               <p>
                 So this portfolio isn’t really meant to be a perfect showcase of polished software.
-                It’s more like a record of curiosity — a place where I can keep the things I build,
+                It’s more like a record of curiosity - a place where I can keep the things I build,
                 experiment with ideas, learn by actually making them, and occasionally turn a
                 completely unnecessary idea into something surprisingly useful.
               </p>
@@ -1610,7 +1624,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">no personal data collected :&#41;</span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-10 22:31:49</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-11 09:37:12</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
