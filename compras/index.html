@@ -431,7 +431,7 @@ async function checkPrice(id, name){
   checkingIds.add(id);
   renderList();
   try{
-    const { data, error } = await sb.functions.invoke('check-price', { body: { product: name } });
+    const { data, error } = await sb.functions.invoke('kupi-fetcher', { body: { product: name } });
     if(error) throw error;
 
     if(!data || !data.found){
