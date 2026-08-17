@@ -159,10 +159,13 @@
       align-items: center;
       justify-content: center;
       color: var(--glacier);
-      font-family: var(--font-stencil);
-      font-size: 0.95rem;
-      font-weight: 700;
       border: 1px solid rgba(0, 172, 225, 0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-mark svg {
+      width: 18px;
+      height: 18px;
     }
 
     .brand-name {
@@ -192,36 +195,42 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
     }
 
-    .name-field {
+    /* Read-only badge showing the signed-in identity — tied to the login, not free text */
+    .user-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      height: 34px;
     }
 
-    .name-field label {
-      font-family: var(--font-stencil);
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.6);
+    .user-badge svg {
+      width: 14px;
+      height: 14px;
+      color: var(--glacier);
+      flex-shrink: 0;
     }
 
-    .name-field input {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--alpine-white);
-      padding: 6px 10px;
+    .user-badge-name {
       font-size: 0.78rem;
-      width: 120px;
       font-weight: 600;
+      color: var(--alpine-white);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .name-field input:focus {
-      outline: none;
-      border-color: var(--glacier);
+    /* Every header control now shares the same pill height/border language */
+    .header-right > * {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
     }
 
     /* ============ BUTTONS & ICONS ============ */
@@ -258,6 +267,11 @@
       transform: translateX(4px);
     }
 
+    .btn-glacier:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
     .btn-outline-light {
       background: transparent;
       border: 1px solid rgba(255, 255, 255, 0.3);
@@ -266,7 +280,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 6px 12px;
+      padding: 0 14px;
       cursor: pointer;
       transition: border-color 0.15s, color 0.15s;
     }
@@ -274,6 +288,11 @@
     .btn-outline-light:hover {
       border-color: var(--glacier);
       color: var(--glacier);
+    }
+
+    .btn-outline-light:disabled {
+      opacity: 0.5;
+      cursor: default;
     }
 
     .btn-danger {
@@ -430,10 +449,12 @@
       align-items: center;
       justify-content: center;
       color: var(--glacier);
-      font-family: var(--font-stencil);
-      font-weight: 800;
-      font-size: 0.85rem;
       flex-shrink: 0;
+    }
+
+    .stat-icon svg {
+      width: 19px;
+      height: 19px;
     }
 
     .stat-value {
@@ -458,7 +479,7 @@
     .add-bar {
       display: flex;
       gap: 10px;
-      margin-bottom: 2.5rem;
+      margin-bottom: 0.9rem;
     }
 
     .add-bar input {
@@ -470,7 +491,54 @@
       font-size: 1rem;
     }
 
+    /* ============ QUICK-ADD / RECENT ITEMS ============ */
+    .recent-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2.5rem;
+    }
+
+    .recent-chips.hidden {
+      display: none;
+    }
+
+    .recent-label {
+      font-family: var(--font-stencil);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-right: 4px;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.76rem;
+      padding: 6px 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .chip:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+      background: rgba(0, 172, 225, 0.08);
+    }
+
     /* ============ RECEIPT ITEMS & LIST ============ */
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
     .section-title {
       font-family: var(--font-display);
       font-size: clamp(2rem, 4vw, 2.8rem);
@@ -478,7 +546,6 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
       line-height: 1;
-      margin-bottom: 1.5rem;
     }
 
     .receipt {
@@ -517,6 +584,18 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 60%;
+    }
+
+    .ri-name-input {
+      max-width: 60%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glacier);
+      color: var(--alpine-white);
+      padding: 6px 9px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
     }
 
     .ri-dots {
@@ -638,13 +717,21 @@
         gap: 1rem;
       }
 
-      .ri-name {
+      .ri-name, .ri-name-input {
         max-width: 45%;
       }
 
       .footer-bottom {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .header-right {
+        gap: 6px;
+      }
+
+      .user-badge-name {
+        max-width: 80px;
       }
     }
   </style>
@@ -684,16 +771,23 @@
   <header class="top">
     <div class="nav-inner">
       <div class="brand">
-        <div class="brand-mark">K</div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 20 L9 8 L13 14 L16 9 L21 20 Z" />
+          </svg>
+        </div>
         <div>
           <span class="brand-name">Compras<em>.</em></span>
           <span class="brand-role">Shared Grocery List</span>
         </div>
       </div>
       <div class="header-right">
-        <div class="name-field">
-          <label for="your-name">You're</label>
-          <input type="text" id="your-name" placeholder="your name" />
+        <div class="user-badge hidden" id="user-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span class="user-badge-name" id="user-badge-name"></span>
         </div>
         <a href="../" class="btn-outline-light">← Home</a>
         <button id="signout" class="btn-outline-light hidden">Sign out</button>
@@ -738,9 +832,14 @@
         </button>
       </div>
 
+      <div class="recent-chips hidden" id="recent-chips"></div>
+
       <div class="section-head">
-        <span class="eyebrow-label">Live Inventory</span>
-        <h2 class="section-title speckled">On the list</h2>
+        <div>
+          <span class="eyebrow-label">Live Inventory</span>
+          <h2 class="section-title speckled">On the list</h2>
+        </div>
+        <button class="btn-outline-light" id="recheck-all-btn">Recheck all</button>
       </div>
 
       <div id="list-container"></div>
@@ -758,10 +857,16 @@
     <div class="footer-inner">
       <div class="footer-bottom">
         <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
-        <span>·</span>
-        <span>Compras Utility Module</span>
-        <span>·</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">v<span id="footer-version">0.1.0</span></span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">no personal data collected :&#41;</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-17 11:51:25</span></span>
+        <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
+        <span class="footer-sep">·</span>
+        <a class="footer-item footer-link" id="footer-contact" href="mailto:krivkaad@gmail.com">Contact</a>
       </div>
     </div>
   </footer>
@@ -773,11 +878,14 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dmdhbW1sb2xtcXN5bGFneWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NjE3NzcsImV4cCI6MjEwMjAzNzc3N30.ZMNTTj_VRblCWGo-BI_ixEOxsz0EPtRJGKGIrr3zfLg";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const NAME_KEY = 'kosik_your_name';
+    const RECENT_KEY = 'kosik_recent_items';
     let currentUser = null;
+    let displayName = '';
     let items = [];
     let checkingIds = new Set();
     let expandedIds = new Set();
+    let editingIds = new Set();
+    let isRecheckingAll = false;
 
     /* ---------- Auth ---------- */
     async function checkSession() {
@@ -812,23 +920,36 @@
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('app-screen').classList.add('hidden');
       document.getElementById('signout').classList.add('hidden');
+      document.getElementById('user-badge').classList.add('hidden');
+    }
+
+    // Display name now comes straight from the account used to sign in —
+    // full name if the account has one set, otherwise the email's local part.
+    function computeDisplayName(user) {
+      if (!user) return 'Someone';
+      const meta = user.user_metadata || {};
+      if (meta.full_name) return meta.full_name;
+      if (meta.name) return meta.name;
+      if (user.email) return user.email.split('@')[0];
+      return 'Someone';
     }
 
     async function showApp() {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
       document.getElementById('signout').classList.remove('hidden');
-      document.getElementById('your-name').value = localStorage.getItem(NAME_KEY) || '';
+
+      displayName = computeDisplayName(currentUser);
+      document.getElementById('user-badge-name').textContent = displayName;
+      document.getElementById('user-badge').classList.remove('hidden');
+
+      renderRecentChips();
       await loadItems();
       subscribeRealtime();
     }
 
-    document.getElementById('your-name').addEventListener('blur', (e) => {
-      try { localStorage.setItem(NAME_KEY, e.target.value.trim()); } catch (err) { }
-    });
-
     function yourName() {
-      return document.getElementById('your-name').value.trim() || 'Someone';
+      return displayName || 'Someone';
     }
 
     /* ---------- Data Operations ---------- */
@@ -852,13 +973,23 @@
       });
       if (error) { alert(error.message); return; }
       input.value = '';
+      pushRecentItem(name);
       await loadItems();
     }
 
+    // Removing an item is immediate — no confirmation popup.
     async function removeItem(id) {
-      if (!confirm('Remove this item from the list?')) return;
       const { error } = await sb.from('shopping_items').delete().eq('id', id);
       if (error) { alert(error.message); return; }
+      await loadItems();
+    }
+
+    async function renameItem(id, newName) {
+      const name = newName.trim();
+      if (!name) return;
+      const { error } = await sb.from('shopping_items').update({ name }).eq('id', id);
+      if (error) { alert(error.message); return; }
+      editingIds.delete(id);
       await loadItems();
     }
 
@@ -896,6 +1027,56 @@
       }
     }
 
+    // Rechecks every item on the list, one at a time, reusing checkPrice.
+    async function recheckAll() {
+      if (isRecheckingAll || !items.length) return;
+      isRecheckingAll = true;
+      const btn = document.getElementById('recheck-all-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Rechecking…'; }
+      const targets = [...items];
+      for (const item of targets) {
+        await checkPrice(item.id, item.name);
+      }
+      isRecheckingAll = false;
+      if (btn) { btn.disabled = false; btn.textContent = 'Recheck all'; }
+    }
+    document.getElementById('recheck-all-btn').addEventListener('click', recheckAll);
+
+    /* ---------- Quick add / recent items ---------- */
+    function getRecentItems() {
+      try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+      catch (e) { return []; }
+    }
+
+    function pushRecentItem(name) {
+      let recent = getRecentItems();
+      recent = recent.filter(n => n.toLowerCase() !== name.toLowerCase());
+      recent.unshift(name);
+      recent = recent.slice(0, 8);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); } catch (e) { }
+      renderRecentChips();
+    }
+
+    function renderRecentChips() {
+      const el = document.getElementById('recent-chips');
+      if (!el) return;
+      const recent = getRecentItems();
+      if (!recent.length) { el.innerHTML = ''; el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+      el.innerHTML = '<span class="recent-label">Quick add</span>' +
+        recent.map(n => `<button type="button" class="chip" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('');
+      el.querySelectorAll('.chip').forEach(btn => {
+        btn.addEventListener('click', () => quickAdd(btn.dataset.name));
+      });
+    }
+
+    async function quickAdd(name) {
+      const { error } = await sb.from('shopping_items').insert({ name, added_by_name: yourName() });
+      if (error) { alert(error.message); return; }
+      pushRecentItem(name);
+      await loadItems();
+    }
+
     /* ---------- Helpers & Rendering ---------- */
     function escapeHtml(str) {
       const d = document.createElement('div');
@@ -918,6 +1099,10 @@
         : `checked ${d.toLocaleDateString()}`;
     }
 
+    const ICON_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+    const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+    const ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+
     function renderMiniStats() {
       const el = document.getElementById('mini-stats');
       if (!el) return;
@@ -926,21 +1111,21 @@
       const pending = total - checked;
       el.innerHTML = `
         <div class="stat-card">
-          <div class="stat-icon">Σ</div>
+          <div class="stat-icon">${ICON_LIST}</div>
           <div>
             <div class="stat-value speckled">${total}</div>
             <span class="stat-desc">On the list</span>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">✓</div>
+          <div class="stat-icon">${ICON_CHECK}</div>
           <div>
             <div class="stat-value speckled">${checked}</div>
             <span class="stat-desc">Priced</span>
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">…</div>
+          <div class="stat-icon">${ICON_CLOCK}</div>
           <div>
             <div class="stat-value speckled">${pending}</div>
             <span class="stat-desc">Pending</span>
@@ -960,6 +1145,7 @@
       const rows = items.map(item => {
         const isChecking = checkingIds.has(item.id);
         const isExpanded = expandedIds.has(item.id);
+        const isEditing = editingIds.has(item.id);
         const hasResult = !!item.checked_at;
         const noMatch = hasResult && item.best_price == null;
 
@@ -1004,21 +1190,35 @@
 
         const showAltToggle = hasResult && !noMatch && (item.raw_results?.products?.length > 0);
 
+        const nameHtml = isEditing
+          ? `<input type="text" class="ri-name-input" value="${escapeHtml(item.name)}" />`
+          : `<span class="ri-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>`;
+
+        const actionsHtml = isEditing
+          ? `
+            <button class="btn-glacier save-btn" style="padding:6px 12px; font-size:0.75rem;">Save</button>
+            <button class="btn-ghost cancel-btn">Cancel</button>
+          `
+          : `
+            <button class="btn-glacier check-btn" style="padding:6px 12px; font-size:0.75rem;" ${isChecking ? 'disabled' : ''}>
+              ${hasResult ? 'Recheck' : 'Check price'}
+            </button>
+            <button class="btn-ghost edit-btn">Edit</button>
+            ${showAltToggle ? `<button class="btn-ghost toggle-btn">${isExpanded ? 'Hide offers' : 'Show all offers'}</button>` : ''}
+            <button class="btn-danger remove-btn">Remove</button>
+          `;
+
         return `
           <div class="receipt-item" data-id="${item.id}">
             <div class="ri-row">
-              <span class="ri-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+              ${nameHtml}
               <span class="ri-dots"></span>
               ${priceHtml}
             </div>
             ${metaHtml ? `<div class="ri-meta">${metaHtml}</div>` : ''}
             ${altHtml}
             <div class="ri-actions">
-              <button class="btn-glacier check-btn" style="padding:6px 12px; font-size:0.75rem;" ${isChecking ? 'disabled' : ''}>
-                ${hasResult ? 'Recheck' : 'Check price'}
-              </button>
-              ${showAltToggle ? `<button class="btn-ghost toggle-btn">${isExpanded ? 'Hide offers' : 'Show all offers'}</button>` : ''}
-              <button class="btn-danger remove-btn">Remove</button>
+              ${actionsHtml}
             </div>
           </div>
         `;
@@ -1029,8 +1229,13 @@
       container.querySelectorAll('.receipt-item').forEach(el => {
         const id = el.dataset.id;
         const item = items.find(i => i.id === id);
-        el.querySelector('.check-btn').addEventListener('click', () => checkPrice(id, item.name));
-        el.querySelector('.remove-btn').addEventListener('click', () => removeItem(id));
+
+        const checkBtn = el.querySelector('.check-btn');
+        if (checkBtn) checkBtn.addEventListener('click', () => checkPrice(id, item.name));
+
+        const removeBtn = el.querySelector('.remove-btn');
+        if (removeBtn) removeBtn.addEventListener('click', () => removeItem(id));
+
         const toggleBtn = el.querySelector('.toggle-btn');
         if (toggleBtn) {
           toggleBtn.addEventListener('click', () => {
@@ -1038,6 +1243,28 @@
             renderList();
           });
         }
+
+        const editBtn = el.querySelector('.edit-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            editingIds.add(id);
+            renderList();
+          });
+        }
+
+        const nameInput = el.querySelector('.ri-name-input');
+        const saveBtn = el.querySelector('.save-btn');
+        const cancelBtn = el.querySelector('.cancel-btn');
+        if (nameInput) {
+          nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') renameItem(id, nameInput.value);
+            if (e.key === 'Escape') { editingIds.delete(id); renderList(); }
+          });
+          nameInput.focus();
+          nameInput.select();
+        }
+        if (saveBtn) saveBtn.addEventListener('click', () => renameItem(id, nameInput.value));
+        if (cancelBtn) cancelBtn.addEventListener('click', () => { editingIds.delete(id); renderList(); });
       });
     }
 
