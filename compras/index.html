@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Compras — Shared Grocery Price Finder</title>
+  <title>Compras</title>
 
   <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
@@ -30,6 +30,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    @font-face {
+      font-family: 'MyDisplay';
+      src: url('../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
     /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
     :root {
       --abyss-teal: #03212d;
@@ -56,6 +63,7 @@
       --poly-fill-3: rgba(255, 255, 255, 0.04);
 
       --font-display: 'Anton', sans-serif;
+      --font-titles: 'MyDisplay', sans-serif;
       --font-stencil: 'Allerta Stencil', sans-serif;
       --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
@@ -540,7 +548,7 @@
     }
 
     .section-title {
-      font-family: var(--font-display);
+      font-family: var(--font-titles);
       font-size: clamp(2rem, 4vw, 2.8rem);
       color: var(--heading);
       text-transform: uppercase;
@@ -839,6 +847,7 @@
           <span class="eyebrow-label">Live Inventory</span>
           <h2 class="section-title speckled">On the list</h2>
         </div>
+        <!--LLM: make the button blend into design more-->
         <button class="btn-outline-light" id="recheck-all-btn">Recheck all</button>
       </div>
 
@@ -862,7 +871,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">no personal data collected :&#41;</span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-17 11:51:25</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-17 12:19:19</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
