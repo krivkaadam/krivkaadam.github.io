@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    /* ---- AK palette ---- */
+    --abyss-teal: #03212d;
+    --deep-fjord: #063244;
+    --glacier: #00ace1;
+    --glacier-hover: #26b8e6;
+    --alpine-red: #FF3B30;
+    --alpine-white: #FFFFFF;
+    --ice-white: #E2E8F0;
+
+    --bg: var(--abyss-teal);
+    --surface: #072e3d;
+    --card-grad: linear-gradient(135deg, #063244 0%, #021a24 100%);
+    --border: rgba(226,232,240,0.14);
+    --border-strong: rgba(0,168,255,0.35);
+    --text: var(--ice-white);
+    --text-dim: rgba(226,232,240,0.68);
+    --text-faint: rgba(226,232,240,0.4);
+
+    --font-display: 'Anton', sans-serif;
+    --font-stencil: 'Allerta Stencil', sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+
+    --header-h: 68px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0; color-scheme:dark;}
+  body{
+    background: var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  a{ color:inherit; }
+
+  /* ---- speckle distress filter, same signature used on the portfolio ---- */
+  .speckled{ filter:url(#distress-speckles); }
+
+  /* ---- fixed global polygon mesh, echoes the portfolio background ---- */
+  .bg-polygon-layer{
+    position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  }
+  .bg-polygon-layer svg{ width:100%; height:100%; display:block; }
+
+  .wrap{ max-width:640px; margin:0 auto; padding:calc(var(--header-h) + 40px) 20px 100px; position:relative; z-index:2; }
+
+  /* ---- Fixed header, matches the portfolio's dark nav bar ---- */
+  header.top{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:#042330;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .nav-inner{
+    max-width:640px; margin:0 auto; padding:0 20px;
+    height:var(--header-h);
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:0.75rem; }
+  .brand-mark{
+    width:36px; height:36px; flex-shrink:0;
+    background:var(--deep-fjord);
+    color:var(--glacier);
+    font-family:var(--font-stencil);
+    font-size:0.95rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand-text{ line-height:1.15; }
+  .brand-name{
+    font-family:var(--font-display);
+    font-size:1.35rem;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    color:var(--alpine-white);
+    display:block;
+  }
+  .brand-name em{ color:var(--glacier); font-style:normal; }
+  .brand-role{
+    display:block;
+    font-family:var(--font-stencil);
+    font-size:0.6rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+  .header-right{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .header-actions{ display:flex; gap:8px; }
+  #home-link, #signout{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.25);
+    color:rgba(255,255,255,0.8);
+    font-family:var(--font-body);
+    font-size:0.72rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    padding:7px 12px;
+    cursor:pointer;
+    text-decoration:none;
+  }
+  #home-link:hover, #signout:hover{ border-color:var(--glacier); color:var(--glacier); }
+  .name-field{ display:flex; align-items:center; gap:6px; }
+  .name-field label{
+    font-family:var(--font-stencil);
+    font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:rgba(255,255,255,0.5);
+  }
+  .name-field input{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.2);
+    color:var(--alpine-white);
+    padding:6px 10px; font-size:0.78rem; width:110px;
+    font-family:var(--font-body);
+  }
+  .name-field input:focus{ outline:none; border-color:var(--glacier); }
+
+  /* ---- Login card ---- */
+  #login-screen{
+    position:relative; z-index:2;
+    max-width:380px; margin:130px auto 0; padding:2.5rem 2.25rem;
+    background:var(--card-grad);
+    border:1px solid var(--border-strong);
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    clip-path:polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+  }
+  #login-screen .eyebrow{
+    font-family:var(--font-stencil);
+    font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--glacier); display:block; margin-bottom:0.5rem;
+  }
+  #login-screen h1{
+    font-family:var(--font-display);
+    text-transform:uppercase;
+    font-size:2.6rem;
+    letter-spacing:0.01em;
+    color:var(--alpine-white);
+    margin:0 0 6px;
+    line-height:1;
+  }
+  #login-screen p{ color:var(--text-dim); font-size:13px; margin:0 0 24px; }
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-family:var(--font-stencil); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color:rgba(226,232,240,0.5); margin-bottom:7px;
+  }
+  input[type=email], input[type=password], input[type=text]{
+    width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--alpine-white);
+    padding:11px 12px; font-family:var(--font-body); font-size:14px;
+  }
+  input:focus{ outline:none; border-color:var(--glacier); box-shadow:0 0 0 3px rgba(0,168,255,0.15); }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    border:1px solid var(--border); background:transparent; color:var(--text);
+    padding:10px 18px; font-size:0.78rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    cursor:pointer; font-family:var(--font-body);
+    transition:border-color .15s, background .15s, color .15s;
+  }
+  .btn:hover{ border-color:var(--glacier); color:var(--glacier); }
+  .btn:disabled{ opacity:0.4; cursor:default; }
+  .btn.primary{ background:var(--glacier); border-color:var(--glacier); color:#042736; font-weight:800; }
+  .btn.primary:hover{ background:var(--glacier-hover); color:#042736; }
+  .btn.ghost{ background:none; border-color:transparent; color:var(--text-dim); padding:7px 10px; font-size:0.7rem; }
+  .btn.ghost:hover{ color:var(--glacier); border-color:transparent; }
+  .btn.danger{ background:none; border-color:rgba(255,59,48,0.4); color:var(--alpine-red); padding:7px 10px; font-size:0.7rem; }
+  .btn.danger:hover{ background:rgba(255,59,48,0.12); border-color:var(--alpine-red); color:var(--alpine-red); }
+  .btn.small{ padding:8px 14px; font-size:0.7rem; }
+  #error-msg{ color:var(--alpine-red); font-size:13px; margin-top:12px; min-height:16px; }
+
+  /* ---- Mini stat strip, echoes the portfolio's stat widget ---- */
+  .mini-stats{
+    display:flex; gap:1.5rem; margin-bottom:28px;
+    padding:16px 20px;
+    background:var(--surface);
+    border:1px solid var(--border);
+  }
+  .mini-stat{ display:flex; align-items:center; gap:0.6rem; }
+  .mini-stat-icon{
+    width:30px; height:30px; border:2px solid var(--glacier); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--glacier); font-family:var(--font-stencil); font-size:0.7rem; flex-shrink:0;
+  }
+  .mini-stat-value{ font-family:var(--font-display); font-size:1.3rem; color:var(--alpine-white); line-height:1; }
+  .mini-stat-label{ display:block; font-family:var(--font-stencil); font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-faint); margin-top:2px; }
+
+  /* ---- Add item bar ---- */
+  .add-bar{ display:flex; gap:8px; margin-bottom:32px; }
+  .add-bar input{ flex:1; }
+
+  /* ---- List ---- */
+  .list-head{
+    font-family:var(--font-stencil);
+    font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--glacier); margin-bottom:12px;
+  }
+
+  .receipt{ display:flex; flex-direction:column; gap:14px; }
+
+  .receipt-item{
+    background:var(--card-grad);
+    border:1px solid var(--border);
+    padding:18px 20px;
+    position:relative;
+    clip-path:polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .receipt-item:hover{ border-color:var(--border-strong); box-shadow:0 10px 30px rgba(0,168,255,0.08); }
+
+  .ri-row{
+    display:flex; align-items:baseline; gap:10px; font-family:var(--font-body); font-size:14.5px;
+  }
+  .ri-name{
+    font-weight:600; color:var(--alpine-white);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:58%;
+  }
+  .ri-dots{
+    flex:1; border-bottom:1px dotted rgba(226,232,240,0.25); transform:translateY(-4px);
+    min-width:12px;
+  }
+  .ri-price{ font-weight:800; white-space:nowrap; color:var(--glacier); font-size:1.02rem; }
+  .ri-price.pending{ color:var(--text-faint); font-weight:400; font-style:italic; font-size:0.85rem; }
+  .ri-meta{
+    font-family:var(--font-body); font-size:11.5px; color:var(--text-dim);
+    margin-top:8px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .ri-meta span:not(:last-child)::after{ content:'·'; margin-left:10px; color:var(--text-faint); }
+  .ri-actions{ display:flex; gap:6px; margin-top:12px; }
+  .no-match{ font-family:var(--font-body); font-size:12px; color:var(--alpine-red); font-style:italic; }
+
+  .ri-alt{
+    margin-top:12px; padding:12px 14px;
+    background:rgba(0,168,255,0.05);
+    border-left:2px solid rgba(0,168,255,0.3);
+    font-family:var(--font-body); font-size:12px;
+  }
+  .ri-alt-row{ display:flex; justify-content:space-between; padding:3px 0; color:var(--text); }
+  .ri-alt-row .shop{ color:var(--text-dim); }
+
+  .empty-state{
+    background:var(--surface); color:var(--text-dim);
+    padding:36px 22px; text-align:center; font-size:13px; font-style:italic;
+    border:1px dashed var(--border);
+  }
+
+  .hidden{ display:none !important; }
+
+  @media (max-width:480px){
+    .wrap{ padding:calc(var(--header-h) + 24px) 14px 80px; }
+    .brand-name{ font-size:1.1rem; }
+    .ri-name{ max-width:42%; }
+    .mini-stats{ gap:1rem; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- global distress filter, carried over from the portfolio -->
+<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+  <filter id="distress-speckles">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+    <feColorMatrix in="noise" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 15 -11" result="speckles" />
+    <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+  </filter>
+</svg>
+
+<!-- fixed background polygon mesh, same device as the portfolio hero -->
+<div class="bg-polygon-layer" aria-hidden="true">
+  <svg viewBox="0 0 640 1200" preserveAspectRatio="xMidYMid slice">
+    <polygon points="0,0 420,0 260,300 0,230" fill="rgba(0,168,255,0.06)" />
+    <polygon points="420,0 640,0 640,260 260,300" fill="rgba(4,39,54,0.55)" />
+    <polygon points="0,230 260,300 320,600 0,650" fill="rgba(4,39,54,0.35)" />
+    <polygon points="260,300 640,260 640,620 320,600" fill="rgba(0,168,255,0.04)" />
+    <polygon points="0,650 320,600 380,950 0,1000" fill="rgba(0,168,255,0.05)" />
+    <polygon points="320,600 640,620 640,980 380,950" fill="rgba(4,39,54,0.45)" />
+    <polygon points="0,1000 380,950 420,1200 0,1200" fill="rgba(4,39,54,0.6)" opacity="0.6" />
+    <polygon points="380,950 640,980 640,1200 420,1200" fill="rgba(0,168,255,0.05)" />
+  </svg>
+</div>
+
+<div id="login-screen">
+  <span class="eyebrow">Household access</span>
+  <h1 class="speckled">Košík</h1>
+  <p>Sign in to the shared list.</p>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="email" />
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password" />
+  </div>
+  <button class="btn primary" id="login-btn" style="width:100%">Sign in</button>
+  <div id="error-msg"></div>
+</div>
+
+<div class="wrap hidden" id="app-screen">
+  <header class="top">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-mark">K</div>
+        <div class="brand-text">
+          <span class="brand-name">Košík<em>.</em></span>
+          <span class="brand-role">Shared grocery list</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <a href="../" id="home-link">← Home</a>
+          <button id="signout">Sign out</button>
+        </div>
+        <div class="name-field">
+          <label for="your-name">You're</label>
+          <input type="text" id="your-name" placeholder="your name" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mini-stats" id="mini-stats"></div>
+
+  <div class="add-bar">
+    <input type="text" id="new-item-input" placeholder="Add something, e.g. tomato sauce" />
+    <button class="btn primary" id="add-item-btn">Add</button>
+  </div>
+
+  <div class="list-head">On the list</div>
+  <div id="list-container"></div>
+</div>
+
+<script>
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const NAME_KEY = 'kosik_your_name';
+let currentUser = null;
+let items = [];
+let checkingIds = new Set();   // items currently mid price-check, for spinner state
+let expandedIds = new Set();   // items with "show all offers" open
+
+/* ---------- auth ---------- */
+async function checkSession(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ currentUser = session.user; showApp(); }
+  else { showLogin(); }
+}
+async function attemptLogin(){
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('error-msg');
+  errEl.textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){ errEl.textContent = error.message; return; }
+  currentUser = data.user;
+  showApp();
+}
+document.getElementById('login-btn').addEventListener('click', attemptLogin);
+['email','password'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown', (e)=>{ if(e.key==='Enter') attemptLogin(); });
+});
+document.getElementById('signout').addEventListener('click', async ()=>{
+  await sb.auth.signOut();
+  currentUser = null;
+  showLogin();
+});
+
+function showLogin(){
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-screen').classList.add('hidden');
+}
+async function showApp(){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-screen').classList.remove('hidden');
+  document.getElementById('your-name').value = localStorage.getItem(NAME_KEY) || '';
+  await loadItems();
+  subscribeRealtime();
+}
+document.getElementById('your-name').addEventListener('blur', (e)=>{
+  try{ localStorage.setItem(NAME_KEY, e.target.value.trim()); } catch(err){}
+});
+function yourName(){
+  return document.getElementById('your-name').value.trim() || 'Someone';
+}
+
+/* ---------- data ---------- */
+async function loadItems(){
+  const { data, error } = await sb.from('shopping_items').select('*').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  items = data || [];
+  renderList();
+}
+
+document.getElementById('add-item-btn').addEventListener('click', addItem);
+document.getElementById('new-item-input').addEventListener('keydown', (e)=>{ if(e.key==='Enter') addItem(); });
+async function addItem(){
+  const input = document.getElementById('new-item-input');
+  const name = input.value.trim();
+  if(!name) return;
+  const { error } = await sb.from('shopping_items').insert({
+    name,
+    added_by_name: yourName()
+  });
+  if(error){ alert(error.message); return; }
+  input.value = '';
+  await loadItems();
+}
+
+async function removeItem(id){
+  if(!confirm('Remove this item from the list?')) return;
+  const { error } = await sb.from('shopping_items').delete().eq('id', id);
+  if(error){ alert(error.message); return; }
+  await loadItems();
+}
+
+async function checkPrice(id, name){
+  checkingIds.add(id);
+  renderList();
+  try{
+    const { data, error } = await sb.functions.invoke('check-price', { body: { product: name } });
+    if(error) throw error;
+
+    if(!data || !data.found){
+      await sb.from('shopping_items').update({
+        checked_at: new Date().toISOString(),
+        best_price: null, best_price_per_100: null, best_store: null,
+        best_amount_text: null, best_validity: null,
+        raw_results: data || { found:false }
+      }).eq('id', id);
+    } else {
+      const c = data.overallCheapest;
+      await sb.from('shopping_items').update({
+        checked_at: new Date().toISOString(),
+        best_price: c.price,
+        best_price_per_100: c.pricePer100,
+        best_store: c.shop,
+        best_amount_text: c.amountText,
+        best_validity: c.validity,
+        raw_results: data
+      }).eq('id', id);
+    }
+  } catch(err){
+    alert('Price check failed: ' + (err.message || err));
+  } finally {
+    checkingIds.delete(id);
+    await loadItems();
+  }
+}
+
+/* ---------- rendering ---------- */
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+function fmtMoney(amount){
+  if(amount == null) return '';
+  return `${Math.round(amount * 100) / 100} Kč`;
+}
+function fmtCheckedAt(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const sameDay = d.toDateString() === now.toDateString();
+  return sameDay
+    ? `checked ${d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}`
+    : `checked ${d.toLocaleDateString()}`;
+}
+
+function renderMiniStats(){
+  const el = document.getElementById('mini-stats');
+  if(!el) return;
+  const total = items.length;
+  const checked = items.filter(i => i.checked_at).length;
+  const pending = total - checked;
+  el.innerHTML = `
+    <div class="mini-stat">
+      <div class="mini-stat-icon">Σ</div>
+      <div><div class="mini-stat-value">${total}</div><span class="mini-stat-label">On the list</span></div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-icon">✓</div>
+      <div><div class="mini-stat-value">${checked}</div><span class="mini-stat-label">Priced</span></div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-icon">…</div>
+      <div><div class="mini-stat-value">${pending}</div><span class="mini-stat-label">Pending</span></div>
+    </div>
+  `;
+}
+
+function renderList(){
+  renderMiniStats();
+  const container = document.getElementById('list-container');
+  if(!items.length){
+    container.innerHTML = '<div class="empty-state">Nothing on the list yet — add the first thing above.</div>';
+    return;
+  }
+
+  const rows = items.map(item => {
+    const isChecking = checkingIds.has(item.id);
+    const isExpanded = expandedIds.has(item.id);
+    const hasResult = !!item.checked_at;
+    const noMatch = hasResult && item.best_price == null;
+
+    let priceHtml, metaHtml, altHtml = '';
+
+    if(isChecking){
+      priceHtml = `<span class="ri-price pending">checking…</span>`;
+      metaHtml = '';
+    } else if(!hasResult){
+      priceHtml = `<span class="ri-price pending">not checked</span>`;
+      metaHtml = `<span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>`;
+    } else if(noMatch){
+      priceHtml = `<span class="no-match">no match found</span>`;
+      metaHtml = `<span>${fmtCheckedAt(item.checked_at)}</span><span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>`;
+    } else {
+      priceHtml = `<span class="ri-price">${fmtMoney(item.best_price)}</span>`;
+      const per100 = item.best_price_per_100 != null ? `${fmtMoney(item.best_price_per_100)} / 100` : '';
+      metaHtml = `
+        <span>${escapeHtml(item.best_store || '')}</span>
+        ${item.best_amount_text ? `<span>${escapeHtml(item.best_amount_text)}</span>` : ''}
+        ${per100 ? `<span>${per100}</span>` : ''}
+        ${item.best_validity ? `<span>${escapeHtml(item.best_validity)}</span>` : ''}
+        <span>${fmtCheckedAt(item.checked_at)}</span>
+        <span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>
+      `;
+
+      const products = item.raw_results?.products || [];
+      if(isExpanded && products.length){
+        altHtml = `<div class="ri-alt">` + products.map(p => `
+          <div style="margin-bottom:6px;">
+            <div style="font-weight:600; margin-bottom:2px; color:var(--alpine-white);">${escapeHtml(p.name)}</div>
+            ${p.offers.slice(0,5).map(o => `
+              <div class="ri-alt-row">
+                <span class="shop">${escapeHtml(o.shop)} (${escapeHtml(o.amountText)})</span>
+                <span>${fmtMoney(o.price)}${o.pricePer100 != null ? ` · ${fmtMoney(o.pricePer100)}/100` : ''}</span>
+              </div>
+            `).join('')}
+          </div>
+        `).join('') + `</div>`;
+      }
+    }
+
+    const showAltToggle = hasResult && !noMatch && (item.raw_results?.products?.length > 0);
+
+    return `
+      <div class="receipt-item" data-id="${item.id}">
+        <div class="ri-row">
+          <span class="ri-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+          <span class="ri-dots"></span>
+          ${priceHtml}
+        </div>
+        ${metaHtml ? `<div class="ri-meta">${metaHtml}</div>` : ''}
+        ${altHtml}
+        <div class="ri-actions">
+          <button class="btn small primary check-btn" ${isChecking ? 'disabled' : ''}>${hasResult ? 'Recheck' : 'Check price'}</button>
+          ${showAltToggle ? `<button class="btn ghost toggle-btn">${isExpanded ? 'Hide offers' : 'Show all offers'}</button>` : ''}
+          <button class="btn danger remove-btn">Remove</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `<div class="receipt">${rows}</div>`;
+
+  container.querySelectorAll('.receipt-item').forEach(el => {
+    const id = el.dataset.id;
+    const item = items.find(i => i.id === id);
+    el.querySelector('.check-btn').addEventListener('click', () => checkPrice(id, item.name));
+    el.querySelector('.remove-btn').addEventListener('click', () => removeItem(id));
+    const toggleBtn = el.querySelector('.toggle-btn');
+    if(toggleBtn){
+      toggleBtn.addEventListener('click', () => {
+        if(expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+        renderList();
+      });
+    }
+  });
+}
+
+/* ---------- realtime sync across flatmates ---------- */
+function subscribeRealtime(){
+  sb.channel('shopping-items-changes')
+    .on('postgres_changes',
+      { event:'*', schema:'public', table:'shopping_items' },
+      ()=>{ loadItems(); }
+    )
+    .subscribe();
+}
+
+/* ---------- boot ---------- */
+checkSession();
+</script>
+</body>
+</html>
