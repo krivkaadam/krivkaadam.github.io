@@ -826,7 +826,6 @@
     .link-icon {
       width: 40px;
       height: 40px;
-      border: 1px solid var(--glacier);
       background: rgba(0, 168, 255, 0.12);
       display: flex;
       align-items: center;
@@ -834,6 +833,15 @@
       color: var(--glacier);
       font-family: var(--font-stencil);
       font-size: 0.75rem;
+      overflow: hidden;
+    }
+
+    .link-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      -o-object-fit: cover;
+         object-fit: cover;
     }
 
     .link-name {
@@ -1179,7 +1187,9 @@
           </p>
 
           <p class="hero-sub">
-            Generally love designing front-end including graphic sw like Photoshop, Premiere Pro and After Effects; here in the form of finetuning details I see and experimenting with elements gradually. <strong>Subtle changes every dayy!</strong>
+            Generally love designing front-end including graphic sw like Photoshop, Premiere Pro and After Effects; here
+            in the form of finetuning details I see and experimenting with elements gradually. <strong>Subtle changes
+              every dayy!</strong>
           </p>
           <div class="hero-actions">
             <a href="/ledger/" class="btn-glacier">
@@ -1200,7 +1210,7 @@
           <div class="stat-grid">
             <!-- LLM: change emojis to icons that match the visual identity? -->
             <div class="stat-card">
-               <!-- LLM: Change the emojis to icons that blend in with the design -->
+              <!-- LLM: Change the emojis to icons that blend in with the design -->
               <div class="stat-icon">🎓</div>
               <div>
                 <div class="stat-value speckled">VUT</div>
@@ -1545,7 +1555,10 @@
           <div class="links-grid">
             <a class="link-card" href="https://github.com/krivkaadam" target="_blank" rel="noreferrer">
               <div class="link-left">
-                <div class="link-icon">GH</div><span class="link-name">GitHub</span>
+                <div class="link-icon">
+                  <img src="/assets/GithubIMG-W9XDfvYu.jpg" alt="GitHub" />
+                </div>
+                <span class="link-name">GitHub</span>
               </div>
               <svg class="icon-external" viewBox="0 0 24 24">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
@@ -1555,7 +1568,10 @@
             </a>
             <a class="link-card" href="https://x.com/krivkaadam" target="_blank" rel="noreferrer">
               <div class="link-left">
-                <div class="link-icon">X</div><span class="link-name">Twitter / X</span>
+                <div class="link-icon">
+                  <img src="/assets/TwitterIMG-XeuCcVqs.jpg" alt="Twitter" />
+                </div>
+                <span class="link-name">Twitter / X</span>
               </div>
               <svg class="icon-external" viewBox="0 0 24 24">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
@@ -1565,38 +1581,59 @@
             </a>
             <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
               <div class="link-left">
-                <div class="link-icon">IG</div><span class="link-name">Instagram</span>
+                <<div class="link-icon">
+                  <img src="/assets/InstagramIMG-BklHfG7R.jpg" alt="Instagram" />
               </div>
-              <svg class="icon-external" viewBox="0 0 24 24">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
-                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                      fill="none" />
-              </svg>
-            </a>
-            <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
-              <div class="link-left">
-                <div class="link-icon"><img src="/assets/FacebookIMG-BKmOgB-E.jpg" alt=""
-             style="width:100%; display:block;"/></div><span class="link-name">Facebook</span>
-              </div>
-              <svg class="icon-external" viewBox="0 0 24 24">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
-                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                      fill="none" />
-              </svg>
-            </a>
-            <a class="link-card" href="mailto:krivkaad@gmail.com">
-              <div class="link-left">
-                <div class="link-icon">@</div><span class="link-name">Email Me</span>
-              </div>
-              <svg class="icon-external" viewBox="0 0 24 24">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
-                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                      fill="none" />
-              </svg>
-            </a>
+              <span class="link-name">Instagram</span>
           </div>
+          <svg class="icon-external" viewBox="0 0 24 24">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  fill="none" />
+          </svg>
+          </a>
+          <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
+            <div class="link-left">
+              <div class="link-icon">
+                <img src="/assets/FacebookIMG-BKmOgB-E.jpg" alt="Facebook" />
+              </div>
+              <span class="link-name">Facebook</span>
+            </div>
+            <svg class="icon-external" viewBox="0 0 24 24">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    fill="none" />
+            </svg>
+          </a>
+          <a class="link-card" href="mailto:krivkaad@gmail.com">
+            <div class="link-left">
+              <div class="link-icon">
+                <img src="/assets/GoogleIMG-Cr1F2Ole.jpg" alt="Email" />
+              </div>
+              <span class="link-name">Email Me</span>
+            </div>
+            <svg class="icon-external" viewBox="0 0 24 24">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    fill="none" />
+            </svg>
+          </a>
+          <a class="link-card" href="wa.me/adam_krivka">
+            <div class="link-left">
+              <div class="link-icon">
+                <img src="./src/assets/WhatsAppIMG.jpg" alt="WhatsApp" />
+              </div>
+              <span class="link-name">WhatsApp</span>
+            </div>
+            <svg class="icon-external" viewBox="0 0 24 24">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    fill="none" />
+            </svg>
+          </a>
         </div>
-      </section>
+    </div>
+    </section>
     </div>
   </main>
 
@@ -1650,7 +1687,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">no personal data collected :&#41;</span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-18 18:33:46</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-18 18:42:48</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
