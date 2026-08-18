@@ -325,7 +325,6 @@
       display: grid;
       grid-template-columns: 1.25fr 0.75fr;
       gap: 3.5rem;
-
       align-items: stretch;
     }
 
@@ -378,13 +377,13 @@
     /* Hero Right Visual Container */
     .hero-visual {
       position: relative;
+      width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
     }
 
     .hero-photo-container {
-      position: relative;
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: 1px solid rgba(0, 168, 255, 0.3);
@@ -402,8 +401,6 @@
       -o-object-position: center;
          object-position: center;
       display: block;
-      filter: brightness(0.92) contrast(1.05);
-      transition: transform 260ms ease, filter 260ms ease;
     }
 
     .hero-photo-container:hover img {
@@ -997,9 +994,16 @@
         gap: 2.5rem;
       }
 
+      .hero-visual {
+        height: auto;
+      }
+
       .hero-photo-container {
+        position: relative;
+        inset: auto;
         height: 380px;
       }
+
 
       .grid-4 {
         grid-template-columns: repeat(2, 1fr);
@@ -1814,7 +1818,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">no personal data collected :&#41;</span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-18 21:16:19</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-18 21:22:49</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
