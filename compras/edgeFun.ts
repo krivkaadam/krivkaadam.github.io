@@ -5,6 +5,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const ALLOWED_SHOPS = ["albert", "lidl", "billa", "tesco"];
+
 interface Offer {
   shop: string;
   price: number;
@@ -43,6 +45,15 @@ function parseGramsOrMl(amountStr: string): number | null {
   const mlMatch = clean.match(/([\d.]+)\s*ml/);
   if (mlMatch) return parseFloat(mlMatch[1]);
 
+  return null;
+}
+
+function normalizeAllowedShop(rawShop: string): string | null {
+  const lower = rawShop.toLowerCase();
+  if (lower.includes("albert")) return "Albert";
+  if (lower.includes("lidl")) return "Lidl";
+  if (lower.includes("billa")) return "Billa";
+  if (lower.includes("tesco")) return "Tesco";
   return null;
 }
 
@@ -94,7 +105,6 @@ Deno.serve(async (req) => {
     const productGroups: ProductGroup[] = [];
     const seenDiscountIds = new Set<string>();
 
-    // Parse discount cards grouped by product wrapper
     $(".group_discounts").each((_, groupEl) => {
       const $group = $(groupEl);
 
@@ -108,12 +118,22 @@ Deno.serve(async (req) => {
       $group.find(".discount_row").each((_, row) => {
         const $row = $(row);
 
-        // 1. Prevent duplicate entries from "Doporučené akce" and "Akce dle ceny"
+        // 1. Filtrace povolených řetězců
+        const rawShop =
+          $row.find(".discounts_markets a").attr("data-shop")?.trim() ||
+          $row.find(".discounts_shop_name a").attr("title")?.trim() ||
+          $row.find(".discounts_shop_name").first().text().replace(/\s+/g, " ").trim() ||
+          "";
+
+        const shop = normalizeAllowedShop(rawShop);
+        if (!shop) return;
+
+        // 2. Ochrana proti duplicitám
         const discountId = $row.attr("data-discount") || $row.attr("id") || "";
         if (discountId && seenDiscountIds.has(discountId)) return;
         if (discountId) seenDiscountIds.add(discountId);
 
-        // 2. Price extraction (data attribute fallback to rendered text)
+        // 3. Cena
         const dataPrice = $row.find("[data-price]").first().attr("data-price");
         const price = dataPrice
           ? parseFloat(dataPrice)
@@ -121,20 +141,12 @@ Deno.serve(async (req) => {
 
         if (!price || isNaN(price)) return;
 
-        // 3. Supermarket name extraction
-        const shop =
-          $row.find(".discounts_markets a").attr("data-shop")?.trim() ||
-          $row.find(".discounts_shop_name a").attr("title")?.trim() ||
-          $row.find(".discounts_shop_name").first().text().replace(/\s+/g, " ").trim() ||
-          "Supermarket";
-
-        // 4. Amount parsing
+        // 4. Množství a platnost
         const key = $row.attr("data-key") || "";
         const amountText = key
           ? key.replace("-", " ")
           : $group.find(".product_name .nowrap").first().text().trim() || "0.5 l";
 
-        // 5. Flags & validity
         const isFuture = $row.find(".price_future_discount").length > 0;
         const validity = $row.find(".discounts_validity").text().replace(/\s+/g, " ").trim();
         const note = $row.find(".discount_note span").text().replace(/\s+/g, " ").trim();
@@ -161,12 +173,22 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Fallback if no .group_discounts wrappers exist on the page
+    // Fallback pokud chybí wrapper .group_discounts
     if (productGroups.length === 0) {
       const standaloneOffers: Offer[] = [];
 
       $(".discount_row").each((_, row) => {
         const $row = $(row);
+
+        const rawShop =
+          $row.find(".discounts_markets a").attr("data-shop")?.trim() ||
+          $row.find(".discounts_shop_name a").attr("title")?.trim() ||
+          $row.find(".discounts_shop_name").first().text().replace(/\s+/g, " ").trim() ||
+          "";
+
+        const shop = normalizeAllowedShop(rawShop);
+        if (!shop) return;
+
         const discountId = $row.attr("data-discount") || $row.attr("id") || "";
         if (discountId && seenDiscountIds.has(discountId)) return;
         if (discountId) seenDiscountIds.add(discountId);
@@ -177,12 +199,6 @@ Deno.serve(async (req) => {
           : parsePrice($row.find(".discount_price_value").first().text());
 
         if (!price || isNaN(price)) return;
-
-        const shop =
-          $row.find(".discounts_markets a").attr("data-shop")?.trim() ||
-          $row.find(".discounts_shop_name a").attr("title")?.trim() ||
-          $row.find(".discounts_shop_name").first().text().replace(/\s+/g, " ").trim() ||
-          "Supermarket";
 
         const key = $row.attr("data-key") || "";
         const amountText = key.replace("-", " ");
