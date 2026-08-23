@@ -1,3 +1,11 @@
+<!-- 
+ File Author:
+ Adam Křivka
+ Description: 
+ main landing page
+-->
+
+
 <!doctype html>
 <html lang="en" data-theme="light">
 
@@ -44,7 +52,7 @@
       filter: url(#distress-speckles);
     }
 
-    /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
+    /* ============ TOKENS & PALETTE ============ */
     :root {
       --abyss-teal: #03212d;
       --deep-fjord: #063244;
@@ -121,7 +129,6 @@
       border: 0;
     }
 
-    /* Helper SVG Icon Styling */
     .icon-arrow {
       width: 1.1em;
       height: 1.1em;
@@ -165,7 +172,7 @@
       display: block;
     }
 
-    /* Section-level Background Polygon Facets */
+    /* Section-level Background Polygons */
     .section-poly-bg {
       position: absolute;
       inset: 0;
@@ -190,7 +197,7 @@
       z-index: 2;
     }
 
-    /* ============ HEADER & NAV ============ */
+    /* ============ HEADER and NAVIGATION ============ */
     header {
       position: fixed;
       top: 0;
@@ -489,7 +496,7 @@
       color: var(--glacier);
     }
 
-    /* ============ STAT STRIP WIDGET ============ */
+    /* ============ STAT STRIP SECTION ============ */
     .stat-strip {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -551,7 +558,7 @@
     .section {
       padding: 4.5rem 0;
       position: relative;
-      /* Smooth anchor landing offset: accounts for fixed header (68px) + 1.5rem extra padding */
+      /* Smooth anchor landing offset */
       scroll-margin-top: calc(68px + 1.5rem);
     }
 
@@ -574,8 +581,6 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 1.25rem;
     }
-
-    /* Standard Card (White Card with Cyan Action Bar) */
     .ticket-card {
       background: var(--card-bg);
       color: var(--card-text);
@@ -1051,7 +1056,7 @@
       }
     }
 
-    /*============ABOUT SECTION (SIDE-BY-SIDE WITH VERTICAL PHOTO)============ */
+    /*============ ABOUT SECTION ============ */
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -1167,7 +1172,7 @@
 </head>
 
 <body>
-  <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+  <!-- GLOBAL SPECKLES FILTER DEFINITION -->
   <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
     <filter id="distress-speckles">
       <feTurbulence
@@ -1293,7 +1298,7 @@
             <!-- Right Hero Image Visual -->
             <div class="hero-visual">
               <div class="hero-photo-container">
-                <img src="/assets/AboutMeBanner-C0tbGaqH.jpg" alt="Adam Křivka portfolio preview" />
+                <img src="/assets/PP_FullSize-BXeYp1pG.jpg" alt="ProfilePicture" />
                 <div class="hero-photo-badge">
                   <span>SANDBOX &amp; LAB</span>
                   <strong>Personal Builds · Experiments</strong>
@@ -1306,7 +1311,6 @@
 
       <!-- METRIC STAT STRIP -->
       <div class="stat-strip">
-        <!--LLM:-->
         <div class="shell">
           <div class="stat-grid">
             <!-- Stat Card 1 -->
@@ -1328,7 +1332,7 @@
             <!-- Stat Card 2 -->
             <div class="stat-card">
               <div class="stat-icon">
-                <!-- High-Voltage Activity Icon -->
+                <!-- Lightning Icon -->
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                 </svg>
@@ -1818,7 +1822,7 @@
         <span class="footer-sep">·</span>
         <span class="footer-item">no personal data collected :&#41;</span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-18 21:22:49</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-23 20:49:00</span></span>
         <span class="footer-sep">·</span>
         <span>Brno, Czech Republic</span>
         <span class="footer-sep">·</span>
@@ -1842,12 +1846,14 @@
   </div>
 
   <script>
+    // Get the full year dynamically
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const homeEl = document.getElementById('home');
     const linksEl = document.getElementById('links');
     const footerEl = document.getElementById('siteFooter');
 
+    // Switch between views, hides the other ones, 
     function showLinks() {
       homeEl.style.display = 'none';
       linksEl.classList.add('active');
@@ -1864,6 +1870,7 @@
       window.scrollTo(0, 0);
     }
 
+    // Showing the mobile options menu
     const mobileMenu = document.getElementById('mobileMenu');
     document.getElementById('mobileToggle').addEventListener('click', () => mobileMenu.classList.add('open'));
     document.getElementById('mobileClose').addEventListener('click', closeMobile);
@@ -1873,3 +1880,5 @@
 </body>
 
 </html>
+
+<!-- END OF FILE: index.html-->
