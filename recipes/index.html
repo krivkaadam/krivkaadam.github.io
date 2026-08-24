@@ -4,32 +4,64 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Recipes</title>
+
+
+  <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../src/assets/ico/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../src/assets/ico/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../src/assets/ico/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../src/assets/ico/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../src/assets/ico/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../src/assets/ico/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../src/assets/ico/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../src/assets/ico/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/ico/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../src/assets/ico/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../src/assets/ico/favicon-16x16.png">
+  <link rel="manifest" href="../src/assets/ico/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="../src/assets/ico/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+    @font-face {
+      font-family: 'MyDisplay';
+      src: url('../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
   :root {
-    --abyss-teal: #03212d;
-    --deep-fjord: #063244;
+    --abyss-teal: #eef3f8;
+    --deep-fjord: #042330;
     --fjord-surface: #072e3d;
-    --glacier: #00ace1;
-    --glacier-hover: #26b8e6;
+    --glacier: #1f7fd1;
+    --glacier-hover: #2f8fe0;
     --alpine-red: #FF3B30;
     --alpine-red-hover: #E03126;
     --alpine-white: #FFFFFF;
-    --ice-white: #E2E8F0;
-    --text-dim: rgba(226, 232, 240, 0.7);
-    --text-faint: rgba(226, 232, 240, 0.45);
-    --border: rgba(0, 168, 255, 0.2);
-    --border-subtle: rgba(255, 255, 255, 0.1);
-    --border-strong: rgba(0, 168, 255, 0.45);
+    --ice-white: #1d2b3a;
+    --text-dim: rgba(29, 43, 58, 0.65);
+    --text-faint: rgba(29, 43, 58, 0.4);
+    --border: rgba(31, 127, 209, 0.22);
+    --border-subtle: rgba(29, 43, 58, 0.08);
+    --border-strong: rgba(31, 127, 209, 0.5);
 
-    --poly-fill-1: rgba(0, 168, 255, 0.12);
-    --poly-fill-2: rgba(4, 39, 54, 0.65);
-    --poly-fill-3: rgba(255, 255, 255, 0.04);
+    --poly-fill-1: rgba(31, 127, 209, 0.06);
+    --poly-fill-2: rgba(31, 127, 209, 0.03);
+    --poly-fill-3: rgba(255, 255, 255, 0.5);
+
+    --surface-card-a: #ffffff;
+    --surface-card-b: #f4f8fc;
+    --navy-heading: #14243a;
 
     --font-display: 'Anton', sans-serif;
+     --font-titles: 'MyDisplay', sans-serif;
     --font-stencil: 'Allerta Stencil', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -85,13 +117,26 @@
   }
 
   .section-title {
-    font-family: var(--font-display);
+    font-family: 'MyDisplay', 'Anton', sans-serif;
     font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-    color: var(--alpine-white);
+    color: var(--navy-heading);
     text-transform: uppercase;
     letter-spacing: 0.02em;
     line-height: 1.1;
     margin-bottom: 1.25rem;
+    display: inline-block;
+    position: relative;
+    padding: 2px 4px;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    inset: -4px -8px;
+    z-index: -1;
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.08  0 0 0 0 0.14  0 0 0 0 0.23  0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
   }
 
   /* ============ HEADER & NAVIGATION ============ */
@@ -206,12 +251,22 @@
   .btn.outline {
     background: transparent;
     border: 1px solid var(--border);
-    color: var(--alpine-white);
+    color: var(--navy-heading);
   }
 
   .btn.outline:hover:not(:disabled) {
     border-color: var(--glacier);
     color: var(--glacier);
+  }
+
+  /* The top nav stays dark regardless of theme, so its outline buttons need light text */
+  .nav-inner .btn.outline {
+    color: var(--alpine-white);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .nav-inner .btn.outline:hover:not(:disabled) {
+    color: var(--glacier-hover);
+    border-color: var(--glacier-hover);
   }
 
   .btn.ghost {
@@ -262,9 +317,9 @@
 
   input[type=email], input[type=password], input[type=text], input[type=number], textarea, select {
     width: 100%;
-    background: rgba(4, 39, 54, 0.75);
+    background: #ffffff;
     border: 1px solid var(--border);
-    color: var(--alpine-white);
+    color: var(--navy-heading);
     padding: 0.75rem 1rem;
     font-family: var(--font-body);
     font-size: 0.9rem;
@@ -283,6 +338,56 @@
     box-shadow: 0 0 0 1px var(--glacier);
   }
 
+  /* Native number-input spinners render as plain unstyled OS controls that
+     clash with the rest of the design - hide them and use our own themed
+     stepper buttons instead (see .qty-stepper). */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .qty-stepper {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    flex: 1;
+    min-width: 110px;
+  }
+  .qty-stepper input[type=number] {
+    border: none;
+    text-align: center;
+    flex: 1;
+    min-width: 40px;
+    background: transparent;
+    padding: 0.75rem 0.25rem;
+  }
+  .qty-stepper input[type=number]:focus {
+    box-shadow: none;
+  }
+  .qty-stepper .qty-btn {
+    background: transparent;
+    border: none;
+    color: var(--glacier);
+    font-weight: 800;
+    font-size: 1rem;
+    width: 34px;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  .qty-stepper .qty-btn:hover {
+    background: rgba(31, 127, 209, 0.1);
+  }
+  .qty-stepper .qty-btn:first-child {
+    border-right: 1px solid var(--border);
+  }
+  .qty-stepper .qty-btn:last-child {
+    border-left: 1px solid var(--border);
+  }
+
   select {
     cursor: pointer;
     appearance: none;
@@ -298,9 +403,9 @@
     max-width: 420px;
     margin: 140px auto 0;
     padding: 2.5rem 2rem;
-    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
     border: 1px solid var(--border);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 20px 45px rgba(20, 36, 58, 0.12);
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
     position: relative;
     z-index: 2;
@@ -310,7 +415,7 @@
     font-family: var(--font-display);
     font-size: 2.2rem;
     text-transform: uppercase;
-    color: var(--alpine-white);
+    color: var(--navy-heading);
     letter-spacing: 0.02em;
     margin-bottom: 0.25rem;
   }
@@ -345,18 +450,35 @@
   }
 
   .recipe-card {
-    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
     border: 1px solid var(--border);
     padding: 1.5rem;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 25px rgba(20, 36, 58, 0.08);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .recipe-card .rc-image {
+    width: calc(100% + 3rem);
+    margin: -1.5rem -1.5rem 1rem;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail-image {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    display: block;
   }
 
   .recipe-card:hover {
@@ -369,7 +491,7 @@
     font-family: var(--font-body);
     font-weight: 800;
     font-size: 1.15rem;
-    color: var(--alpine-white);
+    color: var(--navy-heading);
     margin-bottom: 0.6rem;
     line-height: 1.25;
   }
@@ -407,22 +529,22 @@
     padding: 3rem 1.5rem;
     text-align: center;
     border: 1px dashed var(--border);
-    background: rgba(6, 50, 68, 0.3);
+    background: rgba(31, 127, 209, 0.04);
   }
 
   /* ============ DETAIL VIEW ============ */
   .detail-panel {
-    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
     border: 1px solid var(--border);
     padding: 2rem;
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 35px rgba(20, 36, 58, 0.1);
   }
 
   .detail-title {
     font-family: var(--font-display);
     font-size: clamp(2rem, 4.5vw, 3rem);
-    color: var(--alpine-white);
+    color: var(--navy-heading);
     text-transform: uppercase;
     letter-spacing: 0.02em;
     line-height: 1.05;
@@ -522,7 +644,7 @@
 
   /* ============ FORM VIEW ============ */
   .form-panel {
-    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
     border: 1px solid var(--border);
     padding: 2rem;
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
@@ -542,7 +664,7 @@
     margin-bottom: 0.5rem;
     align-items: center;
     flex-wrap: wrap;
-    background: rgba(3, 33, 45, 0.4);
+    background: rgba(31, 127, 209, 0.04);
     padding: 0.5rem;
     border: 1px solid var(--border-subtle);
   }
@@ -614,7 +736,7 @@
     padding: 0.75rem;
     border: 1px solid var(--border);
     background: var(--deep-fjord);
-    color: var(--ice-white);
+    color: var(--alpine-white);
     cursor: pointer;
     font-weight: 800;
     font-size: 0.78rem;
@@ -1057,6 +1179,7 @@ function openForm(recipe) {
       id: recipe.id,
       title: recipe.title || '',
       description: recipe.description || '',
+      imageUrl: recipe.image_url || '',
       servings: recipe.servings || '',
       prep_minutes: recipe.prep_minutes || '',
       cook_minutes: recipe.cook_minutes || '',
@@ -1079,6 +1202,7 @@ function openForm(recipe) {
       id: null,
       title: '',
       description: '',
+      imageUrl: '',
       servings: '',
       prep_minutes: '',
       cook_minutes: '',
@@ -1095,11 +1219,11 @@ function renderForm() {
   const el = document.getElementById('form-view');
   const f = formState;
   if (!f) return;
-
   el.innerHTML = `
     <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.5rem;">← Cancel</button>
     <div class="form-panel">
       <span class="eyebrow-label">Editor</span>
+      
       <h2 class="section-title" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
 
       <div class="form-grid">
@@ -1110,6 +1234,10 @@ function renderForm() {
         <div class="field full">
           <label>Description & Notes</label>
           <textarea id="f-description" placeholder="A short background or serving tip">${escapeHtml(f.description)}</textarea>
+        </div>
+        <div class="field full">
+          <label>Image URL (optional)</label>
+          <input type="text" id="f-image-url" value="${escapeHtml(f.imageUrl)}" placeholder="https://…" />
         </div>
         <div class="field">
           <label>Servings</label>
@@ -1178,7 +1306,11 @@ function renderIngredientRows() {
   container.innerHTML = formState.ingredients.map((ing, idx) => `
     <div class="dyn-row" data-idx="${idx}">
       <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
-      <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+      <div class="qty-stepper">
+        <button type="button" class="qty-btn qty-dec">−</button>
+        <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+        <button type="button" class="qty-btn qty-inc">+</button>
+      </div>
       <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
       <input type="text" class="note-input ing-note" placeholder="Note (optional)" value="${escapeHtml(ing.note)}" />
       <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
@@ -1203,6 +1335,26 @@ function renderIngredientRows() {
       renderIngredientRows();
     });
   });
+  wireQtySteppers(container, 0.5);
+}
+
+/* Wires the +/- buttons next to a number input to bump its value, replacing
+   the browser's default (unstyled) spinner arrows entirely. */
+function wireQtySteppers(container, step) {
+  container.querySelectorAll('.qty-stepper').forEach(stepper => {
+    const input = stepper.querySelector('input[type=number]');
+    const dec = stepper.querySelector('.qty-dec');
+    const inc = stepper.querySelector('.qty-inc');
+    const bump = (delta) => {
+      const min = input.min !== '' ? parseFloat(input.min) : -Infinity;
+      let next = (parseFloat(input.value) || 0) + delta;
+      if (next < min) next = min;
+      input.value = Number.isInteger(step) ? next : Math.round(next * 100) / 100;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    dec.addEventListener('click', () => bump(-step));
+    inc.addEventListener('click', () => bump(step));
+  });
 }
 
 function renderStepRows() {
@@ -1211,7 +1363,11 @@ function renderStepRows() {
     <div class="dyn-row" data-idx="${idx}">
       <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:24px;">${idx+1}.</span>
       <input type="text" class="step-input step-instruction" placeholder="Instructions" value="${escapeHtml(s.instruction)}" />
-      <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+      <div class="qty-stepper" style="max-width:150px;">
+        <button type="button" class="qty-btn qty-dec">−</button>
+        <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+        <button type="button" class="qty-btn qty-inc">+</button>
+      </div>
       <button class="btn danger small remove-row-btn" type="button">✕</button>
     </div>
   `).join('');
@@ -1225,6 +1381,7 @@ function renderStepRows() {
       renderStepRows();
     });
   });
+  wireQtySteppers(container, 1);
 }
 
 async function saveRecipe() {
@@ -1234,6 +1391,7 @@ async function saveRecipe() {
   const payload = {
     title,
     description: document.getElementById('f-description').value.trim() || null,
+    image_url: document.getElementById('f-image-url').value.trim() || null,
     servings: document.getElementById('f-servings').value ? parseInt(document.getElementById('f-servings').value, 10) : null,
     prep_minutes: document.getElementById('f-prep').value ? parseInt(document.getElementById('f-prep').value, 10) : null,
     cook_minutes: document.getElementById('f-cook').value ? parseInt(document.getElementById('f-cook').value, 10) : null,
