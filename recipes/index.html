@@ -1,0 +1,1468 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --abyss-teal: #03212d;
+    --deep-fjord: #063244;
+    --fjord-surface: #072e3d;
+    --glacier: #00ace1;
+    --glacier-hover: #26b8e6;
+    --alpine-red: #FF3B30;
+    --alpine-red-hover: #E03126;
+    --alpine-white: #FFFFFF;
+    --ice-white: #E2E8F0;
+    --text-dim: rgba(226, 232, 240, 0.7);
+    --text-faint: rgba(226, 232, 240, 0.45);
+    --border: rgba(0, 168, 255, 0.2);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(0, 168, 255, 0.45);
+
+    --poly-fill-1: rgba(0, 168, 255, 0.12);
+    --poly-fill-2: rgba(4, 39, 54, 0.65);
+    --poly-fill-3: rgba(255, 255, 255, 0.04);
+
+    --font-display: 'Anton', sans-serif;
+    --font-stencil: 'Allerta Stencil', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--abyss-teal);
+    color: var(--ice-white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ============ GLOBAL BACKGROUND POLYGON LAYER ============ */
+  .bg-polygon-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .bg-polygon-layer svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .shell {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: calc(68px + 2.5rem) clamp(1.25rem, 4vw, 2.5rem) 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ TYPOGRAPHY & LABELS ============ */
+  .eyebrow-label {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--glacier);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    color: var(--alpine-white);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ============ HEADER & NAVIGATION ============ */
+  header.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #042330;
+    border-bottom: 1px solid var(--border-subtle);
+    height: 68px;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    background: var(--deep-fjord);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--glacier);
+    font-family: var(--font-stencil);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .brand-text .brand-name {
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--alpine-white);
+    display: block;
+  }
+
+  .brand-text .brand-role {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* ============ BUTTON SYSTEM ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.4rem;
+    cursor: pointer;
+    border: 0;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border-radius: 0;
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn.primary {
+    background: var(--glacier);
+    color: var(--abyss-teal);
+  }
+
+  .btn.primary:hover:not(:disabled) {
+    background: var(--glacier-hover);
+  }
+
+  .btn.danger {
+    background: var(--alpine-red);
+    color: var(--alpine-white);
+  }
+
+  .btn.danger:hover:not(:disabled) {
+    background: var(--alpine-red-hover);
+  }
+
+  .btn.outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--alpine-white);
+  }
+
+  .btn.outline:hover:not(:disabled) {
+    border-color: var(--glacier);
+    color: var(--glacier);
+  }
+
+  .btn.ghost {
+    background: transparent;
+    color: var(--text-dim);
+    padding: 0.5rem 0.8rem;
+  }
+
+  .btn.ghost:hover:not(:disabled) {
+    color: var(--glacier);
+  }
+
+  .btn.small {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+  }
+
+  .btn.full {
+    width: 100%;
+  }
+
+  .icon-arrow {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .btn:hover .icon-arrow {
+    transform: translateX(3px);
+  }
+
+  /* ============ INPUTS & FORM FIELDS ============ */
+  .field {
+    margin-bottom: 1rem;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--glacier);
+    margin-bottom: 0.35rem;
+  }
+
+  input[type=email], input[type=password], input[type=text], input[type=number], textarea, select {
+    width: 100%;
+    background: rgba(4, 39, 54, 0.75);
+    border: 1px solid var(--border);
+    color: var(--alpine-white);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    border-radius: 0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 75px;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--glacier);
+    box-shadow: 0 0 0 1px var(--glacier);
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2300ace1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 32px;
+  }
+
+  /* ============ LOGIN SCREEN ============ */
+  #login-screen {
+    max-width: 420px;
+    margin: 140px auto 0;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    position: relative;
+    z-index: 2;
+  }
+
+  #login-screen h1 {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    color: var(--alpine-white);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.25rem;
+  }
+
+  #login-screen p {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  #error-msg {
+    color: var(--alpine-red);
+    font-size: 0.78rem;
+    margin-top: 0.85rem;
+    font-weight: 600;
+    min-height: 18px;
+  }
+
+  /* ============ BROWSE VIEW & CARDS ============ */
+  .search-bar {
+    margin-bottom: 2rem;
+  }
+
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 680px) {
+    .recipe-grid { grid-template-columns: 1fr; }
+  }
+
+  .recipe-card {
+    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--glacier);
+    box-shadow: 0 12px 30px rgba(0, 172, 225, 0.2);
+  }
+
+  .recipe-card h3 {
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--alpine-white);
+    margin-bottom: 0.6rem;
+    line-height: 1.25;
+  }
+
+  .recipe-card .rc-meta {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+  }
+
+  .recipe-card .rc-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .rc-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(0, 172, 225, 0.12);
+    color: var(--glacier);
+    border: 1px solid rgba(0, 172, 225, 0.25);
+    padding: 2px 7px;
+  }
+
+  .empty-state {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    border: 1px dashed var(--border);
+    background: rgba(6, 50, 68, 0.3);
+  }
+
+  /* ============ DETAIL VIEW ============ */
+  .detail-panel {
+    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  }
+
+  .detail-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    color: var(--alpine-white);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    margin: 0.5rem 0;
+  }
+
+  .detail-meta {
+    font-size: 0.78rem;
+    color: var(--glacier);
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+  }
+
+  .detail-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-chip {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: rgba(0, 172, 225, 0.15);
+    color: var(--glacier);
+    padding: 3px 9px;
+    border: 1px solid rgba(0, 172, 225, 0.3);
+  }
+
+  .detail-desc {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.65;
+    padding-left: 1.25rem;
+    border-left: 2px solid rgba(0, 172, 225, 0.4);
+    margin-bottom: 2rem;
+  }
+
+  .block-subhead {
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--glacier);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .ingredient-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px dashed var(--border-subtle);
+    font-size: 0.95rem;
+  }
+
+  .ingredient-row:last-child { border-bottom: none; }
+  .ingredient-qty { font-family: var(--font-mono); color: var(--glacier); font-weight: 600; white-space: nowrap; }
+  .ingredient-name { flex: 1; color: var(--ice-white); }
+  .ingredient-note { color: var(--text-faint); font-size: 0.85rem; font-style: italic; }
+
+  .step-row {
+    display: flex;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px dashed var(--border-subtle);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .step-row:last-child { border-bottom: none; }
+  .step-num {
+    font-family: var(--font-stencil);
+    color: var(--glacier);
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    width: 24px;
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+  }
+
+  /* ============ FORM VIEW ============ */
+  .form-panel {
+    background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-grid .field.full { grid-column: 1 / -1; }
+
+  .dyn-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    background: rgba(3, 33, 45, 0.4);
+    padding: 0.5rem;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .dyn-row input[type=text] { flex: 2; min-width: 120px; }
+  .dyn-row input[type=number] { flex: 1; min-width: 70px; }
+  .dyn-row .unit-input { flex: 1; min-width: 75px; }
+  .dyn-row .note-input { flex: 2; min-width: 120px; }
+  .dyn-row .step-input { flex: 1; min-width: 220px; }
+  .dyn-row .checkbox-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .form-section { margin: 2rem 0 1rem; }
+  .form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+
+  /* ============ KITCHEN MODE ============ */
+  #kitchen-view {
+    position: fixed;
+    inset: 0;
+    background: #021822;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem clamp(1rem, 4vw, 3rem);
+  }
+
+  #kitchen-view.hidden { display: none; }
+
+  .kitchen-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+
+  .kitchen-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    color: var(--alpine-white);
+    letter-spacing: 0.04em;
+  }
+
+  .kitchen-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .kitchen-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .kitchen-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--deep-fjord);
+    color: var(--ice-white);
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kitchen-tab.active {
+    background: var(--glacier);
+    border-color: var(--glacier);
+    color: var(--abyss-teal);
+  }
+
+  .kitchen-panel { flex: 1; }
+  .kitchen-panel.hidden { display: none; }
+
+  .kitchen-ing-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .kitchen-ing-row.checked {
+    opacity: 0.35;
+    text-decoration: line-through;
+  }
+
+  .kitchen-ing-checkbox {
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--glacier);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--abyss-teal);
+  }
+
+  .kitchen-ing-row.checked .kitchen-ing-checkbox {
+    background: var(--glacier);
+    color: var(--abyss-teal);
+  }
+
+  .kitchen-ing-qty {
+    font-family: var(--font-mono);
+    color: var(--glacier);
+    font-weight: 700;
+  }
+
+  .kitchen-step-progress {
+    text-align: center;
+    color: var(--glacier);
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .kitchen-step-text {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    line-height: 1.4;
+    text-align: center;
+    padding: 2rem 1rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--alpine-white);
+  }
+
+  .kitchen-timer-display {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 3.5rem;
+    color: var(--glacier);
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .kitchen-timer-btn {
+    display: block;
+    margin: 0 auto 1.5rem;
+  }
+
+  .kitchen-nav {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .kitchen-nav .btn {
+    flex: 1;
+    padding: 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .brand-text .brand-role { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- GLOBAL FIXED BACKGROUND POLYGONS -->
+  <div class="bg-polygon-layer" aria-hidden="true">
+    <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
+      <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+      <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+      <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+      <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+      <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+      <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+      <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+      <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+      <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
+    </svg>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <span class="eyebrow-label">Authentication</span>
+    <h1>Recipes</h1>
+    <p>Sign in to access your recipes.</p>
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
+    </div>
+    <button class="btn primary full" id="login-btn">
+      Sign In
+      <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    </button>
+    <div id="error-msg"></div>
+  </div>
+
+  <!-- MAIN APP WRAPPER -->
+  <div class="hidden" id="app-screen">
+    <header class="top-nav">
+      <div class="nav-inner">
+        <div class="brand-group" onclick="showView('browse')">
+          <div class="brand-mark">R</div>
+          <div class="brand-text">
+            <span class="brand-name">Recipes</span>
+            <span class="brand-role">Family Recipe Book</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="../" class="btn outline small" id="home-link">← Home</a>
+          <button class="btn primary small" id="new-recipe-btn">+ New Recipe</button>
+          <button class="btn outline small" id="signout">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell">
+      <!-- BROWSE VIEW -->
+      <div id="browse-view">
+        <div class="section-head">
+          <span class="eyebrow-label">Archive</span>
+          <h2 class="section-title">ALL RECIPES</h2>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Search by title, tag, or ingredient…" />
+        </div>
+        <div id="recipe-grid" class="recipe-grid"></div>
+      </div>
+
+      <!-- DETAIL VIEW -->
+      <div id="detail-view" class="hidden"></div>
+
+      <!-- FORM VIEW -->
+      <div id="form-view" class="hidden"></div>
+    </main>
+  </div>
+
+  <!-- KITCHEN MODE OVERLAY -->
+  <div id="kitchen-view" class="hidden"></div>
+
+<script>
+const SUPABASE_URL = "https://eyvgammlolmqsylagygk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dmdhbW1sb2xtcXN5bGFneWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NjE3NzcsImV4cCI6MjEwMjAzNzc3N30.ZMNTTj_VRblCWGo-BI_ixEOxsz0EPtRJGKGIrr3zfLg";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const NAME_KEY = 'recepty_adam';
+let currentUser = null;
+let recipes = [];
+let searchTerm = '';
+let currentView = 'browse';
+let currentRecipeId = null;
+let formState = null;
+let kitchen = null;
+
+/* ---------- AUTHENTICATION ---------- */
+async function checkSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    showApp();
+  } else {
+    showLogin();
+  }
+}
+
+async function attemptLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('error-msg');
+  errEl.textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    errEl.textContent = error.message;
+    return;
+  }
+  currentUser = data.user;
+  showApp();
+}
+
+document.getElementById('login-btn').addEventListener('click', attemptLogin);
+['email','password'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+});
+
+document.getElementById('signout').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  currentUser = null;
+  showLogin();
+});
+
+function showLogin() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-screen').classList.add('hidden');
+}
+
+async function showApp() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-screen').classList.remove('hidden');
+  await loadRecipes();
+  subscribeRealtime();
+  showView('browse');
+}
+
+function yourName() {
+  try {
+    return localStorage.getItem(NAME_KEY) || prompt('Your name (shown as contributor):') || 'Adam';
+  } catch(e) {
+    return 'Adam';
+  }
+}
+
+/* ---------- DATA MANAGEMENT ---------- */
+async function loadRecipes() {
+  const { data, error } = await sb
+    .from('recipes')
+    .select('*, recipe_ingredients(*), recipe_steps(*)')
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error(error);
+    return;
+  }
+  recipes = (data || []).map(r => {
+    r.recipe_ingredients = (r.recipe_ingredients || []).sort((a,b) => a.sort_order - b.sort_order);
+    r.recipe_steps = (r.recipe_steps || []).sort((a,b) => a.step_number - b.step_number);
+    return r;
+  });
+  renderCurrentView();
+}
+
+function findRecipe(id) { return recipes.find(r => r.id === id); }
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : String(str);
+  return d.innerHTML;
+}
+
+function fmtQty(ing) {
+  if (ing.quantity == null) return '';
+  const q = Number(ing.quantity);
+  const qStr = Number.isInteger(q) ? q : q.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+  return `${qStr}${ing.unit ? ' ' + ing.unit : ''}`;
+}
+
+/* ---------- VIEW ROUTING ---------- */
+function showView(name) {
+  currentView = name;
+  document.getElementById('browse-view').classList.toggle('hidden', name !== 'browse');
+  document.getElementById('detail-view').classList.toggle('hidden', name !== 'detail');
+  document.getElementById('form-view').classList.toggle('hidden', name !== 'form');
+  window.scrollTo(0, 0);
+  renderCurrentView();
+}
+
+function renderCurrentView() {
+  if (currentView === 'browse') renderBrowse();
+  else if (currentView === 'detail') renderDetail();
+  else if (currentView === 'form') renderForm();
+}
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+  searchTerm = e.target.value.toLowerCase();
+  renderBrowse();
+});
+
+document.getElementById('new-recipe-btn').addEventListener('click', () => {
+  openForm(null);
+});
+
+/* ---------- BROWSE RENDER ---------- */
+function renderBrowse() {
+  const grid = document.getElementById('recipe-grid');
+  let list = recipes;
+  if (searchTerm) {
+    list = recipes.filter(r => {
+      const hay = [
+        r.title,
+        ...(r.tags || []),
+        ...(r.recipe_ingredients || []).map(i => i.name)
+      ].join(' ').toLowerCase();
+      return hay.includes(searchTerm);
+    });
+  }
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state">${recipes.length ? 'No recipes match your filter query.' : 'No recipes logged yet — add one with "+ New Recipe".'}</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(r => `
+    <article class="recipe-card" data-id="${r.id}">
+      <div>
+        <span class="eyebrow-label">Recipe Entry</span>
+        <h3>${escapeHtml(r.title)}</h3>
+        <div class="rc-meta">
+          ${r.servings ? `<span>${r.servings} Servings</span>` : ''}
+          ${(r.prep_minutes || r.cook_minutes) ? `<span>${(r.prep_minutes||0) + (r.cook_minutes||0)} MIN TOTAL</span>` : ''}
+          ${r.source_note ? `<span>FROM ${escapeHtml(r.source_note)}</span>` : ''}
+        </div>
+      </div>
+      ${(r.tags && r.tags.length) ? `<div class="rc-tags">${r.tags.map(t => `<span class="rc-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+    </article>
+  `).join('');
+
+  grid.querySelectorAll('.recipe-card').forEach(card => {
+    card.addEventListener('click', () => {
+      currentRecipeId = card.dataset.id;
+      showView('detail');
+    });
+  });
+}
+
+/* ---------- DETAIL RENDER ---------- */
+function renderDetail() {
+  const r = findRecipe(currentRecipeId);
+  const el = document.getElementById('detail-view');
+  if (!r) {
+    el.innerHTML = '<div class="empty-state">Recipe not found.</div>';
+    return;
+  }
+
+  el.innerHTML = `
+    <button class="btn outline small" id="back-btn" style="margin-bottom: 1.5rem;">← Back to All</button>
+    <div class="detail-panel">
+      <span class="eyebrow-label">Recipe Overview</span>
+      <h1 class="detail-title">${escapeHtml(r.title)}</h1>
+      
+      <div class="detail-meta">
+        ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
+        ${r.prep_minutes ? `<span>// PREP ${r.prep_minutes} MIN</span>` : ''}
+        ${r.cook_minutes ? `<span>// COOK ${r.cook_minutes} MIN</span>` : ''}
+        ${r.source_note ? `<span>// FROM ${escapeHtml(r.source_note)}</span>` : ''}
+        ${r.added_by_name ? `<span>// CONTRIBUTED BY ${escapeHtml(r.added_by_name)}</span>` : ''}
+      </div>
+
+      ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
+
+      <div class="block-subhead">Ingredients List</div>
+      <div style="margin-bottom: 2rem;">
+        ${r.recipe_ingredients.map(i => `
+          <div class="ingredient-row">
+            <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
+            <span class="ingredient-qty">${escapeHtml(fmtQty(i))}</span>
+          </div>
+        `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
+      </div>
+
+      <div class="block-subhead">Preparation Steps</div>
+      <div>
+        ${r.recipe_steps.map(s => `
+          <div class="step-row">
+            <span class="step-num">${s.step_number}</span>
+            <span>${escapeHtml(s.instruction)}${s.timer_seconds ? ` <strong style="color:var(--glacier); font-size:0.85rem; font-family:var(--font-mono);">(${Math.round(s.timer_seconds/60)} min)</strong>` : ''}</span>
+          </div>
+        `).join('') || '<div class="empty-state">No steps listed.</div>'}
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn primary" id="cook-btn">
+          Enter Kitchen Mode
+          <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+        <button class="btn outline" id="edit-btn">Edit Recipe</button>
+        <button class="btn danger" id="delete-btn">Delete</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('back-btn').addEventListener('click', () => showView('browse'));
+  document.getElementById('cook-btn').addEventListener('click', () => enterKitchen(r));
+  document.getElementById('edit-btn').addEventListener('click', () => openForm(r));
+  document.getElementById('delete-btn').addEventListener('click', () => deleteRecipe(r.id));
+}
+
+async function deleteRecipe(id) {
+  if (!confirm('Delete this recipe? This action cannot be reversed.')) return;
+  const { error } = await sb.from('recipes').delete().eq('id', id);
+  if (error) { alert(error.message); return; }
+  await loadRecipes();
+  showView('browse');
+}
+
+/* ---------- FORM VIEW ---------- */
+function openForm(recipe) {
+  if (recipe) {
+    formState = {
+      id: recipe.id,
+      title: recipe.title || '',
+      description: recipe.description || '',
+      servings: recipe.servings || '',
+      prep_minutes: recipe.prep_minutes || '',
+      cook_minutes: recipe.cook_minutes || '',
+      source_note: recipe.source_note || '',
+      tagsText: (recipe.tags || []).join(', '),
+      ingredients: recipe.recipe_ingredients.map(i => ({
+        name: i.name,
+        quantity: i.quantity ?? '',
+        unit: i.unit || '',
+        note: i.note || '',
+        include_in_price_calc: i.include_in_price_calc !== false
+      })),
+      steps: recipe.recipe_steps.map(s => ({
+        instruction: s.instruction,
+        timer_minutes: s.timer_seconds ? Math.round(s.timer_seconds/60) : ''
+      }))
+    };
+  } else {
+    formState = {
+      id: null,
+      title: '',
+      description: '',
+      servings: '',
+      prep_minutes: '',
+      cook_minutes: '',
+      source_note: '',
+      tagsText: '',
+      ingredients: [{ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true }],
+      steps: [{ instruction: '', timer_minutes: '' }]
+    };
+  }
+  showView('form');
+}
+
+function renderForm() {
+  const el = document.getElementById('form-view');
+  const f = formState;
+  if (!f) return;
+
+  el.innerHTML = `
+    <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.5rem;">← Cancel</button>
+    <div class="form-panel">
+      <span class="eyebrow-label">Editor</span>
+      <h2 class="section-title" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
+
+      <div class="form-grid">
+        <div class="field full">
+          <label>Recipe Title</label>
+          <input type="text" id="f-title" value="${escapeHtml(f.title)}" placeholder="e.g. Grandma's Svíčková" />
+        </div>
+        <div class="field full">
+          <label>Description & Notes</label>
+          <textarea id="f-description" placeholder="A short background or serving tip">${escapeHtml(f.description)}</textarea>
+        </div>
+        <div class="field">
+          <label>Servings</label>
+          <input type="number" id="f-servings" min="1" value="${escapeHtml(f.servings)}" />
+        </div>
+        <div class="field">
+          <label>Prep Minutes</label>
+          <input type="number" id="f-prep" min="0" value="${escapeHtml(f.prep_minutes)}" />
+        </div>
+        <div class="field">
+          <label>Cook Minutes</label>
+          <input type="number" id="f-cook" min="0" value="${escapeHtml(f.cook_minutes)}" />
+        </div>
+        <div class="field">
+          <label>Source / Inspiration</label>
+          <input type="text" id="f-source" value="${escapeHtml(f.source_note)}" placeholder="e.g. Grandma" />
+        </div>
+        <div class="field full">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="f-tags" value="${escapeHtml(f.tagsText)}" placeholder="dinner, beef, sunday" />
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="block-subhead">Ingredients</div>
+        <div id="ingredient-rows"></div>
+        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
+      </div>
+
+      <div class="form-section">
+        <div class="block-subhead">Steps</div>
+        <div id="step-rows"></div>
+        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn primary" id="save-btn">Save Entry</button>
+        <button class="btn outline" id="form-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  renderIngredientRows();
+  renderStepRows();
+
+  document.getElementById('form-back-btn').addEventListener('click', cancelForm);
+  document.getElementById('form-cancel-btn').addEventListener('click', cancelForm);
+  document.getElementById('add-ingredient-btn').addEventListener('click', () => {
+    formState.ingredients.push({ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true });
+    renderIngredientRows();
+  });
+  document.getElementById('add-step-btn').addEventListener('click', () => {
+    formState.steps.push({ instruction: '', timer_minutes: '' });
+    renderStepRows();
+  });
+  document.getElementById('save-btn').addEventListener('click', saveRecipe);
+}
+
+function cancelForm() {
+  formState = null;
+  showView(currentRecipeId ? 'detail' : 'browse');
+}
+
+function renderIngredientRows() {
+  const container = document.getElementById('ingredient-rows');
+  container.innerHTML = formState.ingredients.map((ing, idx) => `
+    <div class="dyn-row" data-idx="${idx}">
+      <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
+      <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+      <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
+      <input type="text" class="note-input ing-note" placeholder="Note (optional)" value="${escapeHtml(ing.note)}" />
+      <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
+      <button class="btn danger small remove-row-btn" type="button">✕</button>
+    </div>
+  `).join('') + `
+    <datalist id="unit-suggestions">
+      <option value="g"></option><option value="kg"></option><option value="ml"></option><option value="l"></option>
+      <option value="ks"></option><option value="lžíce"></option><option value="lžička"></option><option value="špetka"></option>
+    </datalist>
+  `;
+
+  container.querySelectorAll('.dyn-row').forEach(row => {
+    const idx = Number(row.dataset.idx);
+    row.querySelector('.ing-name').addEventListener('input', e => formState.ingredients[idx].name = e.target.value);
+    row.querySelector('.ing-qty').addEventListener('input', e => formState.ingredients[idx].quantity = e.target.value);
+    row.querySelector('.ing-unit').addEventListener('input', e => formState.ingredients[idx].unit = e.target.value);
+    row.querySelector('.note-input').addEventListener('input', e => formState.ingredients[idx].note = e.target.value);
+    row.querySelector('.ing-price').addEventListener('change', e => formState.ingredients[idx].include_in_price_calc = e.target.checked);
+    row.querySelector('.remove-row-btn').addEventListener('click', () => {
+      formState.ingredients.splice(idx, 1);
+      renderIngredientRows();
+    });
+  });
+}
+
+function renderStepRows() {
+  const container = document.getElementById('step-rows');
+  container.innerHTML = formState.steps.map((s, idx) => `
+    <div class="dyn-row" data-idx="${idx}">
+      <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:24px;">${idx+1}.</span>
+      <input type="text" class="step-input step-instruction" placeholder="Instructions" value="${escapeHtml(s.instruction)}" />
+      <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+      <button class="btn danger small remove-row-btn" type="button">✕</button>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.dyn-row').forEach(row => {
+    const idx = Number(row.dataset.idx);
+    row.querySelector('.step-instruction').addEventListener('input', e => formState.steps[idx].instruction = e.target.value);
+    row.querySelector('.step-timer').addEventListener('input', e => formState.steps[idx].timer_minutes = e.target.value);
+    row.querySelector('.remove-row-btn').addEventListener('click', () => {
+      formState.steps.splice(idx, 1);
+      renderStepRows();
+    });
+  });
+}
+
+async function saveRecipe() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { alert('Please enter a recipe title.'); return; }
+
+  const payload = {
+    title,
+    description: document.getElementById('f-description').value.trim() || null,
+    servings: document.getElementById('f-servings').value ? parseInt(document.getElementById('f-servings').value, 10) : null,
+    prep_minutes: document.getElementById('f-prep').value ? parseInt(document.getElementById('f-prep').value, 10) : null,
+    cook_minutes: document.getElementById('f-cook').value ? parseInt(document.getElementById('f-cook').value, 10) : null,
+    source_note: document.getElementById('f-source').value.trim() || null,
+    tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    updated_at: new Date().toISOString()
+  };
+
+  let recipeId = formState.id;
+  if (recipeId) {
+    const { error } = await sb.from('recipes').update(payload).eq('id', recipeId);
+    if (error) { alert(error.message); return; }
+  } else {
+    payload.added_by_name = yourName();
+    const { data, error } = await sb.from('recipes').insert(payload).select().single();
+    if (error) { alert(error.message); return; }
+    recipeId = data.id;
+  }
+
+  await sb.from('recipe_ingredients').delete().eq('recipe_id', recipeId);
+  const validIngredients = formState.ingredients.filter(i => i.name.trim());
+  if (validIngredients.length) {
+    const rows = validIngredients.map((i, idx) => ({
+      recipe_id: recipeId,
+      name: i.name.trim(),
+      quantity: i.quantity !== '' ? parseFloat(i.quantity) : null,
+      unit: i.unit.trim() || null,
+      note: i.note.trim() || null,
+      sort_order: idx,
+      include_in_price_calc: !!i.include_in_price_calc
+    }));
+    const { error } = await sb.from('recipe_ingredients').insert(rows);
+    if (error) alert('Ingredients error: ' + error.message);
+  }
+
+  await sb.from('recipe_steps').delete().eq('recipe_id', recipeId);
+  const validSteps = formState.steps.filter(s => s.instruction.trim());
+  if (validSteps.length) {
+    const rows = validSteps.map((s, idx) => ({
+      recipe_id: recipeId,
+      step_number: idx + 1,
+      instruction: s.instruction.trim(),
+      timer_seconds: s.timer_minutes !== '' ? parseInt(s.timer_minutes, 10) * 60 : null
+    }));
+    const { error } = await sb.from('recipe_steps').insert(rows);
+    if (error) alert('Steps error: ' + error.message);
+  }
+
+  formState = null;
+  currentRecipeId = recipeId;
+  await loadRecipes();
+  showView('detail');
+}
+
+/* ---------- KITCHEN FULLSCREEN MODE ---------- */
+async function enterKitchen(recipe) {
+  kitchen = {
+    recipe,
+    stepIndex: 0,
+    checked: new Set(),
+    wakeLock: null,
+    timerHandle: null,
+    timerRemaining: 0,
+    activeTab: recipe.recipe_ingredients.length ? 'ingredients' : 'steps'
+  };
+  document.getElementById('kitchen-view').classList.remove('hidden');
+  await requestWakeLock();
+  renderKitchen();
+}
+
+function exitKitchen() {
+  if (kitchen?.timerHandle) clearInterval(kitchen.timerHandle);
+  releaseWakeLock();
+  kitchen = null;
+  document.getElementById('kitchen-view').classList.add('hidden');
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      kitchen.wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch(err) {
+    console.warn('WakeLock unavailable:', err);
+  }
+}
+
+function releaseWakeLock() {
+  if (kitchen?.wakeLock) {
+    kitchen.wakeLock.release().catch(() => {});
+  }
+}
+
+document.addEventListener('visibilitychange', async () => {
+  if (kitchen && document.visibilityState === 'visible' && !kitchen.wakeLock) {
+    await requestWakeLock();
+  }
+});
+
+function renderKitchen() {
+  const k = kitchen;
+  if (!k) return;
+  const r = k.recipe;
+  const el = document.getElementById('kitchen-view');
+  const hasIngredients = r.recipe_ingredients.length > 0;
+  const hasSteps = r.recipe_steps.length > 0;
+
+  el.innerHTML = `
+    <div class="kitchen-topbar">
+      <div>
+        <span class="eyebrow-label">Live Kitchen Session</span>
+        <div class="kitchen-title">${escapeHtml(r.title)}</div>
+      </div>
+      <button class="btn outline small" id="exit-kitchen-btn">Exit HUD</button>
+    </div>
+    <div class="kitchen-tabs">
+      ${hasIngredients ? `<div class="kitchen-tab ${k.activeTab==='ingredients'?'active':''}" data-tab="ingredients">Ingredients (${r.recipe_ingredients.length})</div>` : ''}
+      ${hasSteps ? `<div class="kitchen-tab ${k.activeTab==='steps'?'active':''}" data-tab="steps">Steps (${r.recipe_steps.length})</div>` : ''}
+    </div>
+    <div class="kitchen-body">
+      <div class="kitchen-panel ${k.activeTab==='ingredients'?'':'hidden'}" id="kitchen-ingredients-panel">
+        ${r.recipe_ingredients.map((ing, idx) => `
+          <div class="kitchen-ing-row ${k.checked.has(idx)?'checked':''}" data-idx="${idx}">
+            <span class="kitchen-ing-checkbox">${k.checked.has(idx) ? '✓' : ''}</span>
+            <span style="flex:1;">${escapeHtml(ing.name)}${ing.note ? ` <span style="color:var(--text-faint); font-size:0.9rem;">(${escapeHtml(ing.note)})</span>` : ''}</span>
+            <span class="kitchen-ing-qty">${escapeHtml(fmtQty(ing))}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="kitchen-panel ${k.activeTab==='steps'?'':'hidden'}" id="kitchen-steps-panel">
+        ${hasSteps ? renderKitchenStepPanel() : '<div class="empty-state">No steps listed.</div>'}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('exit-kitchen-btn').addEventListener('click', exitKitchen);
+  el.querySelectorAll('.kitchen-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      k.activeTab = tab.dataset.tab;
+      renderKitchen();
+    });
+  });
+  el.querySelectorAll('.kitchen-ing-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const idx = Number(row.dataset.idx);
+      if (k.checked.has(idx)) k.checked.delete(idx);
+      else k.checked.add(idx);
+      renderKitchen();
+    });
+  });
+  wireKitchenStepControls();
+}
+
+function renderKitchenStepPanel() {
+  const k = kitchen;
+  const steps = k.recipe.recipe_steps;
+  const step = steps[k.stepIndex];
+  return `
+    <div class="kitchen-step-progress">Step ${k.stepIndex + 1} of ${steps.length}</div>
+    <div class="kitchen-step-text">${escapeHtml(step.instruction)}</div>
+    ${step.timer_seconds ? `
+      <div class="kitchen-timer-display hidden" id="timer-display">--:--</div>
+      <button class="btn primary kitchen-timer-btn" id="timer-btn">Start ${Math.round(step.timer_seconds/60)} Min Timer</button>
+    ` : ''}
+    <div class="kitchen-nav">
+      <button class="btn outline" id="prev-step-btn" ${k.stepIndex === 0 ? 'disabled' : ''}>← Previous Step</button>
+      <button class="btn primary" id="next-step-btn" ${k.stepIndex === steps.length - 1 ? 'disabled' : ''}>
+        Next Step →
+      </button>
+    </div>
+  `;
+}
+
+function wireKitchenStepControls() {
+  const k = kitchen;
+  const prevBtn = document.getElementById('prev-step-btn');
+  const nextBtn = document.getElementById('next-step-btn');
+  if (prevBtn) prevBtn.addEventListener('click', () => { k.stepIndex--; renderKitchen(); });
+  if (nextBtn) nextBtn.addEventListener('click', () => { k.stepIndex++; renderKitchen(); });
+
+  const timerBtn = document.getElementById('timer-btn');
+  if (timerBtn) {
+    timerBtn.addEventListener('click', () => {
+      const step = k.recipe.recipe_steps[k.stepIndex];
+      startKitchenTimer(step.timer_seconds);
+    });
+  }
+}
+
+function startKitchenTimer(seconds) {
+  const k = kitchen;
+  if (k.timerHandle) clearInterval(k.timerHandle);
+  k.timerRemaining = seconds;
+  const display = document.getElementById('timer-display');
+  const btn = document.getElementById('timer-btn');
+  display.classList.remove('hidden');
+  btn.classList.add('hidden');
+  updateTimerDisplay();
+  k.timerHandle = setInterval(() => {
+    k.timerRemaining--;
+    updateTimerDisplay();
+    if (k.timerRemaining <= 0) {
+      clearInterval(k.timerHandle);
+      k.timerHandle = null;
+      if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+      display.textContent = "DONE!";
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const display = document.getElementById('timer-display');
+  if (!display) return;
+  const m = Math.floor(kitchen.timerRemaining / 60);
+  const s = kitchen.timerRemaining % 60;
+  display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+/* ---------- REALTIME REFRESH ---------- */
+function subscribeRealtime() {
+  sb.channel('recipes-sync')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'recipes' }, () => loadRecipes())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_ingredients' }, () => loadRecipes())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_steps' }, () => loadRecipes())
+    .subscribe();
+}
+
+/* ---------- BOOTSTRAP ---------- */
+checkSession();
+</script>
+</body>
+</html>
