@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Recipes</title>
-
+    <title>Recipes · Family Recipe Book</title>
 
     <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
@@ -27,13 +26,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         @font-face {
             font-family: 'MyDisplay';
-            src: url('../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+            src: url('../../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
             font-weight: 400;
             font-style: normal;
             font-display: swap;
@@ -49,8 +48,8 @@
             --alpine-red-hover: #E03126;
             --alpine-white: #FFFFFF;
             --ice-white: #1d2b3a;
-            --text-dim: rgba(29, 43, 58, 0.65);
-            --text-faint: rgba(29, 43, 58, 0.4);
+            --text-dim: rgba(29, 43, 58, 0.7);
+            --text-faint: rgba(29, 43, 58, 0.45);
             --border: rgba(31, 127, 209, 0.22);
             --border-subtle: rgba(29, 43, 58, 0.08);
             --border-strong: rgba(31, 127, 209, 0.5);
@@ -70,15 +69,8 @@
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
 
         body {
             background: var(--abyss-teal);
@@ -89,6 +81,8 @@
             -webkit-font-smoothing: antialiased;
             position: relative;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ============ GLOBAL BACKGROUND POLYGON LAYER ============ */
@@ -109,9 +103,11 @@
         .shell {
             max-width: 980px;
             margin: 0 auto;
-            padding: calc(68px + 2.5rem) clamp(1.25rem, 4vw, 2.5rem) 100px;
+            padding: calc(68px + 2.5rem) clamp(1.25rem, 4vw, 2.5rem) 60px;
             position: relative;
             z-index: 2;
+            width: 100%;
+            flex: 1;
         }
 
         /* ============ TYPOGRAPHY & LABELS ============ */
@@ -127,28 +123,14 @@
         }
 
         .section-title {
-            font-family: var(--font-titles);
-            font-size: clamp(2.65rem, 4.8vw, 3.85rem);
-            color: var(--heading);
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            color: var(--navy-heading);
             text-transform: uppercase;
             letter-spacing: 0.02em;
             line-height: 1;
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.5rem;
             display: inline-block;
-            position: relative;
-            padding: 2px 4px;
-        }
-
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            inset: -4px -8px;
-            z-index: -1;
-            opacity: 0.55;
-            mix-blend-mode: multiply;
-            background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.08  0 0 0 0 0.14  0 0 0 0 0.23  0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-size: 140px 140px;
         }
 
         /* ============ HEADER & NAVIGATION ============ */
@@ -159,7 +141,7 @@
             right: 0;
             z-index: 100;
             background: #042330;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             height: 68px;
         }
 
@@ -207,7 +189,7 @@
         .brand-text .brand-role {
             display: block;
             font-size: 0.65rem;
-            color: var(--text-dim);
+            color: rgba(255, 255, 255, 0.6);
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
@@ -215,7 +197,7 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
         }
 
         /* ============ BUTTON SYSTEM ============ */
@@ -244,7 +226,7 @@
 
         .btn.primary {
             background: var(--glacier);
-            color: var(--abyss-teal);
+            color: #FFFFFF;
         }
 
         .btn.primary:hover:not(:disabled) {
@@ -271,7 +253,6 @@
             color: var(--glacier);
         }
 
-        /* The top nav stays dark regardless of theme, so its outline buttons need light text */
         .nav-inner .btn.outline {
             color: var(--alpine-white);
             border-color: rgba(255, 255, 255, 0.25);
@@ -358,9 +339,6 @@
             box-shadow: 0 0 0 1px var(--glacier);
         }
 
-        /* Native number-input spinners render as plain unstyled OS controls that
-     clash with the rest of the design - hide them and use our own themed
-     stepper buttons instead (see .qty-stepper). */
         input[type=number] {
             -moz-appearance: textfield;
         }
@@ -419,7 +397,7 @@
         select {
             cursor: pointer;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2300ace1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231f7fd1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 14px;
@@ -463,6 +441,15 @@
         }
 
         /* ============ BROWSE VIEW & CARDS ============ */
+        .section-head-browse {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
         .search-bar {
             margin-bottom: 2rem;
         }
@@ -474,9 +461,7 @@
         }
 
         @media (max-width: 680px) {
-            .recipe-grid {
-                grid-template-columns: 1fr;
-            }
+            .recipe-grid { grid-template-columns: 1fr; }
         }
 
         .recipe-card {
@@ -494,27 +479,41 @@
             transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .recipe-card .rc-image {
-            width: calc(100% + 3rem);
-            margin: -1.5rem -1.5rem 1rem;
-            height: 140px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .detail-image {
-            width: 100%;
-            max-height: 340px;
-            object-fit: cover;
-            border: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
         .recipe-card:hover {
             transform: translateY(-2px);
             border-color: var(--glacier);
-            box-shadow: 0 12px 30px rgba(0, 172, 225, 0.2);
+            box-shadow: 0 12px 30px rgba(31, 127, 209, 0.2);
+        }
+
+        .rc-image-wrap {
+            width: calc(100% + 3rem);
+            margin: -1.5rem -1.5rem 1rem;
+            height: 140px;
+            position: relative;
+            background: var(--deep-fjord);
+            overflow: hidden;
+        }
+
+        .rc-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .rc-badge-pill {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background: rgba(4, 35, 48, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 8px;
         }
 
         .recipe-card h3 {
@@ -522,7 +521,7 @@
             font-weight: 800;
             font-size: 1.15rem;
             color: var(--navy-heading);
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.5rem;
             line-height: 1.25;
         }
 
@@ -532,7 +531,7 @@
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
+            margin-bottom: 0.85rem;
             font-family: var(--font-mono);
         }
 
@@ -547,9 +546,9 @@
             font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            background: rgba(0, 172, 225, 0.12);
+            background: rgba(31, 127, 209, 0.12);
             color: var(--glacier);
-            border: 1px solid rgba(0, 172, 225, 0.25);
+            border: 1px solid rgba(31, 127, 209, 0.25);
             padding: 2px 7px;
         }
 
@@ -571,6 +570,15 @@
             box-shadow: 0 15px 35px rgba(20, 36, 58, 0.1);
         }
 
+        .detail-image {
+            width: calc(100% + 4rem);
+            margin: -2rem -2rem 1.5rem;
+            max-height: 320px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+            display: block;
+        }
+
         .detail-title {
             font-family: var(--font-display);
             font-size: clamp(2rem, 4.5vw, 3rem);
@@ -589,6 +597,7 @@
             flex-wrap: wrap;
             margin-bottom: 1rem;
             font-family: var(--font-mono);
+            font-weight: 600;
         }
 
         .detail-tags {
@@ -603,10 +612,10 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            background: rgba(0, 172, 225, 0.15);
+            background: rgba(31, 127, 209, 0.15);
             color: var(--glacier);
             padding: 3px 9px;
-            border: 1px solid rgba(0, 172, 225, 0.3);
+            border: 1px solid rgba(31, 127, 209, 0.3);
         }
 
         .detail-desc {
@@ -614,7 +623,7 @@
             font-size: 1rem;
             line-height: 1.65;
             padding-left: 1.25rem;
-            border-left: 2px solid rgba(0, 172, 225, 0.4);
+            border-left: 3px solid var(--glacier);
             margin-bottom: 2rem;
         }
 
@@ -639,27 +648,10 @@
             font-size: 0.95rem;
         }
 
-        .ingredient-row:last-child {
-            border-bottom: none;
-        }
-
-        .ingredient-qty {
-            font-family: var(--font-mono);
-            color: var(--glacier);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .ingredient-name {
-            flex: 1;
-            color: var(--ice-white);
-        }
-
-        .ingredient-note {
-            color: var(--text-faint);
-            font-size: 0.85rem;
-            font-style: italic;
-        }
+        .ingredient-row:last-child { border-bottom: none; }
+        .ingredient-qty { font-family: var(--font-mono); color: var(--glacier); font-weight: 700; white-space: nowrap; }
+        .ingredient-name { flex: 1; color: var(--navy-heading); font-weight: 500; }
+        .ingredient-note { color: var(--text-faint); font-size: 0.85rem; font-style: italic; }
 
         .step-row {
             display: flex;
@@ -668,12 +660,10 @@
             border-bottom: 1px dashed var(--border-subtle);
             font-size: 0.95rem;
             line-height: 1.55;
+            color: var(--ice-white);
         }
 
-        .step-row:last-child {
-            border-bottom: none;
-        }
-
+        .step-row:last-child { border-bottom: none; }
         .step-num {
             font-family: var(--font-stencil);
             color: var(--glacier);
@@ -681,6 +671,32 @@
             font-size: 1.05rem;
             flex-shrink: 0;
             width: 24px;
+        }
+
+        .tips-panel {
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: rgba(31, 127, 209, 0.06);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--glacier);
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--glacier);
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+        }
+
+        .tips-panel p {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            line-height: 1.55;
         }
 
         .detail-actions {
@@ -706,9 +722,7 @@
             gap: 1rem;
         }
 
-        .form-grid .field.full {
-            grid-column: 1 / -1;
-        }
+        .form-grid .field.full { grid-column: 1 / -1; }
 
         .dyn-row {
             display: flex;
@@ -721,31 +735,11 @@
             border: 1px solid var(--border-subtle);
         }
 
-        .dyn-row input[type=text] {
-            flex: 2;
-            min-width: 120px;
-        }
-
-        .dyn-row input[type=number] {
-            flex: 1;
-            min-width: 70px;
-        }
-
-        .dyn-row .unit-input {
-            flex: 1;
-            min-width: 75px;
-        }
-
-        .dyn-row .note-input {
-            flex: 2;
-            min-width: 120px;
-        }
-
-        .dyn-row .step-input {
-            flex: 1;
-            min-width: 220px;
-        }
-
+        .dyn-row input[type=text] { flex: 2; min-width: 120px; }
+        .dyn-row input[type=number] { flex: 1; min-width: 70px; }
+        .dyn-row .unit-input { flex: 1; min-width: 75px; }
+        .dyn-row .note-input { flex: 2; min-width: 120px; }
+        .dyn-row .step-input { flex: 1; min-width: 220px; }
         .dyn-row .checkbox-wrap {
             display: flex;
             align-items: center;
@@ -756,194 +750,255 @@
             font-weight: 700;
         }
 
-        .form-section {
-            margin: 2rem 0 1rem;
-        }
+        .form-section { margin: 2rem 0 1rem; }
+        .form-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
 
-        .form-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
-
-        /* ============ KITCHEN MODE ============ */
+        /* ============ KITCHEN MODE HUD ============ */
         #kitchen-view {
             position: fixed;
             inset: 0;
-            background: #021822;
+            background: #eef3f8;
+            color: #14243a;
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            padding: 1.5rem clamp(1rem, 4vw, 3rem);
+            padding: 1.25rem clamp(1rem, 3.5vw, 2.5rem);
+            overflow: hidden;
         }
 
-        #kitchen-view.hidden {
-            display: none;
-        }
+        #kitchen-view.hidden { display: none; }
 
         .kitchen-topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 1rem;
+            padding-bottom: 0.85rem;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
         }
 
         .kitchen-title {
             font-family: var(--font-display);
-            font-size: 1.6rem;
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
             text-transform: uppercase;
-            color: var(--alpine-white);
-            letter-spacing: 0.04em;
+            color: var(--navy-heading);
+            letter-spacing: 0.02em;
+            line-height: 1;
         }
 
-        .kitchen-body {
+        .kitchen-layout-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
             flex: 1;
+            min-height: 0;
+        }
+
+        .kitchen-sidebar {
+            background: #ffffff;
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            padding: 1.25rem;
+            min-height: 0;
+            box-shadow: 0 10px 25px rgba(20, 36, 58, 0.05);
         }
 
-        .kitchen-tabs {
+        .kitchen-sidebar-header {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 0.75rem;
+            flex-shrink: 0;
         }
 
-        .kitchen-tab {
+        .kitchen-ing-list {
+            overflow-y: auto;
             flex: 1;
-            text-align: center;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            background: var(--deep-fjord);
-            color: var(--alpine-white);
-            cursor: pointer;
-            font-weight: 800;
-            font-size: 0.78rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .kitchen-tab.active {
-            background: var(--glacier);
-            border-color: var(--glacier);
-            color: var(--abyss-teal);
-        }
-
-        .kitchen-panel {
-            flex: 1;
-        }
-
-        .kitchen-panel.hidden {
-            display: none;
+            padding-right: 0.25rem;
         }
 
         .kitchen-ing-row {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem 0.5rem;
-            border-bottom: 1px solid var(--border-subtle);
-            font-size: 1.15rem;
+            gap: 0.75rem;
+            padding: 0.75rem 0.4rem;
+            border-bottom: 1px dashed var(--border-subtle);
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .kitchen-ing-row:hover {
+            background: rgba(31, 127, 209, 0.04);
         }
 
         .kitchen-ing-row.checked {
-            opacity: 0.35;
+            opacity: 0.4;
             text-decoration: line-through;
         }
 
         .kitchen-ing-checkbox {
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             border: 2px solid var(--glacier);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            color: var(--abyss-teal);
+            font-size: 0.8rem;
+            color: transparent;
+            background: #ffffff;
         }
 
         .kitchen-ing-row.checked .kitchen-ing-checkbox {
             background: var(--glacier);
-            color: var(--abyss-teal);
+            color: #ffffff;
         }
 
         .kitchen-ing-qty {
             font-family: var(--font-mono);
             color: var(--glacier);
             font-weight: 700;
+            font-size: 0.85rem;
         }
 
-        .kitchen-step-progress {
-            text-align: center;
-            color: var(--glacier);
-            font-weight: 700;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .kitchen-step-text {
-            font-size: clamp(1.4rem, 4vw, 2.2rem);
-            line-height: 1.4;
-            text-align: center;
-            padding: 2rem 1rem;
-            flex: 1;
+        .kitchen-main {
+            background: #ffffff;
+            border: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--alpine-white);
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            min-height: 0;
+            box-shadow: 0 10px 25px rgba(20, 36, 58, 0.05);
+            position: relative;
         }
 
-        .kitchen-timer-display {
-            text-align: center;
-            font-family: var(--font-mono);
-            font-size: 3.5rem;
+        .kitchen-step-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .kitchen-step-counter {
+            font-family: var(--font-stencil);
             color: var(--glacier);
-            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
             letter-spacing: 0.05em;
         }
 
-        .kitchen-timer-btn {
-            display: block;
-            margin: 0 auto 1.5rem;
+        .kitchen-step-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+        }
+
+        .kitchen-step-text {
+            font-size: clamp(1.4rem, 3.2vw, 2.3rem);
+            line-height: 1.35;
+            text-align: center;
+            color: var(--navy-heading);
+            font-weight: 600;
+            max-width: 780px;
+        }
+
+        .kitchen-timer-block {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .kitchen-timer-display {
+            font-family: var(--font-mono);
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: var(--glacier);
+            letter-spacing: 0.05em;
+            line-height: 1;
         }
 
         .kitchen-nav {
             display: flex;
-            gap: 0.75rem;
-            padding-top: 1rem;
+            gap: 1rem;
+            padding-top: 1.25rem;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .kitchen-nav .btn {
             flex: 1;
-            padding: 1.1rem;
+            padding: 1rem;
             font-size: 0.88rem;
         }
 
-        .hidden {
-            display: none !important;
+        /* ============ FOOTER ============ */
+        footer#siteFooter {
+            position: relative;
+            background: #042330;
+            color: rgba(255, 255, 255, 0.75);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            margin-top: auto;
         }
 
-        /* ============ Speckles ============ */
-        .speckled {
-            filter: url(#distress-speckles);
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem clamp(1.25rem, 4vw, 2.5rem) 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: rgba(226, 232, 240, 0.65);
+        }
+
+        .footer-bottom a {
+            color: var(--glacier);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--glacier-hover);
+        }
+
+        .hidden { display: none !important; }
+        .speckled { filter: url(#distress-speckles); }
+
+        @media (max-width: 860px) {
+            .kitchen-layout-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 240px 1fr;
+            }
         }
 
         @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .brand-text .brand-role {
-                display: none;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .brand-text .brand-role { display: none; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; }
+            .footer-sep { display: none; }
         }
     </style>
 </head>
@@ -969,7 +1024,7 @@
     <div id="login-screen">
         <span class="eyebrow-label">Authentication</span>
         <h1>Recipes</h1>
-        <p>Sign in to access your recipes.</p>
+        <p>Sign in to access your culinary ledger.</p>
         <div class="field">
             <label for="email">Email Address</label>
             <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
@@ -980,28 +1035,31 @@
         </div>
         <button class="btn primary full" id="login-btn">
             Sign In
-            <svg class="icon-arrow" viewBox="0 0 24 24">
-                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                      stroke-linejoin="round" fill="none" />
-            </svg>
+            <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
         </button>
         <div id="error-msg"></div>
     </div>
 
     <!-- MAIN APP WRAPPER -->
-    <div class="hidden" id="app-screen">
+    <div class="hidden" id="app-screen" style="display:flex; flex-direction:column; min-height:100vh;">
         <header class="top-nav">
             <div class="nav-inner">
                 <div class="brand-group" onclick="showView('browse')">
-                    <div class="brand-mark">R</div>
+                    <div class="brand-mark" title="Recipes Archive">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 13.8V4a2 2 0 1 1 4 0v9.8M3 8h7M15 4v16M18 4a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3v5"/>
+                        </svg>
+                    </div>
                     <div class="brand-text">
                         <span class="brand-name">Recipes</span>
                         <span class="brand-role">Family Recipe Book</span>
                     </div>
                 </div>
                 <div class="header-actions">
-                    <!--LLM: add a better icon-->
-                    <a href="../" class="btn outline small" id="home-link">← Home</a>
+                    <a href="../" class="btn outline small" id="home-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        Portfolio
+                    </a>
                     <button class="btn primary small" id="new-recipe-btn">+ New Recipe</button>
                     <button class="btn outline small" id="signout">Sign Out</button>
                 </div>
@@ -1011,10 +1069,17 @@
         <main class="shell">
             <!-- BROWSE VIEW -->
             <div id="browse-view">
-                <div class="section-head">
-                    <span class="eyebrow-label">Archive</span>
-                    <h2 class="section-title speckled">ALL RECIPES</h2>
+                <div class="section-head-browse">
+                    <div>
+                        <span class="eyebrow-label">Culinary Archive</span>
+                        <h2 class="section-title speckled">ALL RECIPES</h2>
+                    </div>
+                    <button class="btn primary" id="browse-new-recipe-btn">
+                        + Add New Recipe
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+                    </button>
                 </div>
+
                 <div class="search-bar">
                     <input type="text" id="search-input" placeholder="Search by title, tag, or ingredient…" />
                 </div>
@@ -1027,10 +1092,40 @@
             <!-- FORM VIEW -->
             <div id="form-view" class="hidden"></div>
         </main>
+
+        <!-- FOOTER -->
+        <footer id="siteFooter">
+            <div class="footer-inner">
+                <div class="footer-bottom">
+                    <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">v<span id="footer-version">0.2.0</span></span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">no personal data collected :&#41;</span>
+                    <span class="footer-sep">·</span>
+                    <span>Brno, Czech Republic</span>
+                    <span class="footer-sep">·</span>
+                    <a class="footer-item footer-link" href="mailto:krivkaad@gmail.com">Contact</a>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <!-- KITCHEN MODE OVERLAY -->
+    <!-- KITCHEN FULLSCREEN HUD -->
     <div id="kitchen-view" class="hidden"></div>
+
+    <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+    <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+        <filter id="distress-speckles">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+            <feColorMatrix in="noise" type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 15 -11" result="speckles" />
+            <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+        </filter>
+    </svg>
 
     <script>
         const SUPABASE_URL = "https://eyvgammlolmqsylagygk.supabase.co";
@@ -1045,6 +1140,9 @@
         let currentRecipeId = null;
         let formState = null;
         let kitchen = null;
+
+        // Auto-update footer year
+        document.getElementById('year').textContent = new Date().getFullYear();
 
         /* ---------- AUTHENTICATION ---------- */
         async function checkSession() {
@@ -1159,9 +1257,8 @@
             renderBrowse();
         });
 
-        document.getElementById('new-recipe-btn').addEventListener('click', () => {
-            openForm(null);
-        });
+        document.getElementById('new-recipe-btn').addEventListener('click', () => openForm(null));
+        document.getElementById('browse-new-recipe-btn').addEventListener('click', () => openForm(null));
 
         /* ---------- BROWSE RENDER ---------- */
         function renderBrowse() {
@@ -1181,20 +1278,31 @@
                 grid.innerHTML = `<div class="empty-state">${recipes.length ? 'No recipes match your filter query.' : 'No recipes logged yet — add one with "+ New Recipe".'}</div>`;
                 return;
             }
-            grid.innerHTML = list.map(r => `
-    <article class="recipe-card" data-id="${r.id}">
-      <div>
-        <span class="eyebrow-label">Recipe Entry</span>
-        <h3>${escapeHtml(r.title)}</h3>
-        <div class="rc-meta">
-          ${r.servings ? `<span>${r.servings} Servings</span>` : ''}
-          ${(r.prep_minutes || r.cook_minutes) ? `<span>${(r.prep_minutes || 0) + (r.cook_minutes || 0)} MIN TOTAL</span>` : ''}
-          ${r.source_note ? `<span>FROM ${escapeHtml(r.source_note)}</span>` : ''}
-        </div>
-      </div>
-      ${(r.tags && r.tags.length) ? `<div class="rc-tags">${r.tags.map(t => `<span class="rc-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-    </article>
-  `).join('');
+
+            grid.innerHTML = list.map(r => {
+                const totalMinutes = (r.prep_minutes || 0) + (r.cook_minutes || 0);
+                const timeLabel = totalMinutes > 0 ? `${totalMinutes} MIN` : (r.cook_minutes ? `${r.cook_minutes} MIN COOK` : 'READY TO COOK');
+                return `
+                <article class="recipe-card" data-id="${r.id}">
+                    <div>
+                        ${r.image_url ? `
+                            <div class="rc-image-wrap">
+                                <img src="${escapeHtml(r.image_url)}" alt="${escapeHtml(r.title)}" onerror="this.parentElement.style.display='none'" />
+                                <span class="rc-badge-pill">${timeLabel}</span>
+                            </div>
+                        ` : ''}
+                        <span class="eyebrow-label">${timeLabel} · ${r.servings ? r.servings + ' SERVINGS' : 'CHEF SPECIAL'}</span>
+                        <h3>${escapeHtml(r.title)}</h3>
+                        <div class="rc-meta">
+                            ${r.servings ? `<span>// ${r.servings} Servings</span>` : ''}
+                            ${totalMinutes > 0 ? `<span>// ${totalMinutes}m total</span>` : ''}
+                            ${r.source_note ? `<span>// ${escapeHtml(r.source_note)}</span>` : ''}
+                        </div>
+                    </div>
+                    ${(r.tags && r.tags.length) ? `<div class="rc-tags">${r.tags.map(t => `<span class="rc-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                </article>
+                `;
+            }).join('');
 
             grid.querySelectorAll('.recipe-card').forEach(card => {
                 card.addEventListener('click', () => {
@@ -1214,52 +1322,63 @@
             }
 
             el.innerHTML = `
-    <button class="btn outline small" id="back-btn" style="margin-bottom: 1.5rem;">← Back to All</button>
-    <div class="detail-panel">
-      <span class="eyebrow-label">Recipe Overview</span>
-      <h1 class="detail-title">${escapeHtml(r.title)}</h1>
-      
-      <div class="detail-meta">
-        ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
-        ${r.prep_minutes ? `<span>// PREP ${r.prep_minutes} MIN</span>` : ''}
-        ${r.cook_minutes ? `<span>// COOK ${r.cook_minutes} MIN</span>` : ''}
-        ${r.source_note ? `<span>// FROM ${escapeHtml(r.source_note)}</span>` : ''}
-        ${r.added_by_name ? `<span>// CONTRIBUTED BY ${escapeHtml(r.added_by_name)}</span>` : ''}
-      </div>
+                <button class="btn outline small" id="back-btn" style="margin-bottom: 1.5rem;">← Back to All</button>
+                <div class="detail-panel">
+                    ${r.image_url ? `<img src="${escapeHtml(r.image_url)}" class="detail-image" alt="${escapeHtml(r.title)}" onerror="this.style.display='none'" />` : ''}
+                    <span class="eyebrow-label">Recipe Overview</span>
+                    <h1 class="detail-title">${escapeHtml(r.title)}</h1>
+                    
+                    <div class="detail-meta">
+                        ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
+                        ${r.prep_minutes ? `<span>// PREP ${r.prep_minutes} MIN</span>` : ''}
+                        ${r.cook_minutes ? `<span>// COOK ${r.cook_minutes} MIN</span>` : ''}
+                        ${r.source_note ? `<span>// FROM ${escapeHtml(r.source_note)}</span>` : ''}
+                        ${r.added_by_name ? `<span>// BY ${escapeHtml(r.added_by_name)}</span>` : ''}
+                    </div>
 
-      ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
-      ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
+                    ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                    ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
 
-      <div class="block-subhead">Ingredients List</div>
-      <div style="margin-bottom: 2rem;">
-        ${r.recipe_ingredients.map(i => `
-          <div class="ingredient-row">
-            <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
-            <span class="ingredient-qty">${escapeHtml(fmtQty(i))}</span>
-          </div>
-        `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
-      </div>
+                    <div class="block-subhead">Ingredients List</div>
+                    <div style="margin-bottom: 2rem;">
+                        ${r.recipe_ingredients.map(i => `
+                            <div class="ingredient-row">
+                                <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
+                                <span class="ingredient-qty">${escapeHtml(fmtQty(i))}</span>
+                            </div>
+                        `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
+                    </div>
 
-      <div class="block-subhead">Preparation Steps</div>
-      <div>
-        ${r.recipe_steps.map(s => `
-          <div class="step-row">
-            <span class="step-num">${s.step_number}</span>
-            <span>${escapeHtml(s.instruction)}${s.timer_seconds ? ` <strong style="color:var(--glacier); font-size:0.85rem; font-family:var(--font-mono);">(${Math.round(s.timer_seconds / 60)} min)</strong>` : ''}</span>
-          </div>
-        `).join('') || '<div class="empty-state">No steps listed.</div>'}
-      </div>
+                    <div class="block-subhead">Preparation Steps</div>
+                    <div>
+                        ${r.recipe_steps.map(s => `
+                            <div class="step-row">
+                                <span class="step-num">${s.step_number}</span>
+                                <span>${escapeHtml(s.instruction)}${s.timer_seconds ? ` <strong style="color:var(--glacier); font-size:0.85rem; font-family:var(--font-mono);">(${Math.round(s.timer_seconds / 60)} min)</strong>` : ''}</span>
+                            </div>
+                        `).join('') || '<div class="empty-state">No steps listed.</div>'}
+                    </div>
 
-      <div class="detail-actions">
-        <button class="btn primary" id="cook-btn">
-          Enter Kitchen Mode
-          <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-        </button>
-        <button class="btn outline" id="edit-btn">Edit Recipe</button>
-        <button class="btn danger" id="delete-btn">Delete</button>
-      </div>
-    </div>
-  `;
+                    ${r.source_note ? `
+                        <div class="tips-panel">
+                            <div class="tips-header">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                <span>Chef's Tips &amp; Provenance</span>
+                            </div>
+                            <p>${escapeHtml(r.source_note)}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="detail-actions">
+                        <button class="btn primary" id="cook-btn">
+                            Enter Kitchen HUD
+                            <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        </button>
+                        <button class="btn outline" id="edit-btn">Edit Recipe</button>
+                        <button class="btn danger" id="delete-btn">Delete</button>
+                    </div>
+                </div>
+            `;
 
             document.getElementById('back-btn').addEventListener('click', () => showView('browse'));
             document.getElementById('cook-btn').addEventListener('click', () => enterKitchen(r));
@@ -1322,66 +1441,66 @@
             const el = document.getElementById('form-view');
             const f = formState;
             if (!f) return;
+
             el.innerHTML = `
-    <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.5rem;">← Cancel</button>
-    <div class="form-panel">
-      <span class="eyebrow-label">Editor</span>
-      
-      <h2 class="section-title" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
+                <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.5rem;">← Cancel</button>
+                <div class="form-panel">
+                    <span class="eyebrow-label">Editor</span>
+                    <h2 class="section-title" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
 
-      <div class="form-grid">
-        <div class="field full">
-          <label>Recipe Title</label>
-          <input type="text" id="f-title" value="${escapeHtml(f.title)}" placeholder="e.g. Grandma's Svíčková" />
-        </div>
-        <div class="field full">
-          <label>Description & Notes</label>
-          <textarea id="f-description" placeholder="A short background or serving tip">${escapeHtml(f.description)}</textarea>
-        </div>
-        <div class="field full">
-          <label>Image URL (optional)</label>
-          <input type="text" id="f-image-url" value="${escapeHtml(f.imageUrl)}" placeholder="https://…" />
-        </div>
-        <div class="field">
-          <label>Servings</label>
-          <input type="number" id="f-servings" min="1" value="${escapeHtml(f.servings)}" />
-        </div>
-        <div class="field">
-          <label>Prep Minutes</label>
-          <input type="number" id="f-prep" min="0" value="${escapeHtml(f.prep_minutes)}" />
-        </div>
-        <div class="field">
-          <label>Cook Minutes</label>
-          <input type="number" id="f-cook" min="0" value="${escapeHtml(f.cook_minutes)}" />
-        </div>
-        <div class="field">
-          <label>Source / Inspiration</label>
-          <input type="text" id="f-source" value="${escapeHtml(f.source_note)}" placeholder="e.g. Grandma" />
-        </div>
-        <div class="field full">
-          <label>Tags (comma separated)</label>
-          <input type="text" id="f-tags" value="${escapeHtml(f.tagsText)}" placeholder="dinner, beef, sunday" />
-        </div>
-      </div>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label>Recipe Title</label>
+                            <input type="text" id="f-title" value="${escapeHtml(f.title)}" placeholder="e.g. Grandma's Svíčková" />
+                        </div>
+                        <div class="field full">
+                            <label>Description</label>
+                            <textarea id="f-description" placeholder="A short background or serving tip">${escapeHtml(f.description)}</textarea>
+                        </div>
+                        <div class="field full">
+                            <label>Image URL (optional)</label>
+                            <input type="text" id="f-image-url" value="${escapeHtml(f.imageUrl)}" placeholder="https://…" />
+                        </div>
+                        <div class="field">
+                            <label>Servings</label>
+                            <input type="number" id="f-servings" min="1" value="${escapeHtml(f.servings)}" />
+                        </div>
+                        <div class="field">
+                            <label>Prep Minutes</label>
+                            <input type="number" id="f-prep" min="0" value="${escapeHtml(f.prep_minutes)}" />
+                        </div>
+                        <div class="field">
+                            <label>Cook Minutes</label>
+                            <input type="number" id="f-cook" min="0" value="${escapeHtml(f.cook_minutes)}" />
+                        </div>
+                        <div class="field">
+                            <label>Chef's Tips &amp; Tricks / Provenance</label>
+                            <input type="text" id="f-source" value="${escapeHtml(f.source_note)}" placeholder="e.g. Grandma Věra's secret spice trick" />
+                        </div>
+                        <div class="field full">
+                            <label>Tags (comma separated)</label>
+                            <input type="text" id="f-tags" value="${escapeHtml(f.tagsText)}" placeholder="dinner, beef, sunday" />
+                        </div>
+                    </div>
 
-      <div class="form-section">
-        <div class="block-subhead">Ingredients</div>
-        <div id="ingredient-rows"></div>
-        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
-      </div>
+                    <div class="form-section">
+                        <div class="block-subhead">Ingredients</div>
+                        <div id="ingredient-rows"></div>
+                        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
+                    </div>
 
-      <div class="form-section">
-        <div class="block-subhead">Steps</div>
-        <div id="step-rows"></div>
-        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
-      </div>
+                    <div class="form-section">
+                        <div class="block-subhead">Steps</div>
+                        <div id="step-rows"></div>
+                        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
+                    </div>
 
-      <div class="form-actions">
-        <button class="btn primary" id="save-btn">Save Entry</button>
-        <button class="btn outline" id="form-cancel-btn">Cancel</button>
-      </div>
-    </div>
-  `;
+                    <div class="form-actions">
+                        <button class="btn primary" id="save-btn">Save Entry</button>
+                        <button class="btn outline" id="form-cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            `;
 
             renderIngredientRows();
             renderStepRows();
@@ -1407,24 +1526,24 @@
         function renderIngredientRows() {
             const container = document.getElementById('ingredient-rows');
             container.innerHTML = formState.ingredients.map((ing, idx) => `
-    <div class="dyn-row" data-idx="${idx}">
-      <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
-      <div class="qty-stepper">
-        <button type="button" class="qty-btn qty-dec">−</button>
-        <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
-        <button type="button" class="qty-btn qty-inc">+</button>
-      </div>
-      <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
-      <input type="text" class="note-input ing-note" placeholder="Note (optional)" value="${escapeHtml(ing.note)}" />
-      <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
-      <button class="btn danger small remove-row-btn" type="button">✕</button>
-    </div>
-  `).join('') + `
-    <datalist id="unit-suggestions">
-      <option value="g"></option><option value="kg"></option><option value="ml"></option><option value="l"></option>
-      <option value="ks"></option><option value="lžíce"></option><option value="lžička"></option><option value="špetka"></option>
-    </datalist>
-  `;
+                <div class="dyn-row" data-idx="${idx}">
+                    <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
+                    <div class="qty-stepper">
+                        <button type="button" class="qty-btn qty-dec">−</button>
+                        <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+                        <button type="button" class="qty-btn qty-inc">+</button>
+                    </div>
+                    <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
+                    <input type="text" class="note-input ing-note" placeholder="Note (optional)" value="${escapeHtml(ing.note)}" />
+                    <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
+                    <button class="btn danger small remove-row-btn" type="button">✕</button>
+                </div>
+            `).join('') + `
+                <datalist id="unit-suggestions">
+                    <option value="g"></option><option value="kg"></option><option value="ml"></option><option value="l"></option>
+                    <option value="ks"></option><option value="lžíce"></option><option value="lžička"></option><option value="špetka"></option>
+                </datalist>
+            `;
 
             container.querySelectorAll('.dyn-row').forEach(row => {
                 const idx = Number(row.dataset.idx);
@@ -1441,15 +1560,13 @@
             wireQtySteppers(container, 0.5);
         }
 
-        /* Wires the +/- buttons next to a number input to bump its value, replacing
-           the browser's default (unstyled) spinner arrows entirely. */
         function wireQtySteppers(container, step) {
             container.querySelectorAll('.qty-stepper').forEach(stepper => {
                 const input = stepper.querySelector('input[type=number]');
                 const dec = stepper.querySelector('.qty-dec');
                 const inc = stepper.querySelector('.qty-inc');
                 const bump = (delta) => {
-                    const min = input.min !== '' ? parseFloat(input.min) : -Infinity;
+                    const min = input.min !== '' ? parseFloat(input.min) : 0;
                     let next = (parseFloat(input.value) || 0) + delta;
                     if (next < min) next = min;
                     input.value = Number.isInteger(step) ? next : Math.round(next * 100) / 100;
@@ -1463,17 +1580,17 @@
         function renderStepRows() {
             const container = document.getElementById('step-rows');
             container.innerHTML = formState.steps.map((s, idx) => `
-    <div class="dyn-row" data-idx="${idx}">
-      <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:24px;">${idx + 1}.</span>
-      <input type="text" class="step-input step-instruction" placeholder="Instructions" value="${escapeHtml(s.instruction)}" />
-      <div class="qty-stepper" style="max-width:150px;">
-        <button type="button" class="qty-btn qty-dec">−</button>
-        <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
-        <button type="button" class="qty-btn qty-inc">+</button>
-      </div>
-      <button class="btn danger small remove-row-btn" type="button">✕</button>
-    </div>
-  `).join('');
+                <div class="dyn-row" data-idx="${idx}">
+                    <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:24px;">${idx + 1}.</span>
+                    <input type="text" class="step-input step-instruction" placeholder="Instructions" value="${escapeHtml(s.instruction)}" />
+                    <div class="qty-stepper" style="max-width:150px;">
+                        <button type="button" class="qty-btn qty-dec">−</button>
+                        <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+                        <button type="button" class="qty-btn qty-inc">+</button>
+                    </div>
+                    <button class="btn danger small remove-row-btn" type="button">✕</button>
+                </div>
+            `).join('');
 
             container.querySelectorAll('.dyn-row').forEach(row => {
                 const idx = Number(row.dataset.idx);
@@ -1487,14 +1604,16 @@
             wireQtySteppers(container, 1);
         }
 
+        /* Saves recipe with schema resilience: if the database hasn't had image_url added, gracefully omit it rather than crashing */
         async function saveRecipe() {
             const title = document.getElementById('f-title').value.trim();
             if (!title) { alert('Please enter a recipe title.'); return; }
 
+            const imageUrl = document.getElementById('f-image-url').value.trim();
             const payload = {
                 title,
                 description: document.getElementById('f-description').value.trim() || null,
-                image_url: document.getElementById('f-image-url').value.trim() || null,
+                image_url: imageUrl || null,
                 servings: document.getElementById('f-servings').value ? parseInt(document.getElementById('f-servings').value, 10) : null,
                 prep_minutes: document.getElementById('f-prep').value ? parseInt(document.getElementById('f-prep').value, 10) : null,
                 cook_minutes: document.getElementById('f-cook').value ? parseInt(document.getElementById('f-cook').value, 10) : null,
@@ -1504,14 +1623,30 @@
             };
 
             let recipeId = formState.id;
+            let saveError = null;
+
             if (recipeId) {
-                const { error } = await sb.from('recipes').update(payload).eq('id', recipeId);
-                if (error) { alert(error.message); return; }
+                let res = await sb.from('recipes').update(payload).eq('id', recipeId);
+                // Schema fallback retry if image_url column doesn't exist in Supabase
+                if (res.error && res.error.message.includes('image_url')) {
+                    delete payload.image_url;
+                    res = await sb.from('recipes').update(payload).eq('id', recipeId);
+                }
+                saveError = res.error;
             } else {
                 payload.added_by_name = yourName();
-                const { data, error } = await sb.from('recipes').insert(payload).select().single();
-                if (error) { alert(error.message); return; }
-                recipeId = data.id;
+                let res = await sb.from('recipes').insert(payload).select().single();
+                if (res.error && res.error.message.includes('image_url')) {
+                    delete payload.image_url;
+                    res = await sb.from('recipes').insert(payload).select().single();
+                }
+                saveError = res.error;
+                if (res.data) recipeId = res.data.id;
+            }
+
+            if (saveError) {
+                alert('Save error: ' + saveError.message);
+                return;
             }
 
             await sb.from('recipe_ingredients').delete().eq('recipe_id', recipeId);
@@ -1527,7 +1662,7 @@
                     include_in_price_calc: !!i.include_in_price_calc
                 }));
                 const { error } = await sb.from('recipe_ingredients').insert(rows);
-                if (error) alert('Ingredients error: ' + error.message);
+                if (error) console.error('Ingredients save error:', error);
             }
 
             await sb.from('recipe_steps').delete().eq('recipe_id', recipeId);
@@ -1540,7 +1675,7 @@
                     timer_seconds: s.timer_minutes !== '' ? parseInt(s.timer_minutes, 10) * 60 : null
                 }));
                 const { error } = await sb.from('recipe_steps').insert(rows);
-                if (error) alert('Steps error: ' + error.message);
+                if (error) console.error('Steps save error:', error);
             }
 
             formState = null;
@@ -1549,7 +1684,7 @@
             showView('detail');
         }
 
-        /* ---------- KITCHEN FULLSCREEN MODE ---------- */
+        /* ---------- KITCHEN FULLSCREEN HUD ---------- */
         async function enterKitchen(recipe) {
             kitchen = {
                 recipe,
@@ -1558,7 +1693,7 @@
                 wakeLock: null,
                 timerHandle: null,
                 timerRemaining: 0,
-                activeTab: recipe.recipe_ingredients.length ? 'ingredients' : 'steps'
+                timerActive: false
             };
             document.getElementById('kitchen-view').classList.remove('hidden');
             await requestWakeLock();
@@ -1599,44 +1734,80 @@
             if (!k) return;
             const r = k.recipe;
             const el = document.getElementById('kitchen-view');
-            const hasIngredients = r.recipe_ingredients.length > 0;
-            const hasSteps = r.recipe_steps.length > 0;
+            const totalSteps = r.recipe_steps.length;
+            const currentStep = r.recipe_steps[k.stepIndex] || { instruction: 'Enjoy your meal!' };
 
             el.innerHTML = `
-    <div class="kitchen-topbar">
-      <div>
-        <span class="eyebrow-label">Live Kitchen Session</span>
-        <div class="kitchen-title">${escapeHtml(r.title)}</div>
-      </div>
-      <button class="btn outline small" id="exit-kitchen-btn">Exit HUD</button>
-    </div>
-    <div class="kitchen-tabs">
-      ${hasIngredients ? `<div class="kitchen-tab ${k.activeTab === 'ingredients' ? 'active' : ''}" data-tab="ingredients">Ingredients (${r.recipe_ingredients.length})</div>` : ''}
-      ${hasSteps ? `<div class="kitchen-tab ${k.activeTab === 'steps' ? 'active' : ''}" data-tab="steps">Steps (${r.recipe_steps.length})</div>` : ''}
-    </div>
-    <div class="kitchen-body">
-      <div class="kitchen-panel ${k.activeTab === 'ingredients' ? '' : 'hidden'}" id="kitchen-ingredients-panel">
-        ${r.recipe_ingredients.map((ing, idx) => `
-          <div class="kitchen-ing-row ${k.checked.has(idx) ? 'checked' : ''}" data-idx="${idx}">
-            <span class="kitchen-ing-checkbox">${k.checked.has(idx) ? '✓' : ''}</span>
-            <span style="flex:1;">${escapeHtml(ing.name)}${ing.note ? ` <span style="color:var(--text-faint); font-size:0.9rem;">(${escapeHtml(ing.note)})</span>` : ''}</span>
-            <span class="kitchen-ing-qty">${escapeHtml(fmtQty(ing))}</span>
-          </div>
-        `).join('')}
-      </div>
-      <div class="kitchen-panel ${k.activeTab === 'steps' ? '' : 'hidden'}" id="kitchen-steps-panel">
-        ${hasSteps ? renderKitchenStepPanel() : '<div class="empty-state">No steps listed.</div>'}
-      </div>
-    </div>
-  `;
+                <div class="kitchen-topbar">
+                    <div>
+                        <span class="eyebrow-label">LIVE KITCHEN HUD</span>
+                        <div class="kitchen-title">${escapeHtml(r.title)}</div>
+                    </div>
+                    <button class="btn danger small" id="exit-kitchen-btn">✕ Exit HUD</button>
+                </div>
+
+                <div class="kitchen-layout-grid">
+                    <!-- LEFT COLUMN: INGREDIENTS CHECKLIST -->
+                    <aside class="kitchen-sidebar">
+                        <div class="kitchen-sidebar-header">
+                            <div>
+                                <strong style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--navy-heading);">Ingredients</strong>
+                                <span style="font-size:0.75rem; color:var(--glacier); margin-left:6px; font-weight:700;">(${k.checked.size}/${r.recipe_ingredients.length})</span>
+                            </div>
+                            <button class="btn ghost small" id="reset-checks-btn" style="font-size:0.65rem;">Reset</button>
+                        </div>
+
+                        <div class="kitchen-ing-list">
+                            ${r.recipe_ingredients.map((ing, idx) => `
+                                <div class="kitchen-ing-row ${k.checked.has(idx) ? 'checked' : ''}" data-idx="${idx}">
+                                    <span class="kitchen-ing-checkbox">${k.checked.has(idx) ? '✓' : ''}</span>
+                                    <span style="flex:1; color:var(--navy-heading);">${escapeHtml(ing.name)}${ing.note ? ` <small style="color:var(--text-faint);">(${escapeHtml(ing.note)})</small>` : ''}</span>
+                                    <span class="kitchen-ing-qty">${escapeHtml(fmtQty(ing))}</span>
+                                </div>
+                            `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
+                        </div>
+
+                        ${r.description ? `
+                            <div style="margin-top:auto; padding-top:0.75rem; border-top:1px solid var(--border-subtle); font-size:0.8rem; color:var(--text-dim); max-height:80px; overflow-y:auto;">
+                                <strong>Note:</strong> ${escapeHtml(r.description)}
+                            </div>
+                        ` : ''}
+                    </aside>
+
+                    <!-- RIGHT COLUMN: ACTIVE STEP & DYNAMIC TIMER -->
+                    <main class="kitchen-main">
+                        <div class="kitchen-step-meta">
+                            <span class="kitchen-step-counter">STEP ${k.stepIndex + 1} OF ${totalSteps || 1}</span>
+                            <span class="rc-tag">${r.cook_minutes ? r.cook_minutes + ' MIN COOK' : 'PREPARATION'}</span>
+                        </div>
+
+                        <div class="kitchen-step-center">
+                            <div class="kitchen-step-text">${escapeHtml(currentStep.instruction)}</div>
+                            
+                            ${currentStep.timer_seconds ? `
+                                <div class="kitchen-timer-block">
+                                    <div class="kitchen-timer-display" id="timer-display">--:--</div>
+                                    <button class="btn primary small" id="timer-btn">Start ${Math.round(currentStep.timer_seconds / 60)}m Timer</button>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="kitchen-nav">
+                            <button class="btn outline" id="prev-step-btn" ${k.stepIndex === 0 ? 'disabled' : ''}>← Previous Step</button>
+                            <button class="btn primary" id="next-step-btn" ${k.stepIndex >= totalSteps - 1 ? 'disabled' : ''}>
+                                ${k.stepIndex >= totalSteps - 1 ? 'Finished ✓' : 'Next Step →'}
+                            </button>
+                        </div>
+                    </main>
+                </div>
+            `;
 
             document.getElementById('exit-kitchen-btn').addEventListener('click', exitKitchen);
-            el.querySelectorAll('.kitchen-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    k.activeTab = tab.dataset.tab;
-                    renderKitchen();
-                });
+            document.getElementById('reset-checks-btn').addEventListener('click', () => {
+                k.checked.clear();
+                renderKitchen();
             });
+
             el.querySelectorAll('.kitchen-ing-row').forEach(row => {
                 row.addEventListener('click', () => {
                     const idx = Number(row.dataset.idx);
@@ -1645,42 +1816,15 @@
                     renderKitchen();
                 });
             });
-            wireKitchenStepControls();
-        }
 
-        function renderKitchenStepPanel() {
-            const k = kitchen;
-            const steps = k.recipe.recipe_steps;
-            const step = steps[k.stepIndex];
-            return `
-    <div class="kitchen-step-progress">Step ${k.stepIndex + 1} of ${steps.length}</div>
-    <div class="kitchen-step-text">${escapeHtml(step.instruction)}</div>
-    ${step.timer_seconds ? `
-      <div class="kitchen-timer-display hidden" id="timer-display">--:--</div>
-      <button class="btn primary kitchen-timer-btn" id="timer-btn">Start ${Math.round(step.timer_seconds / 60)} Min Timer</button>
-    ` : ''}
-    <div class="kitchen-nav">
-      <button class="btn outline" id="prev-step-btn" ${k.stepIndex === 0 ? 'disabled' : ''}>← Previous Step</button>
-      <button class="btn primary" id="next-step-btn" ${k.stepIndex === steps.length - 1 ? 'disabled' : ''}>
-        Next Step →
-      </button>
-    </div>
-  `;
-        }
-
-        function wireKitchenStepControls() {
-            const k = kitchen;
             const prevBtn = document.getElementById('prev-step-btn');
             const nextBtn = document.getElementById('next-step-btn');
             if (prevBtn) prevBtn.addEventListener('click', () => { k.stepIndex--; renderKitchen(); });
-            if (nextBtn) nextBtn.addEventListener('click', () => { k.stepIndex++; renderKitchen(); });
+            if (nextBtn) nextBtn.addEventListener('click', () => { if (k.stepIndex < totalSteps - 1) { k.stepIndex++; renderKitchen(); } });
 
             const timerBtn = document.getElementById('timer-btn');
             if (timerBtn) {
-                timerBtn.addEventListener('click', () => {
-                    const step = k.recipe.recipe_steps[k.stepIndex];
-                    startKitchenTimer(step.timer_seconds);
-                });
+                timerBtn.addEventListener('click', () => startKitchenTimer(currentStep.timer_seconds));
             }
         }
 
@@ -1690,9 +1834,9 @@
             k.timerRemaining = seconds;
             const display = document.getElementById('timer-display');
             const btn = document.getElementById('timer-btn');
-            display.classList.remove('hidden');
-            btn.classList.add('hidden');
+            if (btn) btn.style.display = 'none';
             updateTimerDisplay();
+
             k.timerHandle = setInterval(() => {
                 k.timerRemaining--;
                 updateTimerDisplay();
@@ -1700,14 +1844,14 @@
                     clearInterval(k.timerHandle);
                     k.timerHandle = null;
                     if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
-                    display.textContent = "DONE!";
+                    if (display) display.textContent = "DONE! 🔔";
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
             const display = document.getElementById('timer-display');
-            if (!display) return;
+            if (!display || !kitchen) return;
             const m = Math.floor(kitchen.timerRemaining / 60);
             const s = kitchen.timerRemaining % 60;
             display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
@@ -1726,18 +1870,4 @@
         checkSession();
     </script>
 </body>
-
-    <!-- GLOBAL DISTRESS FILTER DEFINITION -->
-    <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
-        <filter id="distress-speckles">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
-            <feColorMatrix in="noise" type="matrix" values="
-                1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                0 0 0 15 -11" result="speckles" />
-            <feComposite in="SourceGraphic" in2="speckles" operator="out" />
-        </filter>
-    </svg>
-
 </html>

@@ -1,4 +1,12 @@
-/* ==========================================================================
+@font-face{
+  font-family:'MyDisplay';
+  src:url('../../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* ========================================================================
    Alpine Prism design system
    Palette: Abyss Teal #042736 · Deep Fjord #083B4F · Glacier Cyan #00A8FF
             Alpine Red #EF4444 · Alpine White #FFFFFF · Ice White #E2E8F0
@@ -39,6 +47,7 @@
   --prism-opacity: 0.045;
   --card-shadow: none;
   --header-surface: var(--surface);
+  --button-text: #04202c;
   color-scheme: dark;
 }
 
@@ -57,6 +66,7 @@
   --prism-opacity: 0.05;
   --card-shadow: 0 10px 30px rgba(4,39,54,0.10), 0 2px 8px rgba(4,39,54,0.06);
   --header-surface: var(--deep-fjord);
+  --button-text: #042736;
   color-scheme: light;
 }
 
@@ -66,7 +76,6 @@ body{
   background: var(--bg);
   color:var(--text);
   font-family: var(--font-body);
-  font-family: var(--font-titles);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
   position:relative;
@@ -277,14 +286,14 @@ button{font-family: var(--font-body);}
 .btn.primary{
   background:var(--accent);
   border-color:var(--accent);
-  color:#04202c;
+  color:var(--button-text);
   font-weight:600;
 }
 .btn.primary:hover{background:#33bcff;}
 .btn.running{
   background:var(--accent);
   border-color:var(--accent);
-  color:#04202c;
+  color:var(--button-text);
   font-weight:600;
 }
 .btn.danger{color:var(--danger); border-color:var(--danger); background:none; padding:6px 10px; font-size:12px;}
@@ -447,7 +456,7 @@ button{font-family: var(--font-body);}
 
 /* ---- Entries ---- */
 .entries-head{
-  font-family: var(--font-display);
+  font-family: var(--font-titles);
   text-transform:uppercase;
   letter-spacing:0.02em;
   font-size:17px;
@@ -457,6 +466,7 @@ button{font-family: var(--font-body);}
   justify-content:space-between;
   align-items:baseline;
 }
+.speckled{filter:url(#distress-speckles);}
 .entries-head .count{font-family: var(--font-mono); font-size:12px; color:var(--text-faint); text-transform:none; letter-spacing:0;}
 .entry{
   display:flex;

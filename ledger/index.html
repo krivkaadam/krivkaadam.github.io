@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ledger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <meta name="build-time" content="2026-08-24 12:21:22">
+  <meta name="build-time" content="2026-08-24 18:56:54">
 
   <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
@@ -37,6 +37,19 @@
 </head>
 
 <body>
+
+  <!-- GLOBAL SPECKLES FILTER DEFINITION -->
+  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+    <filter id="distress-speckles">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 15 -11" result="speckles" />
+      <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+    </filter>
+  </svg>
 
   <!-- Alpine Prism geometric background: fixed, monochrome, very low opacity. Decorative only. -->
   <svg class="prism-bg" aria-hidden="true" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">
@@ -136,6 +149,7 @@
       </div>
 
       <div class="timer-actions">
+        
         <button class="btn primary" id="start-btn">Start</button>
         <button class="btn" id="pause-btn" style="display:none">Pause</button>
         <button class="btn running" id="resume-btn" style="display:none">Resume</button>
@@ -176,7 +190,7 @@
     </div>
 
     <div class="card" id="statement-card">
-      <div class="entries-head" style="margin:0 0 16px;">
+      <div class="entries-head speckled" style="margin:0 0 16px;">
         <span>Print / export statement</span>
       </div>
       <div class="statement-setup">
@@ -206,7 +220,7 @@
     </div>
 
     <div id="entries-section">
-      <div class="entries-head">
+      <div class="entries-head speckled">
         <span>Entries</span>
         <span class="count" id="entries-count">0</span>
       </div>
@@ -269,7 +283,7 @@
       <div class="footer-meta">
         <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
         <span class="footer-sep">·</span>
-        <span class="footer-item">Published <span id="footer-published">2026-08-24 12:21:22</span></span>
+        <span class="footer-item">Published <span id="footer-published">2026-08-24 18:56:54</span></span>
         <span class="footer-sep">·</span>
         <a class="footer-item footer-link" id="footer-contact" href="mailto:krivkaad@gmail.com">Contact</a>
       </div>
