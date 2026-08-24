@@ -132,7 +132,7 @@
 
         .section-title {
             font-family: var(--font-titles);
-            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-size: clamp(3.3rem, 6vw, 4.8rem);
             color: var(--navy-heading);
             text-transform: uppercase;
             letter-spacing: 0.02em;
@@ -635,7 +635,7 @@
         }
 
         .detail-title {
-            font-family: var(--font-display);
+            font-family: var(--font-titles);
             font-size: clamp(1.9rem, 4.5vw, 3rem);
             color: var(--navy-heading);
             text-transform: uppercase;
@@ -915,7 +915,7 @@
         }
 
         .kitchen-title {
-            font-family: var(--font-display);
+            font-family: var(--font-titles);
             font-size: clamp(1.3rem, 2.5vw, 1.85rem);
             text-transform: uppercase;
             color: var(--navy-heading);
@@ -1170,12 +1170,15 @@
             .recipe-grid {
                 grid-template-columns: 1fr;
             }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
             .section-head-browse {
                 align-items: flex-start;
             }
+
             .section-head-browse button {
                 width: 100%;
             }
@@ -1185,24 +1188,30 @@
             .brand-text .brand-role {
                 display: none;
             }
+
             .header-actions .btn {
                 padding: 0.45rem 0.55rem;
                 font-size: 0.7rem;
             }
+
             .header-actions .btn span.btn-label-long {
                 display: none;
             }
+
             .dyn-row {
                 flex-direction: column;
             }
+
             .dyn-row input,
             .dyn-row .qty-stepper {
                 width: 100%;
             }
+
             .footer-bottom {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .footer-sep {
                 display: none;
             }
@@ -1242,7 +1251,10 @@
         </div>
         <button class="btn primary full" id="login-btn">
             <span>Sign In</span>
-            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" /></svg>
+            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" fill="none" />
+            </svg>
         </button>
         <div id="error-msg"></div>
     </div>
@@ -1278,7 +1290,10 @@
                         <span>+ <span class="btn-label-long">New Recipe</span></span>
                     </button>
                     <button class="btn outline small" id="signout">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                        </svg>
                         <span class="btn-label-long">Sign Out</span>
                     </button>
                 </div>
@@ -1325,6 +1340,8 @@
                     <span class="footer-item">v<span id="footer-version">0.2.1</span></span>
                     <span class="footer-sep">·</span>
                     <span class="footer-item">no personal data collected :&#41;</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">Published <span id="footer-published">2026-08-24 21:36:02</span></span>
                     <span class="footer-sep">·</span>
                     <span>Brno, Czech Republic</span>
                     <span class="footer-sep">·</span>
@@ -1560,7 +1577,7 @@
                         </div>
                     ` : ''}
                     <span class="eyebrow-label">Recipe Overview</span>
-                    <h1 class="detail-title">${escapeHtml(r.title)}</h1>
+                    <h1 class="detail-title speckled">${escapeHtml(r.title)}</h1>
                     
                     <div class="detail-meta">
                         ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
@@ -1585,11 +1602,11 @@
                     <div class="block-subhead">Preparation Steps</div>
                     <div>
                         ${r.recipe_steps.map(s => {
-                            // Extract title and description from step if separated by newline
-                            const parts = (s.instruction || '').split('\n\n');
-                            const stepTitle = parts[0] || '';
-                            const stepDesc = parts.slice(1).join('\n\n') || '';
-                            return `
+                // Extract title and description from step if separated by newline
+                const parts = (s.instruction || '').split('\n\n');
+                const stepTitle = parts[0] || '';
+                const stepDesc = parts.slice(1).join('\n\n') || '';
+                return `
                             <div class="step-row">
                                 <span class="step-num">${s.step_number}</span>
                                 <div class="step-content">
@@ -1601,7 +1618,7 @@
                                 </div>
                             </div>
                             `;
-                        }).join('') || '<div class="empty-state">No steps listed.</div>'}
+            }).join('') || '<div class="empty-state">No steps listed.</div>'}
                     </div>
 
                     ${r.source_note ? `
@@ -1698,7 +1715,7 @@
                 </button>
                 <div class="form-panel">
                     <span class="eyebrow-label">Editor</span>
-                    <h2 class="section-title" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
+                    <h2 class="section-title speckled" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
 
                     <div class="form-grid">
                         <div class="field full">
@@ -2009,7 +2026,7 @@
                 <div class="kitchen-topbar">
                     <div>
                         <span class="eyebrow-label">LIVE KITCHEN HUD</span>
-                        <div class="kitchen-title">${escapeHtml(r.title)}</div>
+                        <div class="kitchen-title speckled">${escapeHtml(r.title)}</div>
                     </div>
                     <button class="btn danger small" id="exit-kitchen-btn">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -2101,17 +2118,17 @@
 
             const prevBtn = document.getElementById('prev-step-btn');
             const nextBtn = document.getElementById('next-step-btn');
-            if (prevBtn) prevBtn.addEventListener('click', () => { 
+            if (prevBtn) prevBtn.addEventListener('click', () => {
                 stopTimer();
-                k.stepIndex--; 
-                renderKitchen(); 
+                k.stepIndex--;
+                renderKitchen();
             });
-            if (nextBtn) nextBtn.addEventListener('click', () => { 
-                if (k.stepIndex < totalSteps - 1) { 
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                if (k.stepIndex < totalSteps - 1) {
                     stopTimer();
-                    k.stepIndex++; 
-                    renderKitchen(); 
-                } 
+                    k.stepIndex++;
+                    renderKitchen();
+                }
             });
 
             const toggleBtn = document.getElementById('timer-toggle-btn');
@@ -2148,7 +2165,7 @@
             }
             k.timerRunning = true;
             if (k.timerHandle) clearInterval(k.timerHandle);
-            
+
             updateTimerDisplay();
             updateTimerBtnLabel();
 
