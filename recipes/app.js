@@ -3,8 +3,8 @@
 /* ================================================================
    CONFIG — replace with your project URL and anon key
    ================================================================ */
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const SUPABASE_URL = 'VITE_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'VITE_SUPABASE_ANON_KEY';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
