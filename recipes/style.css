@@ -672,7 +672,6 @@ select {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--glacier);
-    border-bottom: 1px solid var(--border);
     padding-bottom: 0.65rem;
     margin-bottom: 1.1rem;
 }
@@ -758,7 +757,6 @@ select {
     margin-top: 2.5rem;
     padding: 1.5rem 1.65rem;
     background: rgba(31, 127, 209, 0.06);
-    border: 1px solid var(--border);
     border-left: 3px solid var(--glacier);
 }
 
