@@ -1,17 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Recipes · Family Recipe Book</title>
-
-    <!-- SECURITY: CSP. 'unsafe-inline' for styles is needed while CSS lives in this file.
-         Remove it once you split into styles.css during your refactor. -->
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; img-src 'self' https: data:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://cdn.jsdelivr.net; connect-src https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self';">
-
-    <meta name="referrer" content="no-referrer" />
 
     <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
@@ -35,252 +28,168 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
           rel="stylesheet">
-    <!-- SECURITY: pinned version instead of floating @2. Generate an SRI hash
-         (https://www.srihash.org) after splitting files and add integrity="" crossorigin="anonymous". -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- Global decorative polygon background -->
+
+    <!-- GLOBAL FIXED BACKGROUND POLYGONS -->
     <div class="bg-polygon-layer" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1440 900">
-            <rect width="1440" height="900" fill="var(--abyss-teal)" />
-            <polygon points="0,900 0,520 320,700 180,900" fill="var(--poly-fill-1)" />
-            <polygon points="1440,0 1440,380 1100,150 1250,0" fill="var(--poly-fill-1)" />
-            <polygon points="0,0 260,0 90,240" fill="var(--poly-fill-2)" />
-            <polygon points="1440,900 1180,900 1320,660 1440,720" fill="var(--poly-fill-2)" />
-            <polygon points="480,900 760,760 1040,900" fill="var(--poly-fill-3)" />
-            <polygon points="600,0 900,120 1150,0" fill="var(--poly-fill-3)" />
+        <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+            <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+            <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+            <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+            <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+            <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+            <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+            <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+            <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
         </svg>
     </div>
 
-    <!-- ============ HEADER / NAVIGATION ============ -->
-    <header class="top-nav">
-        <div class="nav-inner">
-            <button class="brand-group" id="btn-home" type="button"
-                    aria-label="Go to recipe browse view">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg class="icon-vector" viewBox="0 0 24 24">
-                        <path
-                              d="M7 2v9a3 3 0 003 3v8h2v-8a3 3 0 003-3V2h-2v7h-1V2h-2v7H9V2H7zm11 0v9h2.5v11H22V2h-4z" />
-                    </svg>
-                </span>
-                <span class="brand-text">
-                    <span class="brand-name">Family Recipe Book</span>
-                    <span class="brand-role" id="user-email-label"></span>
-                </span>
-            </button>
-            <nav class="header-actions" aria-label="Primary">
-                <button class="btn outline small" id="btn-new-recipe" type="button" hidden>
-                    <span class="btn-text">New Recipe</span>
-                    <svg class="icon-vector" aria-hidden="true" viewBox="0 0 24 24">
-                        <path d="M11 5h2v14h-2z" />
-                        <path d="M5 11h14v2H5z" />
-                    </svg>
-                </button>
-                <button class="btn ghost small" id="btn-login-nav" type="button">Sign In</button>
-            </nav>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <span class="eyebrow-label">Authentication</span>
+        <h1 class="section-title speckled">Recipes</h1>
+        <p>Sign in to access your culinary ledger.</p>
+        <div class="field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
         </div>
-    </header>
-
-    <!-- ============ MAIN SHELL ============ -->
-    <main class="shell">
-
-        <!-- LOGIN SCREEN -->
-        <section id="login-screen" hidden>
-            <button class="btn ghost small" id="login-home-link" type="button"
-                    aria-label="Return to recipes without signing in">
-                <svg class="icon-vector icon-arrow-left" aria-hidden="true" viewBox="0 0 24 24">
-                    <path d="M15 5l-7 7 7 7" />
-                </svg>
-                Home
-            </button>
-            <!-- heading hierarchy starts at h1 here since this is the page's primary content in this state -->
-            <h1>Welcome Back</h1>
-            <p>Sign in to manage your family recipe collection.</p>
-            <form id="login-form" novalidate>
-                <div class="field">
-                    <label for="login-email">Email</label>
-                    <input id="login-email" name="email" type="email" autocomplete="email" required />
-                </div>
-                <div class="field">
-                    <label for="login-password">Password</label>
-                    <input id="login-password" name="password" type="password" autocomplete="current-password" required
-                           minlength="6" />
-                </div>
-                <button class="btn primary full" type="submit" id="btn-sign-in">
-                    Sign In
-                    <svg class="icon-vector icon-arrow-right" aria-hidden="true" viewBox="0 0 24 24">
-                        <path d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-                <p id="error-msg" role="alert"></p>
-            </form>
-        </section>
-
-        <!-- BROWSE VIEW -->
-        <section id="browse-view" hidden>
-            <div class="section-head-browse">
-                <div>
-                    <span class="eyebrow-label">Collection</span>
-                    <!--single h1 per document; section titles h2 -->
-                    <h1 class="section-title">Recipes</h1>
-                </div>
-            </div>
-            <div class="search-bar">
-                <div class="field" style="margin-bottom:0">
-                    <label for="search-input">Search</label>
-                    <input id="search-input" type="text" placeholder="Search by title or tag…" autocomplete="off" />
-                </div>
-            </div>
-            <div class="recipe-grid" id="recipe-grid"></div>
-        </section>
-
-        <!-- DETAIL VIEW -->
-        <section id="detail-view" hidden></section>
-
-        <!-- FORM VIEW (create/edit) -->
-        <section id="form-view" hidden>
-            <div class="form-panel">
-                <span class="eyebrow-label" id="form-mode-label">Create</span>
-                <h2 class="detail-title" style="font-size:clamp(2.2rem,5vw,3.4rem)">Recipe Details</h2>
-                <form id="recipe-form" novalidate>
-                    <div class="form-grid">
-                        <div class="field full">
-                            <label for="f-title">Title</label>
-                            <input id="f-title" type="text" required maxlength="120" />
-                        </div>
-                        <div class="field full">
-                            <label for="f-desc">Description</label>
-                            <textarea id="f-desc" maxlength="500"></textarea>
-                        </div>
-                        <div class="field">
-                            <label for="f-servings">Servings</label>
-                            <input id="f-servings" type="number" min="1" max="99" value="4" required />
-                        </div>
-                        <div class="field">
-                            <label for="f-time">Total Time (minutes)</label>
-                            <input id="f-time" type="number" min="1" max="2880" required />
-                        </div>
-                        <div class="field full">
-                            <label for="f-tags">Tags (comma separated)</label>
-                            <input id="f-tags" type="text" placeholder="dinner, vegetarian…" />
-                        </div>
-                        <div class="field full">
-                            <label for="f-image">Image URL</label>
-                            <input id="f-image" type="url" placeholder="https://…" />
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="block-subhead">Ingredients</div>
-                        <div id="ingredients-editor"></div>
-                        <button class="btn outline small" type="button" data-add="ingredient">
-                            + Add Ingredient
-                        </button>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="block-subhead">Steps</div>
-                        <div id="steps-editor"></div>
-                        <button class="btn outline small" type="button" data-add="step">
-                            + Add Step
-                        </button>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="block-subhead">Chef's Tips</div>
-                        <div class="field" style="margin-bottom:0">
-                            <textarea id="f-tips" placeholder="Optional tips…"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button class="btn primary" type="submit">Save Recipe</button>
-                        <button class="btn outline" type="button" id="btn-cancel-form">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- KITCHEN MODE HUD -->
-    <section id="kitchen-view" hidden aria-label="Kitchen mode">
-        <div class="kitchen-topbar">
-            <h2 class="kitchen-title" id="k-title"></h2>
-            <button class="btn outline small" id="btn-exit-kitchen" type="button">
-                Exit Kitchen Mode
-            </button>
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
         </div>
-        <div class="k-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-             id="k-progress">
-            <div class="k-progress-fill" style="width:0%" id="k-progress-fill"></div>
-        </div>
-        <div class="kitchen-layout-grid">
-            <aside class="kitchen-sidebar">
-                <div class="kitchen-sidebar-header">
-                    <strong
-                            style="font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--glacier)">Ingredients
-                        · <span id="k-serving-label"></span></strong>
-                </div>
-                <div class="kitchen-ing-list" id="k-ingredients"></div>
-                <div class="kitchen-note-box" id="k-notes-wrap" hidden>
-                    <div class="kitchen-note-label">Notes</div>
-                    <p id="k-notes"></p>
-                </div>
-            </aside>
-            <div class="kitchen-main" id="k-steps"></div>
-        </div>
-    </section>
-
-    <!-- TIMER OVERLAY -->
-    <div id="timer-overlay" role="dialog" aria-modal="true" aria-labelledby="timer-title">
-        <div class="timer-box" id="timer-box">
-            <span class="eyebrow-label">Kitchen Timer</span>
-            <div class="timer-title" id="timer-title">Timer</div>
-            <div class="timer-display" id="timer-display">00:00</div>
-            <div class="timer-actions">
-                <button class="btn danger small" id="btn-timer-stop" type="button">Stop</button>
-            </div>
-        </div>
+        <button class="btn primary full" id="login-btn">
+            <span>Sign In</span>
+            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" fill="none" />
+            </svg>
+        </button>
+        <a href="../" class="btn outline full" id="login-home-link" style="margin-top:0.75rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            <span>Back to Portfolio</span>
+        </a>
+        <div id="error-msg"></div>
     </div>
 
-    <!-- CONFIRM MODAL -->
-    <div id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-box">
-            <h2 id="modal-title">Are you sure?</h2>
-            <p id="modal-message"></p>
-            <div class="modal-actions">
-                <button class="btn outline small" id="btn-modal-cancel" type="button">Cancel</button>
-                <button class="btn danger small" id="btn-modal-confirm" type="button">Confirm</button>
+    <!-- MAIN APP WRAPPER -->
+    <div class="hidden" id="app-screen" style="display:flex; flex-direction:column; min-height:100vh;">
+        <header class="top-nav">
+            <div class="nav-inner">
+                <div class="brand-group" onclick="showView('browse')">
+                    <div class="brand-mark" title="Recipes Archive">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 13.8V4a2 2 0 1 1 4 0v9.8M3 8h7M15 4v16M18 4a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3v5" />
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">Recipes</span>
+                        <span class="brand-role">Family Recipe Book</span>
+                    </div>
+                </div>
+
+                <!-- Responsive Header Actions -->
+                <div class="header-actions">
+                    <a href="../" class="btn outline small" id="home-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        <span class="btn-label-long">Portfolio</span>
+                    </a>
+                    <button class="btn primary small" id="new-recipe-btn">
+                        <span>+ <span class="btn-label-long">New Recipe</span></span>
+                    </button>
+                    <button class="btn outline small" id="signout">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                        </svg>
+                        <span class="btn-label-long">Sign Out</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </header>
+
+        <main class="shell">
+            <!-- BROWSE VIEW -->
+            <div id="browse-view">
+                <div class="section-head-browse">
+                    <div>
+                        <span class="eyebrow-label">Culinary Archive</span>
+                        <h2 class="section-title speckled">ALL RECIPES</h2>
+                    </div>
+                    <button class="btn primary" id="browse-new-recipe-btn">
+                        <span>+ Add New Recipe</span>
+                        <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                  stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search by title, tag, ingredient, or note…" />
+                </div>
+
+                <div id="recipe-grid" class="recipe-grid"></div>
+            </div>
+
+            <!-- DETAIL VIEW -->
+            <div id="detail-view" class="hidden"></div>
+
+            <!-- FORM VIEW -->
+            <div id="form-view" class="hidden"></div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="siteFooter">
+            <div class="footer-inner">
+                <div class="footer-bottom">
+                    <span>© <span id="year"></span> VITE_AUTHOR_NAME. All rights reserved.</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">v<span id="footer-version">0.2.1</span></span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">no personal data sold :&#41;</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">Published <span id="footer-published">2026-08-25 10:33:08</span></span>
+                    <span class="footer-sep">·</span>
+                    <span>VITE_AUTHOR_LOCATION</span>
+                    <span class="footer-sep">·</span>
+                    <a class="footer-item footer-link" href="mailto:krivkaad@gmail.com">Contact</a>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <!-- TOAST STACK -->
-    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+    <!-- KITCHEN FULLSCREEN HUD -->
+    <div id="kitchen-view" class="hidden"></div>
 
-    <!-- ============ FOOTER ============ -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div>
-                <span class="footer-brand-text">Family Recipe Book</span><br>
-                <span class="footer-tagline">Preserving one dish at a time.</span>
-            </div>
-            <ul class="footer-links">
-                <li><a href="#top">Back to Top</a></li>
-                <li><a href="../src/pages/about.html">About</a></li>
-            </ul>
-        </div>
-    </footer>
+    <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+    <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+        <filter id="distress-speckles">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+            <feColorMatrix in="noise" type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 15 -11" result="speckles" />
+            <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+        </filter>
+    </svg>
 
-    <!-- ============ APPLICATION SCRIPT ============ -->
-    <!-- SECURITY: no inline handlers anywhere; all listeners bound below.
-         Split into js/*.js modules during your refactor. -->
-    <script src="app.js"></script>
+   <script src="app.js"></script>
 </body>
 
 </html>

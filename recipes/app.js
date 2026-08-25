@@ -1,835 +1,906 @@
-'use strict';
-
-/* ================================================================
-   CONFIG — replace with your project URL and anon key
-   ================================================================ */
 const SUPABASE_URL = 'https://eyvgammlolmqsylagygk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dmdhbW1sb2xtcXN5bGFneWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NjE3NzcsImV4cCI6MjEwMjAzNzc3N30.ZMNTTj_VRblCWGo-BI_ixEOxsz0EPtRJGKGIrr3zfLg';
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================================================================
-   STATE
-   ================================================================ */
-const state = {
-    user: null,
-    recipes: [],
-    currentId: null,
-    editingId: null,
-    kitchen: { recipe: null, servings: null, doneSteps: new Set(), checkedIng: new Set() },
-    searchQuery: ''
-};
+const NAME_KEY = 'recepty_adam';
+let currentUser = null;
+let recipes = [];
+let searchTerm = '';
+let currentView = 'browse';
+let currentRecipeId = null;
+let formState = null;
+let kitchen = null;
 
-/* ================================================================
-   UTILITIES
-   ================================================================ */
+document.getElementById('year').textContent = new Date().getFullYear();
 
-// SECURITY: escapeHtml prevents XSS from any user/database-supplied string
-function escapeHtml(str) {
-    return String(str ?? '').replace(/[&<>"']/g, c => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    })[c]);
-}
-
-// SECURITY: sanitizeUrl blocks javascript: URLs on image/src attributes
-function safeImgUrl(url) {
-    try { const u = new URL(url); return ['http:', 'https:', 'data:'].includes(u.protocol) ? url : ''; }
-    catch { return ''; }
-}
-
-function formatQty(qty) {
-    if (qty == null || qty === '') return '';
-    const n = Number(qty);
-    if (!isFinite(n)) return String(qty);
-    if (Number.isInteger(n)) return String(n);
-    const fracMap = { 0.25: '\u00BC', 0.33: '\u2153', 0.5: '\u00BD', 0.67: '\u2154', 0.75: '\u00BE' };
-    const whole = Math.floor(n), frac = +(n - whole).toFixed(2);
-    if (fracMap[frac] !== undefined) return whole ? `whole{whole}whole{fracMap[frac]}` : fracMap[frac];
-    return String(Math.round(n * 100) / 100);
-}
-
-function formatTime(mins) {
-    mins = Number(mins) || 0;
-    if (mins >= 60) {
-        const h = Math.floor(mins / 60), m = mins % 60;
-        return m ? `hh{h}hhh{m}m` : `${h}h`;
-    }
-    return `${mins}m`;
-}
-
-function parseTags(str) {
-    return String(str || '').split(',').map(t => t.trim()).filter(Boolean).slice(0, 12);
-}
-
-function toast(msg, type = 'info') {
-    const stack = document.getElementById('toast-stack');
-    const el = document.createElement('div');
-    el.className = `toast ${type}`;
-    el.textContent = msg;
-    stack.appendChild(el);
-    setTimeout(() => el.remove(), 4000);
-}
-
-/* ================================================================
-   VIEW ROUTING
-   ================================================================ */
-const views = ['browse-view', 'detail-view', 'form-view'];
-
-function showView(name) {
-    views.forEach(id => document.getElementById(id).hidden = id !== name);
-    document.getElementById('login-screen').hidden = name !== 'login';
-    window.scrollTo({ top: 0, behavior: 'auto' });
-}
-
-/* ================================================================
-   AUTH
-   ================================================================ */
-async function initAuth() {
-    const { data } = await sb.auth.getSession();
-    setUser(data?.session?.user ?? null);
-    sb.auth.onAuthStateChange((_e, session) => setUser(session?.user ?? null));
-}
-
-function setUser(user) {
-    state.user = user;
-    document.getElementById('btn-new-recipe').hidden = !user;
-    const navBtn = document.getElementById('btn-login-nav');
-    document.getElementById('user-email-label').textContent =
-        user ? user.email : 'Browse & Cook — no account needed';
-    if (user) {
-        navBtn.textContent = 'Sign Out';
-        navBtn.dataset.mode = 'signout';
+/* ---------- AUTHENTICATION ---------- */
+async function checkSession() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+        currentUser = session.user;
+        showApp();
     } else {
-        navBtn.textContent = 'Sign In';
-        navBtn.dataset.mode = 'signin';
+        showLogin();
     }
-    loadRecipes();
 }
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
+async function attemptLogin() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
     const errEl = document.getElementById('error-msg');
     errEl.textContent = '';
-    const btn = document.getElementById('btn-sign-in');
-    btn.disabled = true;
-    try {
-        const { error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        showView('browse');
-    } catch (err) {
-        errEl.textContent = err.message || 'Sign in failed.';
-    } finally {
-        btn.disabled = false;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+        errEl.textContent = error.message;
+        return;
     }
+    currentUser = data.user;
+    showApp();
+}
+
+document.getElementById('login-btn').addEventListener('click', attemptLogin);
+['email', 'password'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') attemptLogin();
+    });
 });
 
-document.getElementById('btn-login-nav').addEventListener('click', () => {
-    const btn = e.currentTarget;
-    if (btn.dataset.mode === 'signout') {
-        sb.auth.signOut().then(() => toast('Signed out.', 'success'));
-    } else {
-        showView('login');
-    }
+document.getElementById('signout').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    currentUser = null;
+    showLogin();
 });
-// NOTE: the handler above reads e.currentTarget but binds with an implicit event param — corrected binding:
-document.getElementById('btn-login-nav').onclick = function () {
-    if (this.dataset.mode === 'signout') {
-        sb.auth.signOut().then(() => toast('Signed out.', 'success'));
-    } else {
-        showView('login');
-    }
-};
 
-/* ================================================================
-   DATA LOADING
-   ================================================================ */
-async function loadRecipes() {
-    const grid = document.getElementById('recipe-grid');
-    grid.innerHTML = '<div class="empty-state">Loading recipes…</div>';
+function showLogin() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app-screen').classList.add('hidden');
+}
+
+async function showApp() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-screen').classList.remove('hidden');
+    await loadRecipes();
+    subscribeRealtime();
+    showView('browse');
+}
+
+function yourName() {
     try {
-        let query = sb.from('recipes').select('*').order('created_at', { ascending: false });
-        if (!state.user) query = query.eq('is_public', true);
-        const { data, error } = await query;
-        if (error) throw error;
-        state.recipes = data || [];
-        renderGrid();
-    } catch (err) {
-        grid.innerHTML = '';
-        toast('Failed to load recipes: ' + err.message, 'error');
+        return localStorage.getItem(NAME_KEY) || prompt('Your name (shown as contributor):') || 'Adam';
+    } catch (e) {
+        return 'Adam';
     }
 }
 
-/* ================================================================
-   BROWSE GRID RENDER
-   ================================================================ */
-function renderGrid() {
+/* ---------- DATA MANAGEMENT ---------- */
+async function loadRecipes() {
+    const { data, error } = await sb
+        .from('recipes')
+        .select('*, recipe_ingredients(*), recipe_steps(*)')
+        .order('created_at', { ascending: false });
+    if (error) {
+        console.error(error);
+        return;
+    }
+    recipes = (data || []).map(r => {
+        r.recipe_ingredients = (r.recipe_ingredients || []).sort((a, b) => a.sort_order - b.sort_order);
+        r.recipe_steps = (r.recipe_steps || []).sort((a, b) => a.step_number - b.step_number);
+        return r;
+    });
+    renderCurrentView();
+}
+
+function findRecipe(id) { return recipes.find(r => r.id === id); }
+
+/*
+ * Escapes text for safe insertion into HTML markup, including when that
+ * markup lands inside a quoted attribute (e.g. src="${escapeHtml(url)}").
+ * A previous version used a textContent -> innerHTML round trip, which does
+ * NOT escape quote characters — any user-supplied field (title, image URL,
+ * notes, etc.) containing a `"` could break out of an attribute and inject
+ * arbitrary markup/JS for every visitor who later viewed that recipe. This
+ * version escapes &, <, >, " and ' explicitly, so it's safe in both text
+ * and attribute contexts.
+ */
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[ch]));
+}
+
+function fmtQty(ing) {
+    if (ing.quantity == null) return '';
+    const q = Number(ing.quantity);
+    const qStr = Number.isInteger(q) ? q : q.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+    return `${qStr}${ing.unit ? ' ' + ing.unit : ''}`;
+}
+
+/* ---------- VIEW ROUTING ---------- */
+function showView(name) {
+    currentView = name;
+    document.getElementById('browse-view').classList.toggle('hidden', name !== 'browse');
+    document.getElementById('detail-view').classList.toggle('hidden', name !== 'detail');
+    document.getElementById('form-view').classList.toggle('hidden', name !== 'form');
+    window.scrollTo(0, 0);
+    renderCurrentView();
+}
+
+function renderCurrentView() {
+    if (currentView === 'browse') renderBrowse();
+    else if (currentView === 'detail') renderDetail();
+    else if (currentView === 'form') renderForm();
+}
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+    searchTerm = e.target.value.toLowerCase();
+    renderBrowse();
+});
+
+document.getElementById('new-recipe-btn').addEventListener('click', () => openForm(null));
+document.getElementById('browse-new-recipe-btn').addEventListener('click', () => openForm(null));
+
+/* ---------- BROWSE RENDER ---------- */
+function renderBrowse() {
     const grid = document.getElementById('recipe-grid');
-    const q = state.searchQuery.toLowerCase();
-    const filtered = q
-        ? state.recipes.filter(r =>
-            r.title?.toLowerCase().includes(q) ||
-            (r.tags || []).some(t => t.toLowerCase().includes(q)))
-        : state.recipes;
-
-    grid.innerHTML = '';
-
-    if (!filtered.length) {
-        const div = document.createElement('div');
-        div.className = 'empty-state';
-        div.textContent = q ? `No recipes match “${state.searchQuery}”.` :
-            (state.user ? 'No recipes yet. Click “New Recipe” to add your first one.'
-                : 'No public recipes available yet.');
-        grid.appendChild(div);
+    let list = recipes;
+    if (searchTerm) {
+        list = recipes.filter(r => {
+            const hay = [
+                r.title,
+                r.description,
+                r.source_note,
+                ...(r.tags || []),
+                ...(r.recipe_ingredients || []).map(i => i.name)
+            ].join(' ').toLowerCase();
+            return hay.includes(searchTerm);
+        });
+    }
+    if (!list.length) {
+        grid.innerHTML = `<div class="empty-state">${recipes.length ? 'No recipes match your search query.' : 'No recipes cataloged yet — add one with "+ New Recipe".'}</div>`;
         return;
     }
 
-    filtered.forEach(r => {
-        const card = document.createElement('article');
-        card.className = 'recipe-card';
-        card.tabIndex = 0;
-        card.setAttribute('role', 'link');
+    grid.innerHTML = list.map(r => {
+        const totalMinutes = (r.prep_minutes || 0) + (r.cook_minutes || 0);
+        const timeLabel = totalMinutes > 0 ? `${totalMinutes} MIN` : (r.cook_minutes ? `${r.cook_minutes} MIN COOK` : 'READY TO COOK');
+        return `
+                <article class="recipe-card" data-id="${r.id}">
+                    <div>
+                        ${r.image_url ? `
+                            <div class="rc-image-wrap">
+                                <img src="${escapeHtml(r.image_url)}" alt="${escapeHtml(r.title)}" onerror="this.parentElement.style.display='none'" />
+                                <span class="rc-badge-pill">${timeLabel}</span>
+                            </div>
+                        ` : ''}
+                        <span class="eyebrow-label">${timeLabel} · ${r.servings ? r.servings + ' SERVINGS' : 'CHEF SPECIAL'}</span>
+                        <h3>${escapeHtml(r.title)}</h3>
+                        
+                        ${r.description ? `<p class="rc-description-clamped">${escapeHtml(r.description)}</p>` : ''}
 
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'rc-image-wrap';
-        if (r.image_url) {
-            const img = document.createElement('img');
-            img.src = safeImgUrl(r.image_url);
-            img.alt = '';
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            if (img.src) imgWrap.appendChild(img);
-        }
-        if (r.category) {
-            const pill = document.createElement('span');
-            pill.className = 'rc-badge-pill';
-            pill.textContent = r.category;
-            imgWrap.appendChild(pill);
-        }
-        card.appendChild(imgWrap);
+                        <div class="rc-meta">
+                            ${r.servings ? `<span>// ${r.servings} Servings</span>` : ''}
+                            ${totalMinutes > 0 ? `<span>// ${totalMinutes}m total</span>` : ''}
+                            ${r.source_note ? `<span>// ${escapeHtml(r.source_note.slice(0, 30))}${r.source_note.length > 30 ? '…' : ''}</span>` : ''}
+                        </div>
+                    </div>
+                    ${(r.tags && r.tags.length) ? `<div class="rc-tags">${r.tags.map(t => `<span class="rc-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                </article>
+                `;
+    }).join('');
 
-        const title = document.createElement('h3');
-        title.textContent = r.title;
-        card.appendChild(title);
-
-        if (r.description) {
-            const desc = document.createElement('p');
-            desc.className = 'rc-description-clamped';
-            desc.textContent = r.description;
-            card.appendChild(desc);
-        }
-
-        const meta = document.createElement('div');
-        meta.className = 'rc-meta';
-        meta.append(
-            Object.assign(document.createElement('span'), { textContent: `⏱ ${formatTime(r.total_minutes)}` }),
-            Object.assign(document.createElement('span'), { textContent: `🍽 ${r.servings ?? '—'} servings` })
-        );
-        card.appendChild(meta);
-
-        if ((r.tags || []).length) {
-            const tags = document.createElement('div');
-            tags.className = 'rc-tags';
-            r.tags.slice(0, 4).forEach(t => {
-                const chip = document.createElement('span');
-                chip.className = 'rc-tag';
-                chip.textContent = t;
-                tags.appendChild(chip);
-            });
-            card.appendChild(tags);
-        }
-
-        const open = () => openDetail(r.id);
-        card.addEventListener('click', open);
-        card.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
-        grid.appendChild(card);
-    });
-}
-
-document.getElementById('search-input').addEventListener('input', e => {
-    state.searchQuery = e.target.value.trim();
-    renderGrid();
-});
-
-/* ================================================================
-   DETAIL VIEW
-   ================================================================ */
-function openDetail(id) {
-    const r = state.recipes.find(x => x.id === id);
-    if (!r) return;
-    state.currentId = id;
-
-    const v = document.getElementById('detail-view');
-    v.innerHTML = '';
-
-    const panel = document.createElement('div');
-    panel.className = 'detail-panel';
-
-    if (r.image_url) {
-        const wrap = document.createElement('div');
-        wrap.className = 'detail-image-container';
-        const img = document.createElement('img');
-        img.src = safeImgUrl(r.image_url);
-        img.alt = '';
-        if (img.src) wrap.appendChild(img);
-        panel.appendChild(wrap);
-    }
-
-    panel.appendChild(Object.assign(document.createElement('span'),
-        { className: 'eyebrow-label overview-label', textContent: r.category || 'Recipe' }));
-
-    panel.appendChild(Object.assign(document.createElement('h2'),
-        { className: 'detail-title', textContent: r.title }));
-
-    const meta = document.createElement('div');
-    meta.className = 'detail-meta';
-    meta.append(
-        Object.assign(document.createElement('span'), { textContent: `⏱ ${formatTime(r.total_minutes)}` }),
-        Object.assign(document.createElement('span'), { textContent: `🍽 ${r.servings ?? '—'} servings` }),
-        Object.assign(document.createElement('span'), { textContent: `📋 ${(r.ingredients || []).length} ingredients` })
-    );
-    panel.appendChild(meta);
-
-    if ((r.tags || []).length) {
-        const tags = document.createElement('div');
-        tags.className = 'detail-tags';
-        r.tags.forEach(t => {
-            tags.appendChild(Object.assign(document.createElement('span'),
-                { className: 'tag-chip', textContent: t }));
+    grid.querySelectorAll('.recipe-card').forEach(card => {
+        card.addEventListener('click', () => {
+            currentRecipeId = card.dataset.id;
+            showView('detail');
         });
-        panel.appendChild(tags);
-    }
-
-    if (r.description) {
-        panel.appendChild(Object.assign(document.createElement('p'),
-            { className: 'detail-desc', textContent: r.description }));
-    }
-
-    // Ingredients
-    const ingSec = document.createElement('div');
-    ingSec.appendChild(Object.assign(document.createElement('h3'),
-        { className: 'block-subhead', textContent: 'Ingredients' }));
-    (r.ingredients || []).forEach(ing => {
-        const row = document.createElement('div');
-        row.className = 'ingredient-row';
-        const qty = document.createElement('span');
-        qty.className = 'ingredient-qty';
-        qty.textContent = ing.qty != null ? formatQty(ing.qty) + (ing.unit ? ' ' + ing.unit : '') : '—';
-        const name = document.createElement('span');
-        name.className = 'ingredient-name';
-        name.textContent = ing.name + (ing.note ? ' ' : '');
-        row.append(qty, name);
-        if (ing.note) {
-            const note = document.createElement('span');
-            note.className = 'ingredient-note';
-            note.textContent = ing.note;
-            row.appendChild(note);
-        }
-        ingSec.appendChild(row);
     });
-    panel.appendChild(ingSec);
-
-    // Steps
-    const stepSec = document.createElement('div');
-    stepSec.style.marginTop = '2rem';
-    stepSec.appendChild(Object.assign(document.createElement('h3'),
-        { className: 'block-subhead', textContent: 'Method' }));
-    (r.steps || []).forEach((st, i) => {
-        const row = document.createElement('div');
-        row.className = 'step-row';
-        row.appendChild(Object.assign(document.createElement('span'),
-            { className: 'step-num', textContent: String(i + 1).padStart(2, '0') }));
-        const content = document.createElement('div');
-        content.className = 'step-content';
-        content.appendChild(Object.assign(document.createElement('div'),
-            { className: 'step-title-text', textContent: st.title }));
-        if (st.desc) content.appendChild(Object.assign(document.createElement('p'),
-            { className: 'step-desc-text', textContent: st.desc }));
-        if (st.timer_minutes > 0) {
-            const chip = document.createElement('span');
-            chip.className = 'k-timer-chip';
-            chip.setAttribute('role', 'button');
-            chip.tabIndex = 0;
-            chip.textContent = `⏲ ${st.timer_minutes} min timer`;
-            chip.addEventListener('click', ev => { ev.stopPropagation(); startTimer(st.timer_minutes, st.title); });
-            chip.addEventListener('keydown', ev => { if (ev.key === 'Enter') startTimer(st.timer_minutes, st.title); });
-            content.appendChild(chip);
-        }
-        row.appendChild(content);
-        stepSec.appendChild(row);
-    });
-    panel.appendChild(stepSec);
-
-    // Tips
-    if (r.tips) {
-        const tips = document.createElement('div');
-        tips.className = 'tips-panel';
-        tips.innerHTML = '<div class="tips-header">💡 Chef\u2019s Tips</div>';
-        tips.appendChild(Object.assign(document.createElement('p'), { textContent: r.tips }));
-        panel.appendChild(tips);
-    }
-
-    // Actions
-    const actions = document.createElement('div');
-    actions.className = 'detail-actions';
-    const back = document.createElement('button');
-    back.className = 'btn ghost small';
-    back.type = 'button';
-    back.innerHTML = '<svg class="icon-vector icon-arrow-left" aria-hidden="true" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg> Back to Recipes';
-    back.addEventListener('click', () => showView('browse'));
-    actions.appendChild(back);
-
-    if (state.user) {
-        const cook = document.createElement('button');
-        cook.className = 'btn primary';
-        cook.type = 'button';
-        cook.innerHTML = '<svg class="icon-vector" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Cook This';
-        cook.addEventListener('click', () => openKitchen(r));
-        actions.appendChild(cook);
-
-        const edit = document.createElement('button');
-        edit.className = 'btn outline';
-        edit.type = 'button';
-        edit.textContent = 'Edit';
-        edit.addEventListener('click', () => openForm(r.id));
-        actions.appendChild(edit);
-
-        const del = document.createElement('button');
-        del.className = 'btn danger';
-        del.type = 'button';
-        del.textContent = 'Delete';
-        del.addEventListener('click', () => confirmModal(
-            'Delete Recipe?', `This will permanently delete “${r.title}”.`,
-            async () => {
-                const { error } = await sb.from('recipes').delete().eq('id', r.id);
-                if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
-                toast('Recipe deleted.', 'success');
-                state.recipes = state.recipes.filter(x => x.id !== r.id);
-                showView('browse'); renderGrid();
-            }));
-        actions.appendChild(del);
-    }
-    panel.appendChild(actions);
-    v.appendChild(panel);
-    showView('detail');
 }
 
-/* ================================================================
-   FORM VIEW
-   ================================================================ */
-function openForm(editId) {
-    state.editingId = editId || null;
-    const r = editId ? state.recipes.find(x => x.id === editId) : null;
+/* ---------- DETAIL RENDER ---------- */
+function renderDetail() {
+    const r = findRecipe(currentRecipeId);
+    const el = document.getElementById('detail-view');
+    if (!r) {
+        el.innerHTML = '<div class="empty-state">Recipe not found.</div>';
+        return;
+    }
+    el.innerHTML = `
+                <button class="btn outline small" id="back-btn" style="margin-bottom: 1.25rem;">
+                    <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    <span>Back to All</span>
+                </button>
+                <div class="detail-panel">
+                    ${r.image_url ? `
+                        <div class="detail-image-container">
+                            <img src="${escapeHtml(r.image_url)}" alt="${escapeHtml(r.title)}" onerror="this.parentElement.style.display='none'" />
+                        </div>
+                    ` : ''}
+                    <span class="eyebrow-label">Recipe Overview</span>
+                    <h1 class="detail-title speckled">${escapeHtml(r.title)}</h1>
+                    
+                    <div class="detail-meta">
+                        ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
+                        ${r.prep_minutes ? `<span>// PREP ${r.prep_minutes} MIN</span>` : ''}
+                        ${r.cook_minutes ? `<span>// COOK ${r.cook_minutes} MIN</span>` : ''}
+                        ${r.added_by_name ? `<span>// BY ${escapeHtml(r.added_by_name)}</span>` : ''}
+                    </div>
 
-    document.getElementById('form-mode-label').textContent =
-        editId ? 'Edit' : 'Create';
-    document.getElementById('f-title').value = r?.title || '';
-    document.getElementById('f-desc').value = r?.description || '';
-    document.getElementById('f-servings').value = r?.servings ?? 4;
-    document.getElementById('f-time').value = r?.total_minutes ?? '';
-    document.getElementById('f-tags').value = (r?.tags || []).join(', ');
-    document.getElementById('f-image').value = r?.image_url || '';
-    document.getElementById('f-tips').value = r?.tips || '';
+                    ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                    ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
 
-    renderIngredientsEditor(r?.ingredients || []);
-    renderStepsEditor(r?.steps || []);
+                    <div class="block-subhead">Ingredients List</div>
+                    <div style="margin-bottom: 2rem;">
+                        ${r.recipe_ingredients.map(i => `
+                            <div class="ingredient-row">
+                                <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
+                                <span class="ingredient-qty">${escapeHtml(fmtQty(i))}</span>
+                            </div>
+                        `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
+                    </div>
+
+                    <div class="block-subhead">Preparation Steps</div>
+                    <div>
+                        ${r.recipe_steps.map(s => {
+        // Extract title and description from step if separated by newline
+        const parts = (s.instruction || '').split('\n\n');
+        const stepTitle = parts[0] || '';
+        const stepDesc = parts.slice(1).join('\n\n') || '';
+        return `
+                            <div class="step-row">
+                                <span class="step-num">${s.step_number}</span>
+                                <div class="step-content">
+                                    <div class="step-title-text">
+                                        ${escapeHtml(stepTitle)}
+                                        ${s.timer_seconds ? ` <strong style="color:var(--glacier); font-size:0.82rem; font-family:var(--font-mono);">(${Math.round(s.timer_seconds / 60)} min timer)</strong>` : ''}
+                                    </div>
+                                    ${stepDesc ? `<div class="step-desc-text">${escapeHtml(stepDesc)}</div>` : ''}
+                                </div>
+                            </div>
+                            `;
+    }).join('') || '<div class="empty-state">No steps listed.</div>'}
+                    </div>
+
+                    ${r.source_note ? `
+                        <div class="tips-panel">
+                            <div class="tips-header">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                <span>Chef's Tips &amp; Tricks / Provenance</span>
+                            </div>
+                            <p>${escapeHtml(r.source_note)}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="detail-actions">
+                        <button class="btn primary" id="cook-btn">
+                            <span>Let's cook</span>
+                            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        </button>
+                        <button class="btn outline" id="edit-btn">Edit Recipe</button>
+                        <button class="btn danger" id="delete-btn">Delete</button>
+                    </div>
+                </div>
+            `;
+
+    document.getElementById('back-btn').addEventListener('click', () => showView('browse'));
+    document.getElementById('cook-btn').addEventListener('click', () => enterKitchen(r));
+    document.getElementById('edit-btn').addEventListener('click', () => openForm(r));
+    document.getElementById('delete-btn').addEventListener('click', () => deleteRecipe(r.id));
+}
+
+async function deleteRecipe(id) {
+    if (!confirm('Delete this recipe? This action cannot be reversed.')) return;
+    const { error } = await sb.from('recipes').delete().eq('id', id);
+    if (error) { alert(error.message); return; }
+    await loadRecipes();
+    showView('browse');
+}
+
+/* ---------- FORM VIEW ---------- */
+function openForm(recipe) {
+    if (recipe) {
+        formState = {
+            id: recipe.id,
+            title: recipe.title || '',
+            description: recipe.description || '',
+            imageUrl: recipe.image_url || '',
+            servings: recipe.servings || '',
+            prep_minutes: recipe.prep_minutes || '',
+            cook_minutes: recipe.cook_minutes || '',
+            source_note: recipe.source_note || '',
+            tagsText: (recipe.tags || []).join(', '),
+            ingredients: recipe.recipe_ingredients.map(i => ({
+                name: i.name,
+                quantity: i.quantity ?? '',
+                unit: i.unit || '',
+                note: i.note || '',
+                include_in_price_calc: i.include_in_price_calc !== false
+            })),
+            steps: recipe.recipe_steps.map(s => {
+                const parts = (s.instruction || '').split('\n\n');
+                return {
+                    instruction: parts[0] || '',
+                    description: parts.slice(1).join('\n\n') || '',
+                    timer_minutes: s.timer_seconds ? Math.round(s.timer_seconds / 60) : ''
+                };
+            })
+        };
+    } else {
+        formState = {
+            id: null,
+            title: '',
+            description: '',
+            imageUrl: '',
+            servings: '',
+            prep_minutes: '',
+            cook_minutes: '',
+            source_note: '',
+            tagsText: '',
+            ingredients: [{ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true }],
+            steps: [{ instruction: '', description: '', timer_minutes: '' }]
+        };
+    }
     showView('form');
 }
 
-function renderIngredientsEditor(list) {
-    const wrap = document.getElementById('ingredients-editor');
-    wrap.innerHTML = '';
-    list.forEach(addIngredientRow);
+function renderForm() {
+    const el = document.getElementById('form-view');
+    const f = formState;
+    if (!f) return;
+
+    el.innerHTML = `
+                <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.25rem;">
+                    <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    <span>Cancel</span>
+                </button>
+                <div class="form-panel">
+                    <span class="eyebrow-label">Editor</span>
+                    <h2 class="section-title speckled" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
+
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label>Recipe Title</label>
+                            <input type="text" id="f-title" value="${escapeHtml(f.title)}" placeholder="e.g. Spaghetti al Tonno" />
+                        </div>
+                        <div class="field full">
+                            <label>Short Description / Serving Notes</label>
+                            <textarea id="f-description" placeholder="A brief summary or background about this dish...">${escapeHtml(f.description)}</textarea>
+                        </div>
+                        <div class="field full">
+                            <label>Cover Image URL (Direct link to image)</label>
+                            <input type="text" id="f-image-url" value="${escapeHtml(f.imageUrl)}" placeholder="https://images.unsplash.com/..." />
+                        </div>
+                        <div class="field">
+                            <label>Servings</label>
+                            <input type="number" id="f-servings" min="1" value="${escapeHtml(f.servings)}" placeholder="4" />
+                        </div>
+                        <div class="field">
+                            <label>Prep Minutes</label>
+                            <input type="number" id="f-prep" min="0" value="${escapeHtml(f.prep_minutes)}" placeholder="15" />
+                        </div>
+                        <div class="field">
+                            <label>Cook Minutes</label>
+                            <input type="number" id="f-cook" min="0" value="${escapeHtml(f.cook_minutes)}" placeholder="20" />
+                        </div>
+                        <div class="field">
+                            <label>Tags (comma separated)</label>
+                            <input type="text" id="f-tags" value="${escapeHtml(f.tagsText)}" placeholder="dinner, pasta, seafood" />
+                        </div>
+                        <div class="field full">
+                            <label>Chef's Tips &amp; Tricks / Provenance (Multiline)</label>
+                            <textarea id="f-source" style="min-height:95px;" placeholder="e.g. Secret trick: Reserve 1/2 cup of salted pasta water to emulsify with the olive oil.">${escapeHtml(f.source_note)}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="block-subhead">Ingredients</div>
+                        <div id="ingredient-rows"></div>
+                        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="block-subhead">Preparation Steps</div>
+                        <div id="step-rows"></div>
+                        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn primary" id="save-btn">
+                            <span>Save Entry</span>
+                            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        </button>
+                        <button class="btn outline" id="form-cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            `;
+
+    renderIngredientRows();
+    renderStepRows();
+
+    document.getElementById('form-back-btn').addEventListener('click', cancelForm);
+    document.getElementById('form-cancel-btn').addEventListener('click', cancelForm);
+    document.getElementById('add-ingredient-btn').addEventListener('click', () => {
+        formState.ingredients.push({ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true });
+        renderIngredientRows();
+    });
+    document.getElementById('add-step-btn').addEventListener('click', () => {
+        formState.steps.push({ instruction: '', description: '', timer_minutes: '' });
+        renderStepRows();
+    });
+    document.getElementById('save-btn').addEventListener('click', saveRecipe);
 }
 
-function addIngredientRow(data = {}) {
-    const row = document.createElement('div');
-    row.className = 'dyn-row';
-
-    const mk = (tag, cls, attrs = {}) => {
-        const el = document.createElement(tag);
-        el.className = cls;
-        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-        return el;
-    };
-
-    row.appendChild(mk('input', '', {
-        type: 'number', step: 'any', min: '0',
-        value: data.qty ?? '', placeholder: 'Qty', 'aria-label': 'Quantity'
-    }));
-    row.appendChild(mk('input', 'unit-input', {
-        type: 'text', maxlength: '20',
-        value: data.unit || '', placeholder: 'Unit', 'aria-label': 'Unit'
-    }));
-    row.appendChild(mk('input', '', {
-        type: 'text', maxlength: '80',
-        value: data.name || '', placeholder: 'Ingredient *', 'aria-label': 'Ingredient name'
-    }));
-    row.appendChild(mk('input', 'note-input', {
-        type: 'text', maxlength: '120',
-        value: data.note || '', placeholder: 'Note (optional)', 'aria-label': 'Note'
-    }));
-
-    const rm = document.createElement('button');
-    rm.className = 'btn ghost small';
-    rm.type = 'button';
-    rm.textContent = '✕';
-    rm.setAttribute('aria-label', 'Remove ingredient');
-    rm.addEventListener('click', () => row.remove());
-    row.appendChild(rm);
-
-    document.getElementById('ingredients-editor').appendChild(row);
+function cancelForm() {
+    formState = null;
+    showView(currentRecipeId ? 'detail' : 'browse');
 }
 
-function renderStepsEditor(list) {
-    document.getElementById('steps-editor').innerHTML = '';
-    list.forEach(addStepRow);
+function renderIngredientRows() {
+    const container = document.getElementById('ingredient-rows');
+    container.innerHTML = formState.ingredients.map((ing, idx) => `
+                <div class="dyn-row" data-idx="${idx}">
+                    <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
+                    <div class="qty-stepper">
+                        <button type="button" class="qty-btn qty-dec">−</button>
+                        <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+                        <button type="button" class="qty-btn qty-inc">+</button>
+                    </div>
+                    <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
+                    <input type="text" class="note-input ing-note" placeholder="Note (e.g. finely chopped)" value="${escapeHtml(ing.note)}" />
+                    <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
+                    <button class="btn danger small remove-row-btn" type="button">✕</button>
+                </div>
+            `).join('') + `
+                <datalist id="unit-suggestions">
+                    <option value="g"></option><option value="kg"></option><option value="ml"></option><option value="l"></option>
+                    <option value="ks"></option><option value="lžíce"></option><option value="lžička"></option><option value="špetka"></option>
+                    <option value="can"></option><option value="clove"></option>
+                </datalist>
+            `;
+
+    container.querySelectorAll('.dyn-row').forEach(row => {
+        const idx = Number(row.dataset.idx);
+        row.querySelector('.ing-name').addEventListener('input', e => formState.ingredients[idx].name = e.target.value);
+        row.querySelector('.ing-qty').addEventListener('input', e => formState.ingredients[idx].quantity = e.target.value);
+        row.querySelector('.ing-unit').addEventListener('input', e => formState.ingredients[idx].unit = e.target.value);
+        row.querySelector('.note-input').addEventListener('input', e => formState.ingredients[idx].note = e.target.value);
+        row.querySelector('.ing-price').addEventListener('change', e => formState.ingredients[idx].include_in_price_calc = e.target.checked);
+        row.querySelector('.remove-row-btn').addEventListener('click', () => {
+            formState.ingredients.splice(idx, 1);
+            renderIngredientRows();
+        });
+    });
+    wireQtySteppers(container, 0.5);
 }
 
-function addStepRow(data = {}) {
-    const row = document.createElement('div');
-    row.className = 'dyn-row';
-
-    const num = document.createElement('span');
-    num.className = 'step-num';
-    renumberSteps();
-    row.appendChild(num);
-
-    const title = document.createElement('input');
-    title.type = 'text'; title.maxLength = 100; title.placeholder = 'Step summary *';
-    title.setAttribute('aria-label', 'Step summary');
-    title.value = data.title || '';
-    row.appendChild(title);
-
-    const desc = document.createElement('textarea');
-    desc.maxLength = 500; desc.placeholder = 'Detailed instructions…';
-    desc.setAttribute('aria-label', 'Step description');
-    desc.value = data.desc || '';
-    row.appendChild(desc);
-
-    const timerWrap = document.createElement('div');
-    timerWrap.className = 'checkbox-wrap';
-
-    const tmin = document.createElement('input');
-    tmin.type = 'number'; tmin.min = 0; tmin.max = 720; tmin.style.width = '70px';
-    tmin.value = data.timer_minutes > 0 ? data.timer_minutes : '';
-    tmin.setAttribute('aria-label', 'Timer minutes');
-
-    const tlabel = document.createElement('label');
-    tlabel.append(tmin, document.createTextNode(' min timer'));
-    timerWrap.appendChild(tlabel);
-    row.appendChild(timerWrap);
-
-    const rm = document.createElement('button');
-    rm.className = 'btn ghost small'; rm.type = 'button'; rm.textContent = '✕';
-    rm.setAttribute('aria-label', 'Remove step');
-    rm.addEventListener('click', () => { row.remove(); renumberSteps(); });
-    row.appendChild(rm);
-
-    document.getElementById('steps-editor').appendChild(row);
-    renumberSteps();
-}
-
-function renumberSteps() {
-    document.querySelectorAll('#steps-editor .dyn-row .step-num')
-        .forEach((el, i) => el.textContent = String(i + 1).padStart(2, '0'));
-}
-
-document.querySelectorAll('[data-add]').forEach(btn =>
-    btn.addEventListener('click', () =>
-        btn.dataset.add === 'ingredient' ? addIngredientRow() : addStepRow()));
-
-document.getElementById('recipe-form').addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const ingredients = [...document.querySelectorAll('#ingredients-editor .dyn-row')].map(row => {
-        const [qty, unit, name] = row.querySelectorAll('input');
-        const note = row.querySelector('.note-input') || null;
-        const nEl = note ? note : null;
-        const noteVal = nEl ? nEl.value.trim() : '';
-        const qtyNum = qty.value === '' ? null : Number(qty.value);
-        return {
-            qty: qtyNum,
-            unit: unit.value.trim(),
-            name: name.value.trim(),
-            note: noteVal
+function wireQtySteppers(container, step) {
+    container.querySelectorAll('.qty-stepper').forEach(stepper => {
+        const input = stepper.querySelector('input[type=number]');
+        const dec = stepper.querySelector('.qty-dec');
+        const inc = stepper.querySelector('.qty-inc');
+        const bump = (delta) => {
+            const min = input.min !== '' ? parseFloat(input.min) : 0;
+            let next = (parseFloat(input.value) || 0) + delta;
+            if (next < min) next = min;
+            input.value = Number.isInteger(step) ? next : Math.round(next * 100) / 100;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
         };
-    }).filter(i => i.name);
+        dec.addEventListener('click', () => bump(-step));
+        inc.addEventListener('click', () => bump(step));
+    });
+}
 
-    const steps = [...document.querySelectorAll('#steps-editor .dyn-row')].map(row => {
-        const inputs = row.querySelectorAll('input[type=text]');
-        const ta = row.querySelector('textarea');
-        const tnum = row.querySelector('input[type=number]');
-        return {
-            title: inputs[0]?.value.trim() || '',
-            desc: ta?.value.trim() || '',
-            timer_minutes: tnum && tnum.value !== '' ? Number(tnum.value) : 0
-        };
-    }).filter(s => s.title);
+function renderStepRows() {
+    const container = document.getElementById('step-rows');
+    container.innerHTML = formState.steps.map((s, idx) => `
+                <div class="dyn-row" data-idx="${idx}">
+                    <div style="display:flex; gap:0.5rem; width:100%; align-items:center;">
+                        <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:22px;">${idx + 1}.</span>
+                        <input type="text" class="step-input step-instruction" placeholder="Step title / core action (e.g. Sauté aromatics)" value="${escapeHtml(s.instruction)}" />
+                        <div class="qty-stepper" style="max-width:140px;">
+                            <button type="button" class="qty-btn qty-dec">−</button>
+                            <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+                            <button type="button" class="qty-btn qty-inc">+</button>
+                        </div>
+                        <button class="btn danger small remove-row-btn" type="button">✕</button>
+                    </div>
+                    <textarea class="step-desc-input" placeholder="Extended step description &amp; tips (optional, shown in kitchen mode)...">${escapeHtml(s.description || '')}</textarea>
+                </div>
+            `).join('');
 
+    container.querySelectorAll('.dyn-row').forEach(row => {
+        const idx = Number(row.dataset.idx);
+        row.querySelector('.step-instruction').addEventListener('input', e => formState.steps[idx].instruction = e.target.value);
+        row.querySelector('.step-desc-input').addEventListener('input', e => formState.steps[idx].description = e.target.value);
+        row.querySelector('.step-timer').addEventListener('input', e => formState.steps[idx].timer_minutes = e.target.value);
+        row.querySelector('.remove-row-btn').addEventListener('click', () => {
+            formState.steps.splice(idx, 1);
+            renderStepRows();
+        });
+    });
+    wireQtySteppers(container, 1);
+}
+
+/* Saves recipe with schema resilience */
+async function saveRecipe() {
+    const title = document.getElementById('f-title').value.trim();
+    if (!title) { alert('Please enter a recipe title.'); return; }
+
+    const imageUrl = document.getElementById('f-image-url').value.trim();
     const payload = {
-        title: document.getElementById('f-title').value.trim(),
-        description: document.getElementById('f-desc').value.trim(),
-        servings: Number(document.getElementById('f-servings').value) || 4,
-        total_minutes: Number(document.getElementById('f-time').value) || 0,
-        tags: parseTags(document.getElementById('f-tags').value),
-        image_url: safeImgUrl(document.getElementById('f-image').value.trim()) || null,
-        tips: document.getElementById('f-tips').value.trim(),
-        category: '',
-        ingredients,
-        steps,
-        is_public: false
+        title,
+        description: document.getElementById('f-description').value.trim() || null,
+        image_url: imageUrl || null,
+        servings: document.getElementById('f-servings').value ? parseInt(document.getElementById('f-servings').value, 10) : null,
+        prep_minutes: document.getElementById('f-prep').value ? parseInt(document.getElementById('f-prep').value, 10) : null,
+        cook_minutes: document.getElementById('f-cook').value ? parseInt(document.getElementById('f-cook').value, 10) : null,
+        source_note: document.getElementById('f-source').value.trim() || null,
+        tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+        updated_at: new Date().toISOString()
     };
 
-    if (!payload.title) { toast('Title is required.', 'error'); return; }
+    let recipeId = formState.id;
+    let saveError = null;
 
-    try {
-        let saved;
-        if (state.editingId) {
-            ({ data: saved } = await sb.from('recipes')
-                .update(payload).eq('id', state.editingId).select());
-        } else {
-            ({ data: saved } = await sb.from('recipes').insert(payload).select());
+    if (recipeId) {
+        let res = await sb.from('recipes').update(payload).eq('id', recipeId);
+        if (res.error && res.error.message.includes('image_url')) {
+            delete payload.image_url;
+            res = await sb.from('recipes').update(payload).eq('id', recipeId);
         }
-        const rec = saved?.[0];
-        if (!rec) throw new Error('Save returned no data.');
-        const idx = state.recipes.findIndex(x => x.id === rec.id);
-        if (idx >= 0) state.recipes[idx] = rec; else state.recipes.unshift(rec);
-        toast(state.editingId ? 'Recipe updated.' : 'Recipe created.', 'success');
-        openDetail(rec.id);
+        saveError = res.error;
+    } else {
+        payload.added_by_name = yourName();
+        let res = await sb.from('recipes').insert(payload).select().single();
+        if (res.error && res.error.message.includes('image_url')) {
+            delete payload.image_url;
+            res = await sb.from('recipes').insert(payload).select().single();
+        }
+        saveError = res.error;
+        if (res.data) recipeId = res.data.id;
+    }
+
+    if (saveError) {
+        alert('Save error: ' + saveError.message);
+        return;
+    }
+
+    await sb.from('recipe_ingredients').delete().eq('recipe_id', recipeId);
+    const validIngredients = formState.ingredients.filter(i => i.name.trim());
+    if (validIngredients.length) {
+        const rows = validIngredients.map((i, idx) => ({
+            recipe_id: recipeId,
+            name: i.name.trim(),
+            quantity: i.quantity !== '' ? parseFloat(i.quantity) : null,
+            unit: i.unit.trim() || null,
+            note: i.note.trim() || null,
+            sort_order: idx,
+            include_in_price_calc: !!i.include_in_price_calc
+        }));
+        const { error } = await sb.from('recipe_ingredients').insert(rows);
+        if (error) console.error('Ingredients save error:', error);
+    }
+
+    await sb.from('recipe_steps').delete().eq('recipe_id', recipeId);
+    const validSteps = formState.steps.filter(s => s.instruction.trim());
+    if (validSteps.length) {
+        const rows = validSteps.map((s, idx) => {
+            const combined = s.description.trim() ? `${s.instruction.trim()}\n\n${s.description.trim()}` : s.instruction.trim();
+            return {
+                recipe_id: recipeId,
+                step_number: idx + 1,
+                instruction: combined,
+                timer_seconds: s.timer_minutes !== '' ? parseInt(s.timer_minutes, 10) * 60 : null
+            };
+        });
+        const { error } = await sb.from('recipe_steps').insert(rows);
+        if (error) console.error('Steps save error:', error);
+    }
+
+    formState = null;
+    currentRecipeId = recipeId;
+    await loadRecipes();
+    showView('detail');
+}
+
+/* ---------- KITCHEN FULLSCREEN HUD ---------- */
+async function enterKitchen(recipe) {
+    kitchen = {
+        recipe,
+        stepIndex: 0,
+        checked: new Set(),
+        wakeLock: null,
+        timerHandle: null,
+        timerRemaining: 0,
+        timerInitial: 0,
+        timerRunning: false
+    };
+    document.getElementById('kitchen-view').classList.remove('hidden');
+    await requestWakeLock();
+    renderKitchen();
+}
+
+function exitKitchen() {
+    if (kitchen?.timerHandle) clearInterval(kitchen.timerHandle);
+    releaseWakeLock();
+    kitchen = null;
+    document.getElementById('kitchen-view').classList.add('hidden');
+}
+
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            kitchen.wakeLock = await navigator.wakeLock.request('screen');
+        }
     } catch (err) {
-        toast('Save failed: ' + err.message, 'error');
+        console.warn('WakeLock unavailable:', err);
+    }
+}
+
+function releaseWakeLock() {
+    if (kitchen?.wakeLock) {
+        kitchen.wakeLock.release().catch(() => { });
+    }
+}
+
+document.addEventListener('visibilitychange', async () => {
+    if (kitchen && document.visibilityState === 'visible' && !kitchen.wakeLock) {
+        await requestWakeLock();
     }
 });
 
-document.getElementById('btn-cancel-form').addEventListener('click', () => showView('browse'));
-document.getElementById('btn-new-recipe').addEventListener('click', () => openForm(null));
+function renderKitchen() {
+    const k = kitchen;
+    if (!k) return;
+    const r = k.recipe;
+    const el = document.getElementById('kitchen-view');
+    const totalSteps = r.recipe_steps.length;
+    const currentStepRaw = r.recipe_steps[k.stepIndex] || { instruction: 'Enjoy your meal!' };
 
-/* ================================================================
-   KITCHEN MODE
-   ================================================================ */
-function openKitchen(recipe) {
-    state.kitchen = { recipe, servings: recipe.servings, doneSteps: new Set(), checkedIng: new Set() };
-    document.getElementById('k-title').textContent = recipe.title;
-    document.getElementById('k-serving-label').textContent = `${recipe.servings} servings`;
-    renderKitchenIngredients();
-    renderKitchenSteps();
-    document.getElementById('kitchen-view').hidden = false;
-    document.body.classList.add('kitchen-open');
-}
+    // Parse Step Title and Step Extended Description
+    const parts = (currentStepRaw.instruction || '').split('\n\n');
+    const stepTitle = parts[0] || '';
+    const stepDesc = parts.slice(1).join('\n\n') || '';
+    const stepProgressPct = totalSteps ? Math.round(((k.stepIndex + 1) / totalSteps) * 100) : 100;
 
-function closeKitchen() {
-    document.getElementById('kitchen-view').hidden = true;
-    document.body.classList.remove('kitchen-open');
-    state.kitchen = { recipe: null, servings: null, doneSteps: new Set(), checkedIng: new Set() };
-}
+    el.innerHTML = `
+                <div class="kitchen-topbar">
+                    <div>
+                        <span class="eyebrow-label">In Progress...</span>
+                        <div class="kitchen-title speckled">${escapeHtml(r.title)}</div>
+                    </div>
+                    <button class="btn danger small" id="exit-kitchen-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <span>Exit</span>
+                    </button>
+                </div>
 
-function scaledQty(qty) {
-    const base = state.kitchen.recipe.servings || 1;
-    const target = state.kitchen.servings || base;
-    if (qty == null) return null;
-    return Math.round(qty * (target / base) * 100) / 100;
-}
+                <div class="kitchen-layout-grid">
+                    <!-- LEFT COLUMN: INGREDIENTS CHECKLIST & NOTES -->
+                    <aside class="kitchen-sidebar">
+                        <div class="kitchen-sidebar-header">
+                            <div>
+                                <strong style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--navy-heading);">Ingredients</strong>
+                                <span style="font-size:0.75rem; color:var(--glacier); margin-left:6px; font-weight:700;">(${k.checked.size}/${r.recipe_ingredients.length})</span>
+                            </div>
+                            <button class="btn ghost small" id="reset-checks-btn" style="font-size:0.65rem;">Reset</button>
+                        </div>
 
-function renderKitchenIngredients() {
-    const list = document.getElementById('k-ingredients');
-    list.innerHTML = '';
-    (state.kitchen.recipe.ingredients || []).forEach((ing, i) => {
-        const row = document.createElement('div');
-        row.className = 'kitchen-ing-row' + (state.kitchen.checkedIng.has(i) ? ' checked' : '');
-        row.setAttribute('role', 'checkbox');
-        row.tabIndex = 0;
-        row.setAttribute('aria-checked', String(state.kitchen.checkedIng.has(i)));
+                        <div class="kitchen-ing-list">
+                            ${r.recipe_ingredients.map((ing, idx) => `
+                                <div class="kitchen-ing-row ${k.checked.has(idx) ? 'checked' : ''}" data-idx="${idx}">
+                                    <span class="kitchen-ing-checkbox">${k.checked.has(idx) ? '✓' : ''}</span>
+                                    <span style="flex:1; color:var(--navy-heading);">${escapeHtml(ing.name)}${ing.note ? ` <small style="color:var(--text-faint);">(${escapeHtml(ing.note)})</small>` : ''}</span>
+                                    <span class="kitchen-ing-qty">${escapeHtml(fmtQty(ing))}</span>
+                                </div>
+                            `).join('') || '<div class="empty-state">No ingredients listed.</div>'}
+                        </div>
 
-        const box = document.createElement('span');
-        box.className = 'kitchen-ing-checkbox';
-        box.textContent = '✓';
-        row.appendChild(box);
+                        ${(r.description || r.source_note) ? `
+                            <div class="kitchen-note-box">
+                                ${r.description ? `<div><strong>Overview:</strong> ${escapeHtml(r.description)}</div>` : ''}
+                                ${r.source_note ? `<div style="margin-top:0.35rem;"><strong>Tips:</strong> ${escapeHtml(r.source_note)}</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </aside>
 
-        const qty = document.createElement('span');
-        qty.className = 'kitchen-ing-qty';
-        const sq = scaledQty(ing.qty);
-        qty.textContent = sq != null ? formatQty(sq) + (ing.unit ? ' ' + ing.unit : '') : '';
-        row.appendChild(qty);
+                    <!-- RIGHT COLUMN: ACTIVE STEP & DYNAMIC TIMER -->
+                    <main class="kitchen-main">
+                        <div class="kitchen-step-meta">
+                            <span class="kitchen-step-counter">
+                                STEP ${k.stepIndex + 1} OF ${totalSteps || 1}
+                                <span class="kitchen-step-progress-track"><span class="kitchen-step-progress-fill" style="width:${stepProgressPct}%;"></span></span>
+                            </span>
+                            <span class="rc-tag">${r.cook_minutes ? r.cook_minutes + ' MIN COOK' : 'PREPARATION'}</span>
+                        </div>
 
-        const nm = document.createElement('span');
-        nm.textContent = ing.name + (ing.note ? ` (${ing.note})` : '');
-        row.appendChild(nm);
+                        <div class="kitchen-step-center">
+                            <div class="kitchen-step-text">${escapeHtml(stepTitle)}</div>
+                            ${stepDesc ? `<div class="kitchen-step-desc">${escapeHtml(stepDesc)}</div>` : ''}
 
-        const toggle = () => {
-            state.kitchen.checkedIng.has(i)
-                ? state.kitchen.checkedIng.delete(i)
-                : state.kitchen.checkedIng.add(i);
-            renderKitchenIngredients();
-        };
-        row.addEventListener('click', toggle);
-        row.addEventListener('keydown', ev => {
-            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(); }
-        });
-        list.appendChild(row);
+                            ${currentStepRaw.timer_seconds ? `
+                                <div class="kitchen-timer-card" id="kitchen-timer-card">
+                                    <span class="kitchen-timer-label">Step Timer</span>
+                                    <div class="kitchen-timer-display" id="timer-display">--:--</div>
+                                    <div class="kitchen-timer-bar-track">
+                                        <div class="kitchen-timer-bar-fill" id="timer-bar-fill" style="width:100%;"></div>
+                                    </div>
+                                    <div class="kitchen-timer-controls">
+                                        <button class="btn primary small" id="timer-toggle-btn">
+                                            <span>${k.timerRunning ? 'Pause' : (k.timerRemaining > 0 ? 'Resume' : `Start ${Math.round(currentStepRaw.timer_seconds / 60)}m Timer`)}</span>
+                                        </button>
+                                        <button class="btn outline small" id="timer-reset-btn">Reset</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="kitchen-nav">
+                            <button class="btn outline" id="prev-step-btn" ${k.stepIndex === 0 ? 'disabled' : ''}>
+                                <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                                <span>Previous Step</span>
+                            </button>
+                            <button class="btn primary" id="next-step-btn" ${k.stepIndex >= totalSteps - 1 ? 'disabled' : ''}>
+                                <span>${k.stepIndex >= totalSteps - 1 ? 'Finished ✓' : 'Next Step'}</span>
+                                ${k.stepIndex < totalSteps - 1 ? `<svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}
+                            </button>
+                        </div>
+                    </main>
+                </div>
+            `;
+
+    document.getElementById('exit-kitchen-btn').addEventListener('click', exitKitchen);
+    document.getElementById('reset-checks-btn').addEventListener('click', () => {
+        k.checked.clear();
+        renderKitchen();
     });
-}
 
-function renderKitchenSteps() {
-    const wrap = document.getElementById('k-steps');
-    wrap.innerHTML = '';
-    const steps = state.kitchen.recipe.steps || [];
-    let firstUndone = steps.findIndex((_, i) => !state.kitchen.doneSteps.has(i));
-    if (firstUndone === -1) firstUndone = 0;
+    el.querySelectorAll('.kitchen-ing-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const idx = Number(row.dataset.idx);
+            if (k.checked.has(idx)) k.checked.delete(idx);
+            else k.checked.add(idx);
+            renderKitchen();
+        });
+    });
 
-    steps.forEach((st, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'kitchen-step'
-            + (state.kitchen.doneSteps.has(i) ? ' done' : '')
-            + (i === firstUndone ? ' current' : '');
-        btn.type = 'button';
-
-        const num = document.createElement('span');
-        num.className = 'k-step-num';
-        num.textContent = String(i + 1).padStart(2, '0');
-        btn.appendChild(num);
-
-        const content = document.createElement('div');
-        content.className = 'k-step-content';
-        content.appendChild(Object.assign(document.createElement('div'),
-            { className: 'k-step-title', textContent: st.title }));
-        if (st.desc) content.appendChild(Object.assign(document.createElement('p'),
-            { className: 'k-step-desc', textContent: st.desc }));
-        if (st.timer_minutes > 0) {
-            const chip = document.createElement('span');
-            chip.className = 'k-timer-chip';
-            chip.setAttribute('role', 'button');
-            chip.tabIndex = 0;
-            chip.textContent = `⏲ ${st.timer_minutes} min`;
-            chip.addEventListener('click', ev => { ev.stopPropagation(); startTimer(st.timer_minutes, st.title); });
-            chip.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.stopPropagation(); startTimer(st.timer_minutes, st.title); } });
-            content.appendChild(chip);
+    const prevBtn = document.getElementById('prev-step-btn');
+    const nextBtn = document.getElementById('next-step-btn');
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+        stopTimer();
+        k.stepIndex--;
+        renderKitchen();
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+        if (k.stepIndex < totalSteps - 1) {
+            stopTimer();
+            k.stepIndex++;
+            renderKitchen();
         }
-        btn.appendChild(content);
-        btn.addEventListener('click', () => {
-            state.kitchen.doneSteps.has(i)
-                ? state.kitchen.doneSteps.delete(i)
-                : state.kitchen.doneSteps.add(i);
-            renderKitchenSteps();
-        });
-        wrap.appendChild(btn);
     });
 
-    const pct = steps.length ? Math.round(done / steps.length * 100) : 0;
-    document.getElementById('k-progress-fill').style.width = pct + '%';
-    document.getElementById('k-progress').setAttribute('aria-valuenow', pct);
+    const toggleBtn = document.getElementById('timer-toggle-btn');
+    const resetBtn = document.getElementById('timer-reset-btn');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            if (k.timerRunning) {
+                pauseKitchenTimer();
+            } else {
+                startOrResumeKitchenTimer(currentStepRaw.timer_seconds);
+            }
+        });
+    }
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => resetKitchenTimer(currentStepRaw.timer_seconds));
+    }
+
+    if (currentStepRaw.timer_seconds) {
+        if (k.timerRemaining === 0 && !k.timerRunning) {
+            k.timerRemaining = currentStepRaw.timer_seconds;
+            k.timerInitial = currentStepRaw.timer_seconds;
+        }
+        updateTimerDisplay();
+    }
 }
 
-document.getElementById('btn-exit-kitchen').addEventListener('click', closeKitchen);
+/* Full Timer State Controls (Start / Pause / Resume / Reset) */
+function startOrResumeKitchenTimer(defaultSeconds) {
+    const k = kitchen;
+    if (!k) return;
+    if (k.timerRemaining <= 0) {
+        k.timerRemaining = defaultSeconds;
+        k.timerInitial = defaultSeconds;
+    }
+    k.timerRunning = true;
+    if (k.timerHandle) clearInterval(k.timerHandle);
 
-/* ================================================================
-   TIMER
-   ================================================================ */
-let timerInterval = null;
+    updateTimerDisplay();
+    updateTimerBtnLabel();
 
-function startTimer(minutes, label) {
-    stopTimer(false);
-    const overlay = document.getElementById('timer-overlay');
-    document.getElementById('timer-title').textContent = label || 'Timer';
-    overlay.classList.add('active');
+    k.timerHandle = setInterval(() => {
+        k.timerRemaining--;
+        updateTimerDisplay();
+        if (k.timerRemaining <= 0) {
+            clearInterval(k.timerHandle);
+            k.timerHandle = null;
+            k.timerRunning = false;
+            if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+            const display = document.getElementById('timer-display');
+            if (display) display.textContent = "DONE! 🔔";
+            const card = document.getElementById('kitchen-timer-card');
+            if (card) card.classList.add('is-done');
+            updateTimerBtnLabel();
+        }
+    }, 1000);
+}
+
+function pauseKitchenTimer() {
+    const k = kitchen;
+    if (!k) return;
+    k.timerRunning = false;
+    if (k.timerHandle) {
+        clearInterval(k.timerHandle);
+        k.timerHandle = null;
+    }
+    updateTimerBtnLabel();
+}
+
+function resetKitchenTimer(defaultSeconds) {
+    const k = kitchen;
+    if (!k) return;
+    pauseKitchenTimer();
+    k.timerRemaining = defaultSeconds;
+    k.timerInitial = defaultSeconds;
+    const card = document.getElementById('kitchen-timer-card');
+    if (card) card.classList.remove('is-done');
+    updateTimerDisplay();
+    updateTimerBtnLabel();
+}
+
+function stopTimer() {
+    const k = kitchen;
+    if (!k) return;
+    if (k.timerHandle) clearInterval(k.timerHandle);
+    k.timerHandle = null;
+    k.timerRunning = false;
+    k.timerRemaining = 0;
+}
+
+function updateTimerBtnLabel() {
+    const toggleBtn = document.getElementById('timer-toggle-btn');
+    if (!toggleBtn || !kitchen) return;
+    const span = toggleBtn.querySelector('span');
+    if (span) {
+        span.textContent = kitchen.timerRunning ? 'Pause' : (kitchen.timerRemaining > 0 && kitchen.timerRemaining < kitchen.timerInitial ? 'Resume' : 'Start Timer');
+    }
+}
+
+function updateTimerDisplay() {
     const display = document.getElementById('timer-display');
-    let remaining = minutes * 60;
-
-    const tick = () => {
-        remaining--;
-        if (remaining <= 0) {
-            clearInterval(timerInterval);
-            display.textContent = "00:00";
-            document.querySelector('.timer-box').classList.add('alarm');
-            toast(`⏰ Time's up — ${label}`, 'success');
-            try {
-                beep(3);
-            } catch (_) { /* audio may be blocked */ }
-            return;
-        }
-        display.textContent = fmtClock(remaining);
-    };
-    display.textContent = fmtClock(remaining);
-    timerInterval = setInterval(tick, 1000);
-}
-
-function stopTimer(hideOverlay = true) {
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = null;
-    if (hideOverlay) {
-        document.getElementById('timer-overlay').classList.remove('active');
-        document.querySelector('.timer-box')?.classList.remove('alarm');
+    const barFill = document.getElementById('timer-bar-fill');
+    if (!display || !kitchen) return;
+    const m = Math.floor(kitchen.timerRemaining / 60);
+    const s = kitchen.timerRemaining % 60;
+    display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    if (barFill && kitchen.timerInitial > 0) {
+        const pct = Math.max(0, Math.min(100, (kitchen.timerRemaining / kitchen.timerInitial) * 100));
+        barFill.style.width = `${pct}%`;
     }
 }
 
-function fmtClock(sec) {
-    const m = Math.floor(sec / 60), s = sec % 60;
-    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+/* ---------- REALTIME REFRESH ---------- */
+function subscribeRealtime() {
+    sb.channel('recipes-sync')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'recipes' }, () => loadRecipes())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_ingredients' }, () => loadRecipes())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_steps' }, () => loadRecipes())
+        .subscribe();
 }
 
-// Simple WebAudio beeper — no external assets needed
-function beep(times = 3) {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        for (let i = 0; i < times; i++) {
-            const osc = ctx.createOscillator(), gain = ctx.createGain();
-            osc.frequency.value = 880;
-            gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.35);
-            gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + i * 0.35 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.35 + 0.3);
-            osc.connect(gain).connect(ctx.destination);
-            osc.start(ctx.currentTime + i * 0.35);
-            osc.stop(ctx.currentTime + i * 0.35 + 0.32);
-        }
-    } catch (_) { /* no audio available */ }
-}
-
-document.getElementById('btn-timer-stop').addEventListener('click', () => stopTimer(true));
-document.getElementById('timer-overlay').addEventListener('click', e => {
-    if (e.target.id === 'timer-overlay') stopTimer(true);
-});
-
-/* ================================================================
-   CONFIRM MODAL
-   ================================================================ */
-let modalCallback = null;
-
-function confirmModal(title, message, onConfirm) {
-    modalCallback = onConfirm;
-    document.getElementById('modal-title').textContent = title;
-    document.getElementById('modal-message').textContent = message;
-    document.getElementById('modal-backdrop').classList.add('active');
-}
-
-document.getElementById('btn-modal-cancel').addEventListener('click', hideModal);
-document.getElementById('btn-modal-confirm').addEventListener('click', async () => {
-    hideModal();
-    if (modalCallback) await modalCallback();
-    modalCallback = null;
-});
-document.getElementById('modal-backdrop').addEventListener('click', e => {
-    if (e.target.id === 'modal-backdrop') hideModal();
-});
-
-function hideModal() {
-    document.getElementById('modal-backdrop').classList.remove('active');
-}
-
-/* ================================================================
-   NAV WIRING & INIT
-   ================================================================ */
-document.getElementById('btn-home').addEventListener('click', () => {
-    if (!document.getElementById('kitchen-view').hidden) closeKitchen();
-    else showView('browse');
-});
-document.getElementById('login-home-link').addEventListener('click', () => showView('browse'));
-
-window.addEventListener('beforeunload', e => {
-    if (!document.getElementById('kitchen-view').hidden) { e.preventDefault(); e.returnValue = ''; }
-});
-
-(async function init() {
-    initAuth();
-    showView('browse');
-})();
+/* ---------- BOOTSTRAP ---------- */
+checkSession();
