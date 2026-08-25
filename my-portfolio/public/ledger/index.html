@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="build-time" content="__BUILD_TIMESTAMP__">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../src/assets/ico/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../src/assets/ico/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../src/assets/ico/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../src/assets/ico/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../src/assets/ico/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../src/assets/ico/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../src/assets/ico/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../src/assets/ico/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/ico/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../src/assets/ico/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../src/assets/ico/favicon-16x16.png">
+  <link rel="manifest" href="../src/assets/ico/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="../src/assets/ico/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- GLOBAL SPECKLES FILTER DEFINITION -->
+  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+    <filter id="distress-speckles">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 15 -11" result="speckles" />
+      <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+    </filter>
+  </svg>
+
+  <!-- Alpine Prism geometric background: fixed, monochrome, very low opacity. Decorative only. -->
+  <svg class="prism-bg" aria-hidden="true" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice">
+    <polygon points="0,0 320,0 140,260 0,180" opacity="0.9" />
+    <polygon points="320,0 620,0 520,300 140,260" opacity="0.55" />
+    <polygon points="620,0 1000,0 1000,140 520,300" opacity="0.75" />
+    <polygon points="0,180 140,260 60,520 0,470" opacity="0.4" />
+    <polygon points="140,260 520,300 400,560 60,520" opacity="0.65" />
+    <polygon points="520,300 1000,140 1000,430 720,540 400,560" opacity="0.3" />
+    <polygon points="0,470 60,520 20,700 0,700" opacity="0.55" />
+    <polygon points="60,520 400,560 300,700 20,700" opacity="0.35" />
+    <polygon points="400,560 720,540 620,700 300,700" opacity="0.6" />
+    <polygon points="720,540 1000,430 1000,700 620,700" opacity="0.45" />
+  </svg>
+
+  <div id="login-screen">
+    <div class="theme-toggle-row">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+        <span class="tt-icon tt-sun">☀</span>
+        <span class="tt-icon tt-moon"><span class="moon-crescent"></span></span>
+      </button>
+    </div>
+    <h1>Ledger</h1>
+    <p>Sign in to track hours.</p>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="email" placeholder="try: test@test.com" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="try: test" />
+    </div>
+    <button class="btn primary" id="login-btn" style="width:100%">Sign in</button>
+    <div id="error-msg"></div>
+  </div>
+
+  <div class="wrap hidden" id="app-screen">
+    <header class="top">
+      <div>
+        <div class="brand">Ledger<em>.</em></div>
+        <div class="sub">o meu trabalho</div>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle-app" type="button" aria-label="Toggle light and dark mode">
+          <span class="tt-icon tt-sun">☀</span>
+          <span class="tt-icon tt-moon"><span class="moon-crescent"></span></span>
+        </button>
+        <a href="../" id="home-link">Home</a>
+        <button id="signout">Sign out</button>
+      </div>
+    </header>
+
+    <div class="card timer-card">
+      <div class="timer-status">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">No session running</span>
+      </div>
+      <div class="timer-display" id="timer-display">00:00:00</div>
+      <div class="session-meta" id="session-meta"></div>
+
+      <div id="focus-visual">
+
+        <img id="focus-gif" src="../src/assets/PiggyBank.gif" alt=""
+             style="width:100%; display:block;"
+             onerror="this.style.display='none'; document.getElementById('focus-visual-placeholder').style.display='flex';" />
+        <div id="focus-visual-placeholder">your gif goes here</div>
+      </div>
+
+      <div id="pre-session-fields">
+        <div class="project-row">
+          <div class="col">
+            <select id="project-select">
+              <option value="">Select a project…</option>
+              <option value="__new__">+ Add new project…</option>
+            </select>
+          </div>
+          <div class="rate-col">
+            <input type="number" id="rate-input" placeholder="Rate / hr" min="0" step="0.01" />
+          </div>
+          <div class="currency-col">
+            <select id="currency-select">
+              <option value="CZK">CZK</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+        <div id="new-project-row">
+          <input type="text" id="new-project-input" placeholder="New project name, e.g. Website Aunt" />
+          <button class="btn" id="new-project-confirm">Add</button>
+          <button class="btn ghost" id="new-project-cancel">Cancel</button>
+        </div>
+        <div id="project-error"></div>
+
+        <div class="timer-note">
+          <input type="text" id="note-input" placeholder="What are you working on? (optional)" />
+        </div>
+      </div>
+
+      <div class="timer-actions">
+        
+        <button class="btn primary" id="start-btn">Start</button>
+        <button class="btn" id="pause-btn" style="display:none">Pause</button>
+        <button class="btn running" id="resume-btn" style="display:none">Resume</button>
+        <button class="btn" id="stop-btn" style="display:none; border-color:var(--danger); color:var(--danger);">Stop
+          &amp; save</button>
+      </div>
+    </div>
+
+    <div class="card" id="summary-card">
+      <div class="summary-row">
+        <div class="summary-total">
+          <div class="label" id="summary-label">This month</div>
+          <div class="summary-value-lines" id="summary-value">0h 00m</div>
+        </div>
+        <div class="filters">
+          <div class="field">
+            <label>Project</label>
+            <select id="filter-project">
+              <option value="">All projects</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>From</label>
+            <input type="date" id="filter-from" />
+          </div>
+          <div class="field">
+            <label>To</label>
+            <input type="date" id="filter-to" />
+          </div>
+          <button class="btn" id="filter-apply">Apply</button>
+          <button class="btn ghost" id="filter-reset">This month</button>
+        </div>
+      </div>
+      <div class="breakdown" id="breakdown-section" style="display:none">
+        <div class="breakdown-title">By project</div>
+        <div id="breakdown-list"></div>
+      </div>
+    </div>
+
+    <div class="card" id="statement-card">
+      <div class="entries-head speckled" style="margin:0 0 16px;">
+        <span>Print / export statement</span>
+      </div>
+      <div class="statement-setup">
+        <div class="field">
+          <label>Your name</label>
+          <input type="text" id="stmt-your-name" placeholder="Jane Doe" />
+        </div>
+        <div class="field">
+          <label>Sent to</label>
+          <input type="text" id="stmt-friend-name" placeholder="Friend's name" />
+        </div>
+        <div class="field full">
+          <label>Your bank IBAN (for the payment QR code)</label>
+          <input type="text" id="stmt-iban" placeholder="CZ65 0800 0000 1920 0014 5399" />
+        </div>
+        <div class="field">
+          <label>Variable symbol (optional)</label>
+          <input type="text" id="stmt-vs" placeholder="e.g. 202607" />
+        </div>
+        <div class="field">
+          <label>QR payment note (optional)</label>
+          <input type="text" id="stmt-msg" placeholder="e.g. Hours July" />
+        </div>
+      </div>
+      <div id="stmt-range-note"></div>
+      <button class="btn primary" id="stmt-generate">Preview statement</button>
+    </div>
+
+    <div id="entries-section">
+      <div class="entries-head speckled">
+        <span>Entries</span>
+        <span class="count" id="entries-count">0</span>
+      </div>
+      <div id="entries-list"></div>
+    </div>
+  </div>
+
+  <div id="print-overlay" class="hidden">
+    <div class="print-toolbar no-print">
+      <button class="btn ghost" id="print-close">Close</button>
+      <button class="btn primary" id="print-now">Print / Save as PDF</button>
+    </div>
+    <div id="print-sheet">
+      <h1>Hours worked</h1>
+      <div class="print-sub" id="ps-period">Period</div>
+      <div class="print-meta">
+        <div>
+          <div class="m-label">From</div>
+          <div class="m-value" id="ps-from">—</div>
+        </div>
+        <div>
+          <div class="m-label">To</div>
+          <div class="m-value" id="ps-to">—</div>
+        </div>
+        <div>
+          <div class="m-label">Project</div>
+          <div class="m-value" id="ps-project">All</div>
+        </div>
+        <div>
+          <div class="m-label">Generated</div>
+          <div class="m-value" id="ps-generated">—</div>
+        </div>
+      </div>
+      <table class="print-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Project</th>
+            <th>Note</th>
+            <th class="num">Duration</th>
+            <th class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="ps-rows"></tbody>
+      </table>
+      <div id="ps-currency-blocks"></div>
+      <div class="print-footer">Generated with Ledger by Adam Křivka.</div>
+    </div>
+  </div>
+
+
+
+  <footer class="app-footer" id="app-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Ledger<em>.</em></div>
+        <div class="footer-tagline">o meu trabalho</div>
+      </div>
+      <div class="footer-meta">
+        <span class="footer-item">v<span id="footer-version">0.0.5</span></span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Published <span id="footer-published">__BUILD_TIMESTAMP__</span></span>
+        <span class="footer-sep">·</span>
+        <a class="footer-item footer-link" id="footer-contact" href="mailto:krivkaad@gmail.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+
+</body>
+
+</html>

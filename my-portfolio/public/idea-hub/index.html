@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Idea Hub · Adam Křivka</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="build-time" content="__BUILD_TIMESTAMP__">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../src/assets/ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../src/assets/ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../src/assets/ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../src/assets/ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="../src/assets/ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../src/assets/ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../src/assets/ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../src/assets/ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../src/assets/ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/assets/ico/favicon-16x16.png">
+    <link rel="manifest" href="../src/assets/ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../src/assets/ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= AUTH SCREEN ================= -->
+    <div id="auth-screen" class="screen active">
+        <svg class="bgpoly" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 600,0 350,420 0,320" fill="rgba(0,168,255,0.10)" />
+            <polygon points="600,0 1200,0 950,360 350,420" fill="rgba(4,39,54,0.7)" />
+            <polygon points="1200,0 1440,0 1440,440 950,360" fill="rgba(0,168,255,0.06)" />
+            <polygon points="0,320 350,420 450,900 0,900" fill="rgba(4,39,54,0.5)" />
+            <polygon points="350,420 950,360 850,900 450,900" fill="rgba(0,168,255,0.08)" />
+            <polygon points="950,360 1440,440 1440,900 850,900" fill="rgba(4,39,54,0.85)" />
+        </svg>
+
+        <div class="auth-card">
+            <span class="auth-eyebrow" id="auth-eyebrow">Private Workspace</span>
+            <h1 class="auth-title" id="auth-title">Idea Hub</h1>
+
+            <div class="auth-error" id="auth-error"></div>
+
+            <form id="auth-form">
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" id="auth-email" required autocomplete="email" />
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" id="auth-password" required autocomplete="current-password" minlength="6" />
+                </div>
+                <button type="submit" class="btn-glacier" id="auth-submit">
+                    <span id="auth-submit-label">Sign In</span>
+                </button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="auth-switch-text">New here?</span>
+                <button type="button" id="auth-switch-btn">Create an account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= APP SCREEN ================= -->
+    <div id="app-screen" class="screen">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">IH</div>
+                <div>
+                    <div class="brand-title">Idea Hub</div>
+                    <div class="brand-sub" id="board-name">My Idea Hub</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn-small" id="new-idea-btn">
+                    <svg class="icon-plus" viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    New Idea
+                </button>
+                <button class="btn-outline-sm" id="signout-btn">Sign Out</button>
+            </div>
+        </div>
+
+        <div class="canvas-wrap" id="canvas-wrap">
+            <div class="hint-toast" id="link-hint">
+                <span>Click another idea to connect it - or</span>
+                <button id="link-cancel">Cancel</button>
+            </div>
+
+            <div class="empty-state" id="empty-state">
+                <h2>Blank canvas</h2>
+                <p>Click "New Idea" to drop your first block, then drag to arrange, link, and grow it.</p>
+            </div>
+
+            <svg class="edges-layer" id="edges-layer"></svg>
+            <div class="canvas-world" id="canvas-world"></div>
+
+            <div class="zoom-controls">
+                <button class="btn-icon" id="zoom-in">+</button>
+                <button class="btn-icon" id="zoom-reset">⤾</button>
+                <button class="btn-icon" id="zoom-out">-</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DETAIL PANEL ================= -->
+    <div id="detail-panel">
+        <div class="panel-head">
+            <span>Idea Detail</span>
+            <button class="btn-icon" id="panel-close">
+                <svg class="icon-x" viewBox="0 0 24 24">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="panel-body">
+            <div class="panel-field">
+                <label>Title</label>
+                <input type="text" id="detail-title" />
+            </div>
+            <div class="panel-field">
+                <label>Details</label>
+                <textarea id="detail-body" rows="4"></textarea>
+            </div>
+            <div class="panel-field">
+                <label>Color</label>
+                <div class="color-row" id="color-row"></div>
+            </div>
+
+            <div class="panel-actions">
+                <button class="btn-small" id="save-idea-btn">Save</button>
+                <button class="btn-outline-sm" id="add-subidea-btn">+ Sub-idea</button>
+                <button class="btn-outline-sm" id="link-mode-btn">
+                    <svg class="icon-link" viewBox="0 0 24 24" style="width:0.9em;height:0.9em;margin-right:0.3em;">
+                        <path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 1 1 0 10h-2M8 12h8" />
+                    </svg>
+                    Connect
+                </button>
+                <button class="btn-outline-sm" id="delete-idea-btn" style="color:#ff8a82;">Delete</button>
+            </div>
+
+            <div>
+                <span class="section-label" id="subidea-label">Sub-ideas</span>
+                <div class="subidea-list" id="subidea-list"></div>
+            </div>
+
+            <div>
+                <span class="section-label">Comments</span>
+                <div class="comment-list" id="comment-list"></div>
+                <div class="comment-form" style="margin-top:0.6rem;">
+                    <textarea id="comment-input" placeholder="Add a comment…"></textarea>
+                    <button class="btn-small" id="comment-submit">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+arrow displays at wrong coordinates, zoom into where mouse is, creating account email problem, font and
+speckles, white polygon background, add a comment field design, double click to create an idea, home button. clicking
+away hides edit fields, scrolling up and down zoom,

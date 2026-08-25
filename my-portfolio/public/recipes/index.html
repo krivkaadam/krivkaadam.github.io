@@ -1,0 +1,2249 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipes · Family Recipe Book</title>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../src/assets/ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../src/assets/ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../src/assets/ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../src/assets/ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="../src/assets/ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../src/assets/ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../src/assets/ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../src/assets/ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../src/assets/ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../src/assets/ico/favicon-16x16.png">
+    <link rel="manifest" href="../src/assets/ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../src/assets/ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        @font-face {
+            font-family: 'MyDisplay';
+            src: url('../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --abyss-teal: #eef3f8;
+            --deep-fjord: #042330;
+            --fjord-surface: #072e3d;
+            --glacier: #1f7fd1;
+            --glacier-hover: #2f8fe0;
+            --alpine-red: #FF3B30;
+            --alpine-red-hover: #E03126;
+            --alpine-white: #FFFFFF;
+            --ice-white: #1d2b3a;
+            --text-dim: rgba(29, 43, 58, 0.7);
+            --text-faint: rgba(29, 43, 58, 0.45);
+            --border: rgba(31, 127, 209, 0.22);
+            --border-subtle: rgba(29, 43, 58, 0.08);
+            --border-strong: rgba(31, 127, 209, 0.5);
+
+            --poly-fill-1: rgba(31, 127, 209, 0.06);
+            --poly-fill-2: rgba(31, 127, 209, 0.03);
+            --poly-fill-3: rgba(255, 255, 255, 0.5);
+
+            --surface-card-a: #ffffff;
+            --surface-card-b: #f4f8fc;
+            --navy-heading: #245685;
+
+            --font-display: 'Anton', sans-serif;
+            --font-titles: 'MyDisplay', sans-serif;
+            --font-stencil: 'Allerta Stencil', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--abyss-teal);
+            color: var(--ice-white);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============ GLOBAL BACKGROUND POLYGON LAYER ============ */
+        .bg-polygon-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-polygon-layer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .shell {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: calc(68px + 2rem) clamp(1rem, 3.5vw, 2.5rem) 60px;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* ============ TYPOGRAPHY & LABELS ============ */
+        .eyebrow-label {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--glacier);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-title {
+            font-family: var(--font-titles);
+            font-size: clamp(3.3rem, 6vw, 4.8rem);
+            color: var(--navy-heading);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* ============ HEADER & NAVIGATION ============ */
+        header.top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #042330;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            height: 68px;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(0.75rem, 3vw, 2rem);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            background: var(--deep-fjord);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--glacier);
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            min-width: 0;
+        }
+
+        .brand-text .brand-name {
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--alpine-white);
+            display: block;
+            white-space: nowrap;
+        }
+
+        .brand-text .brand-role {
+            display: block;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-shrink: 0;
+        }
+
+        /* ============ BUTTON SYSTEM ============ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            font-family: var(--font-body);
+            font-weight: 800;
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.7rem 1.25rem;
+            cursor: pointer;
+            border: 0;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border-radius: 0;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn.primary {
+            background: var(--glacier);
+            color: #FFFFFF;
+        }
+
+        .btn.primary:hover:not(:disabled) {
+            background: var(--glacier-hover);
+        }
+
+        .btn.danger {
+            background: var(--alpine-red);
+            color: var(--alpine-white);
+        }
+
+        .btn.danger:hover:not(:disabled) {
+            background: var(--alpine-red-hover);
+        }
+
+        .btn.outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--navy-heading);
+        }
+
+        .btn.outline:hover:not(:disabled) {
+            border-color: var(--glacier);
+            color: var(--glacier);
+        }
+
+        .nav-inner .btn.outline {
+            color: var(--alpine-white);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .nav-inner .btn.outline:hover:not(:disabled) {
+            color: var(--glacier-hover);
+            border-color: var(--glacier-hover);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--text-dim);
+            padding: 0.45rem 0.75rem;
+        }
+
+        .btn.ghost:hover:not(:disabled) {
+            color: var(--glacier);
+        }
+
+        .btn.small {
+            padding: 0.45rem 0.75rem;
+            font-size: 0.72rem;
+        }
+
+        .btn.full {
+            width: 100%;
+        }
+
+        .icon-vector {
+            width: 1.05em;
+            height: 1.05em;
+            fill: currentColor;
+            display: inline-block;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn:hover .icon-arrow-right {
+            transform: translateX(3px);
+        }
+
+        .btn:hover .icon-arrow-left {
+            transform: translateX(-3px);
+        }
+
+        /* ============ INPUTS & FORM FIELDS ============ */
+        .field {
+            margin-bottom: 1rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--glacier);
+            margin-bottom: 0.35rem;
+        }
+
+        input[type=email],
+        input[type=password],
+        input[type=text],
+        input[type=number],
+        textarea,
+        select {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            color: var(--navy-heading);
+            padding: 0.75rem 0.9rem;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            border-radius: 0;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--glacier);
+            box-shadow: 0 0 0 1px var(--glacier);
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: stretch;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .qty-stepper input[type=number] {
+            border: none;
+            text-align: center;
+            flex: 1;
+            min-width: 36px;
+            background: transparent;
+            padding: 0.75rem 0.25rem;
+        }
+
+        .qty-stepper input[type=number]:focus {
+            box-shadow: none;
+        }
+
+        .qty-stepper .qty-btn {
+            background: transparent;
+            border: none;
+            color: var(--glacier);
+            font-weight: 800;
+            font-size: 1rem;
+            width: 32px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-stepper .qty-btn:hover {
+            background: rgba(31, 127, 209, 0.1);
+        }
+
+        .qty-stepper .qty-btn:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .qty-stepper .qty-btn:last-child {
+            border-left: 1px solid var(--border);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231f7fd1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            padding-right: 32px;
+        }
+
+        /* ============ LOGIN SCREEN ============ */
+        #login-screen {
+            max-width: 420px;
+            margin: 100px auto 40px;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 45px rgba(20, 36, 58, 0.12);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            position: relative;
+            z-index: 2;
+            width: calc(100% - 2rem);
+        }
+
+        #login-screen h1 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            color: var(--navy-heading);
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        #login-screen p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #error-msg {
+            color: var(--alpine-red);
+            font-size: 0.78rem;
+            margin-top: 0.85rem;
+            font-weight: 600;
+            min-height: 18px;
+        }
+
+        /* ============ BROWSE VIEW & CARDS ============ */
+        .section-head-browse {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            margin-bottom: 1.75rem;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .recipe-card {
+            background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
+            border: 1px solid var(--border);
+            padding: 1.35rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+            box-shadow: 0 10px 25px rgba(20, 36, 58, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--glacier);
+            box-shadow: 0 12px 30px rgba(31, 127, 209, 0.2);
+        }
+
+        .rc-image-wrap {
+            width: calc(100% + 2.7rem);
+            margin: -1.35rem -1.35rem 1rem;
+            height: 155px;
+            position: relative;
+            background: var(--deep-fjord);
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rc-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-card:hover .rc-image-wrap img {
+            transform: scale(1.04);
+        }
+
+        .rc-badge-pill {
+            position: absolute;
+            top: 0.65rem;
+            left: 0.65rem;
+            background: rgba(4, 35, 48, 0.88);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            z-index: 2;
+        }
+
+        .recipe-card h3 {
+            font-family: var(--font-body);
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--navy-heading);
+            margin-bottom: 0.4rem;
+            line-height: 1.25;
+            word-break: break-word;
+        }
+
+        /* Clamped description prevents edge-spill */
+        .rc-description-clamped {
+            font-size: 0.84rem;
+            color: var(--text-dim);
+            line-height: 1.45;
+            margin-bottom: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recipe-card .rc-meta {
+            font-size: 0.74rem;
+            color: var(--text-dim);
+            display: flex;
+            gap: 0.6rem 0.85rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        .recipe-card .rc-tags {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .rc-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: rgba(31, 127, 209, 0.12);
+            color: var(--glacier);
+            border: 1px solid rgba(31, 127, 209, 0.25);
+            padding: 2px 7px;
+        }
+
+        .empty-state {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            border: 1px dashed var(--border);
+            background: rgba(31, 127, 209, 0.04);
+            grid-column: 1 / -1;
+        }
+
+        /* ============ DETAIL VIEW ============ */
+        .detail-panel {
+            background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
+            border: 1px solid var(--border);
+            padding: clamp(1.25rem, 3vw, 2rem);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            box-shadow: 0 15px 35px rgba(20, 36, 58, 0.1);
+        }
+
+        .detail-image-container {
+            width: calc(100% + clamp(2.5rem, 6vw, 4rem));
+            margin: calc(-1 * clamp(1.25rem, 3vw, 2rem)) calc(-1 * clamp(1.25rem, 3vw, 2rem)) 1.5rem;
+            max-height: 360px;
+            overflow: hidden;
+            position: relative;
+            background: var(--deep-fjord);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-image-container img {
+            width: 100%;
+            height: 100%;
+            max-height: 360px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .detail-title {
+            font-family: var(--font-titles);
+            font-size: clamp(2.85rem, 6.45vw, 4.5rem);
+            color: var(--navy-heading);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            line-height: 1.05;
+            margin: 0.5rem 0;
+            word-break: break-word;
+        }
+
+        .detail-meta {
+            font-size: 0.78rem;
+            color: var(--glacier);
+            display: flex;
+            gap: 0.6rem 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        .detail-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .tag-chip {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: rgba(31, 127, 209, 0.15);
+            color: var(--glacier);
+            padding: 3px 9px;
+            border: 1px solid rgba(31, 127, 209, 0.3);
+        }
+
+        .detail-desc {
+            color: var(--text-dim);
+            font-size: 0.98rem;
+            line-height: 1.65;
+            padding-left: 1.15rem;
+            border-left: 3px solid var(--glacier);
+            margin-bottom: 2rem;
+            word-break: break-word;
+        }
+
+        .block-subhead {
+            font-family: var(--font-body);
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--glacier);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .ingredient-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.65rem 0;
+            border-bottom: 1px dashed var(--border-subtle);
+            font-size: 0.95rem;
+        }
+
+        .ingredient-row:last-child {
+            border-bottom: none;
+        }
+
+        .ingredient-qty {
+            font-family: var(--font-mono);
+            color: var(--glacier);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .ingredient-name {
+            flex: 1;
+            color: var(--navy-heading);
+            font-weight: 500;
+        }
+
+        .ingredient-note {
+            color: var(--text-faint);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .step-row {
+            display: flex;
+            gap: 0.9rem;
+            padding: 0.9rem 0;
+            border-bottom: 1px dashed var(--border-subtle);
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: var(--ice-white);
+        }
+
+        .step-row:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            font-family: var(--font-stencil);
+            color: var(--glacier);
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            width: 24px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title-text {
+            font-weight: 700;
+            color: var(--navy-heading);
+            margin-bottom: 0.2rem;
+        }
+
+        .step-desc-text {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .tips-panel {
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: rgba(31, 127, 209, 0.06);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--glacier);
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--glacier);
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.4rem;
+        }
+
+        .tips-panel p {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        /* ============ FORM VIEW ============ */
+        .form-panel {
+            background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
+            border: 1px solid var(--border);
+            padding: clamp(1.25rem, 3vw, 2rem);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-grid .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .dyn-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.65rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            background: rgba(31, 127, 209, 0.04);
+            padding: 0.65rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .dyn-row input[type=text] {
+            flex: 2;
+            min-width: 120px;
+        }
+
+        .dyn-row input[type=number] {
+            flex: 1;
+            min-width: 70px;
+        }
+
+        .dyn-row .unit-input {
+            flex: 1;
+            min-width: 75px;
+        }
+
+        .dyn-row .note-input {
+            flex: 2;
+            min-width: 120px;
+        }
+
+        .dyn-row .step-input {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .dyn-row .step-desc-input {
+            width: 100%;
+            min-height: 55px;
+            font-size: 0.85rem;
+            margin-top: 0.35rem;
+        }
+
+        .dyn-row .checkbox-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+            padding-top: 0.6rem;
+        }
+
+        .form-section {
+            margin: 2rem 0 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ============ KITCHEN MODE HUD ============ */
+        #kitchen-view {
+            position: fixed;
+            inset: 0;
+            background: #eef3f8;
+            color: #14243a;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem clamp(0.75rem, 3vw, 2rem);
+            overflow: hidden;
+        }
+
+        #kitchen-view.hidden {
+            display: none;
+        }
+
+        .kitchen-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.85rem;
+            flex-shrink: 0;
+            gap: 0.5rem;
+        }
+
+        .kitchen-title {
+            font-family: var(--font-titles);
+            font-size: clamp(2.6rem, 5vw, 3.7rem);
+            text-transform: uppercase;
+            color: var(--navy-heading);
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+        }
+
+        .kitchen-layout-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .kitchen-sidebar {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            min-height: 0;
+            box-shadow: 0 10px 25px rgba(20, 36, 58, 0.05);
+        }
+
+        .kitchen-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 0.65rem;
+            flex-shrink: 0;
+        }
+
+        .kitchen-ing-list {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 0.25rem;
+        }
+
+        .kitchen-ing-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.35rem;
+            border-bottom: 1px dashed var(--border-subtle);
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .kitchen-ing-row:hover {
+            background: rgba(31, 127, 209, 0.04);
+        }
+
+        .kitchen-ing-row.checked {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+
+        .kitchen-ing-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--glacier);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: transparent;
+            background: #ffffff;
+        }
+
+        .kitchen-ing-row.checked .kitchen-ing-checkbox {
+            background: var(--glacier);
+            color: #ffffff;
+        }
+
+        .kitchen-ing-qty {
+            font-family: var(--font-mono);
+            color: var(--glacier);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Taller, scrollable recipe notes in kitchen mode */
+        .kitchen-note-box {
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            max-height: 160px;
+            min-height: 60px;
+            overflow-y: auto;
+            line-height: 1.45;
+            background: rgba(31, 127, 209, 0.03);
+            padding: 0.65rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .kitchen-main {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem clamp(1rem, 2.5vw, 2rem);
+            min-height: 0;
+            box-shadow: 0 10px 25px rgba(20, 36, 58, 0.05);
+            position: relative;
+        }
+
+        .kitchen-step-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.65rem;
+            flex-shrink: 0;
+        }
+
+        .kitchen-step-counter {
+            font-family: var(--font-stencil);
+            color: var(--glacier);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .kitchen-step-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .kitchen-step-text {
+            font-size: clamp(1.3rem, 2.8vw, 2.1rem);
+            line-height: 1.3;
+            color: var(--navy-heading);
+            font-weight: 700;
+            max-width: 780px;
+            margin-bottom: 0.65rem;
+        }
+
+        .kitchen-step-desc {
+            font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+            line-height: 1.55;
+            color: var(--text-dim);
+            max-width: 680px;
+        }
+
+        .kitchen-timer-block {
+            margin-top: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .kitchen-timer-display {
+            font-family: var(--font-mono);
+            font-size: clamp(2.5rem, 5vw, 3.4rem);
+            font-weight: 700;
+            color: var(--glacier);
+            letter-spacing: 0.05em;
+            line-height: 1;
+        }
+
+        .kitchen-timer-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .kitchen-nav {
+            display: flex;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .kitchen-nav .btn {
+            flex: 1;
+            padding: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        /* ============ FOOTER ============ */
+        footer#siteFooter {
+            position: relative;
+            background: #042330;
+            color: rgba(255, 255, 255, 0.75);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem clamp(1rem, 3vw, 2.5rem);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: rgba(226, 232, 240, 0.65);
+        }
+
+        .footer-bottom a {
+            color: var(--glacier);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--glacier-hover);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .speckled {
+            filter: url(#distress-speckles);
+        }
+
+        /* ============ MOBILE RESPONSIVE FIXES ============ */
+        @media (max-width: 860px) {
+            .kitchen-layout-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 200px 1fr;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .recipe-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-head-browse {
+                align-items: flex-start;
+            }
+
+            .section-head-browse button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .brand-text .brand-role {
+                display: none;
+            }
+
+            .header-actions .btn {
+                padding: 0.45rem 0.55rem;
+                font-size: 0.7rem;
+            }
+
+            .header-actions .btn span.btn-label-long {
+                display: none;
+            }
+
+            .dyn-row {
+                flex-direction: column;
+            }
+
+            .dyn-row input,
+            .dyn-row .qty-stepper {
+                width: 100%;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer-sep {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOBAL FIXED BACKGROUND POLYGONS -->
+    <div class="bg-polygon-layer" aria-hidden="true">
+        <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+            <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+            <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+            <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+            <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+            <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+            <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+            <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+            <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
+        </svg>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <!-- LLM: Add return home button-->
+    <div id="login-screen">
+        <span class="eyebrow-label">Authentication</span>
+        <h1 class="section-title speckled">Recipes</h1>
+        <p>Sign in to access your culinary ledger.</p>
+        <div class="field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <button class="btn primary full" id="login-btn">
+            <span>Sign In</span>
+            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" fill="none" />
+            </svg>
+        </button>
+        <div id="error-msg"></div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="hidden" id="app-screen" style="display:flex; flex-direction:column; min-height:100vh;">
+        <header class="top-nav">
+            <div class="nav-inner">
+                <div class="brand-group" onclick="showView('browse')">
+                    <div class="brand-mark" title="Recipes Archive">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 13.8V4a2 2 0 1 1 4 0v9.8M3 8h7M15 4v16M18 4a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3v5" />
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">Recipes</span>
+                        <span class="brand-role">Family Recipe Book</span>
+                    </div>
+                </div>
+
+                <!-- Responsive Header Actions -->
+                <div class="header-actions">
+                    <a href="../" class="btn outline small" id="home-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        <span class="btn-label-long">Portfolio</span>
+                    </a>
+                    <button class="btn primary small" id="new-recipe-btn">
+                        <span>+ <span class="btn-label-long">New Recipe</span></span>
+                    </button>
+                    <button class="btn outline small" id="signout">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                        </svg>
+                        <span class="btn-label-long">Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="shell">
+            <!-- BROWSE VIEW -->
+            <div id="browse-view">
+                <div class="section-head-browse">
+                    <div>
+                        <span class="eyebrow-label">Culinary Archive</span>
+                        <h2 class="section-title speckled">ALL RECIPES</h2>
+                    </div>
+                    <button class="btn primary" id="browse-new-recipe-btn">
+                        <span>+ Add New Recipe</span>
+                        <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5"
+                                  stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search by title, tag, ingredient, or note…" />
+                </div>
+
+                <div id="recipe-grid" class="recipe-grid"></div>
+            </div>
+
+            <!-- DETAIL VIEW -->
+            <div id="detail-view" class="hidden"></div>
+
+            <!-- FORM VIEW -->
+            <div id="form-view" class="hidden"></div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="siteFooter">
+            <div class="footer-inner">
+                <div class="footer-bottom">
+                    <span>© <span id="year"></span> VITE_AUTHOR_NAME. All rights reserved.</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">v<span id="footer-version">0.2.1</span></span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">no personal data collected :&#41;</span>
+                    <span class="footer-sep">·</span>
+                    <span class="footer-item">Published <span id="footer-published">__BUILD_TIMESTAMP__</span></span>
+                    <span class="footer-sep">·</span>
+                    <span>VITE_AUTHOR_LOCATION</span>
+                    <span class="footer-sep">·</span>
+                    <a class="footer-item footer-link" href="mailto:krivkaad@gmail.com">Contact</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- KITCHEN FULLSCREEN HUD -->
+    <div id="kitchen-view" class="hidden"></div>
+
+    <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+    <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+        <filter id="distress-speckles">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+            <feColorMatrix in="noise" type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 15 -11" result="speckles" />
+            <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+        </filter>
+    </svg>
+
+    <script>
+        const SUPABASE_URL = "VITE_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "VITE_SUPABASE_ANON_KEY";
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const NAME_KEY = 'recepty_adam';
+        let currentUser = null;
+        let recipes = [];
+        let searchTerm = '';
+        let currentView = 'browse';
+        let currentRecipeId = null;
+        let formState = null;
+        let kitchen = null;
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        /* ---------- AUTHENTICATION ---------- */
+        async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        async function attemptLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errEl = document.getElementById('error-msg');
+            errEl.textContent = '';
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                return;
+            }
+            currentUser = data.user;
+            showApp();
+        }
+
+        document.getElementById('login-btn').addEventListener('click', attemptLogin);
+        ['email', 'password'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') attemptLogin();
+            });
+        });
+
+        document.getElementById('signout').addEventListener('click', async () => {
+            await sb.auth.signOut();
+            currentUser = null;
+            showLogin();
+        });
+
+        function showLogin() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('app-screen').classList.add('hidden');
+        }
+
+        async function showApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            await loadRecipes();
+            subscribeRealtime();
+            showView('browse');
+        }
+
+        function yourName() {
+            try {
+                return localStorage.getItem(NAME_KEY) || prompt('Your name (shown as contributor):') || 'Adam';
+            } catch (e) {
+                return 'Adam';
+            }
+        }
+
+        /* ---------- DATA MANAGEMENT ---------- */
+        async function loadRecipes() {
+            const { data, error } = await sb
+                .from('recipes')
+                .select('*, recipe_ingredients(*), recipe_steps(*)')
+                .order('created_at', { ascending: false });
+            if (error) {
+                console.error(error);
+                return;
+            }
+            recipes = (data || []).map(r => {
+                r.recipe_ingredients = (r.recipe_ingredients || []).sort((a, b) => a.sort_order - b.sort_order);
+                r.recipe_steps = (r.recipe_steps || []).sort((a, b) => a.step_number - b.step_number);
+                return r;
+            });
+            renderCurrentView();
+        }
+
+        function findRecipe(id) { return recipes.find(r => r.id === id); }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str == null ? '' : String(str);
+            return d.innerHTML;
+        }
+
+        function fmtQty(ing) {
+            if (ing.quantity == null) return '';
+            const q = Number(ing.quantity);
+            const qStr = Number.isInteger(q) ? q : q.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+            return `${qStr}${ing.unit ? ' ' + ing.unit : ''}`;
+        }
+
+        /* ---------- VIEW ROUTING ---------- */
+        function showView(name) {
+            currentView = name;
+            document.getElementById('browse-view').classList.toggle('hidden', name !== 'browse');
+            document.getElementById('detail-view').classList.toggle('hidden', name !== 'detail');
+            document.getElementById('form-view').classList.toggle('hidden', name !== 'form');
+            window.scrollTo(0, 0);
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            if (currentView === 'browse') renderBrowse();
+            else if (currentView === 'detail') renderDetail();
+            else if (currentView === 'form') renderForm();
+        }
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderBrowse();
+        });
+
+        document.getElementById('new-recipe-btn').addEventListener('click', () => openForm(null));
+        document.getElementById('browse-new-recipe-btn').addEventListener('click', () => openForm(null));
+
+        /* ---------- BROWSE RENDER ---------- */
+        function renderBrowse() {
+            const grid = document.getElementById('recipe-grid');
+            let list = recipes;
+            if (searchTerm) {
+                list = recipes.filter(r => {
+                    const hay = [
+                        r.title,
+                        r.description,
+                        r.source_note,
+                        ...(r.tags || []),
+                        ...(r.recipe_ingredients || []).map(i => i.name)
+                    ].join(' ').toLowerCase();
+                    return hay.includes(searchTerm);
+                });
+            }
+            if (!list.length) {
+                grid.innerHTML = `<div class="empty-state">${recipes.length ? 'No recipes match your search query.' : 'No recipes cataloged yet — add one with "+ New Recipe".'}</div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map(r => {
+                const totalMinutes = (r.prep_minutes || 0) + (r.cook_minutes || 0);
+                const timeLabel = totalMinutes > 0 ? `${totalMinutes} MIN` : (r.cook_minutes ? `${r.cook_minutes} MIN COOK` : 'READY TO COOK');
+                return `
+                <article class="recipe-card" data-id="${r.id}">
+                    <div>
+                        ${r.image_url ? `
+                            <div class="rc-image-wrap">
+                                <img src="${escapeHtml(r.image_url)}" alt="${escapeHtml(r.title)}" onerror="this.parentElement.style.display='none'" />
+                                <span class="rc-badge-pill">${timeLabel}</span>
+                            </div>
+                        ` : ''}
+                        <span class="eyebrow-label">${timeLabel} · ${r.servings ? r.servings + ' SERVINGS' : 'CHEF SPECIAL'}</span>
+                        <h3>${escapeHtml(r.title)}</h3>
+                        
+                        ${r.description ? `<p class="rc-description-clamped">${escapeHtml(r.description)}</p>` : ''}
+
+                        <div class="rc-meta">
+                            ${r.servings ? `<span>// ${r.servings} Servings</span>` : ''}
+                            ${totalMinutes > 0 ? `<span>// ${totalMinutes}m total</span>` : ''}
+                            ${r.source_note ? `<span>// ${escapeHtml(r.source_note.slice(0, 30))}${r.source_note.length > 30 ? '…' : ''}</span>` : ''}
+                        </div>
+                    </div>
+                    ${(r.tags && r.tags.length) ? `<div class="rc-tags">${r.tags.map(t => `<span class="rc-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                </article>
+                `;
+            }).join('');
+
+            grid.querySelectorAll('.recipe-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    currentRecipeId = card.dataset.id;
+                    showView('detail');
+                });
+            });
+        }
+
+        /* ---------- DETAIL RENDER ---------- */
+        function renderDetail() {
+            const r = findRecipe(currentRecipeId);
+            const el = document.getElementById('detail-view');
+            if (!r) {
+                el.innerHTML = '<div class="empty-state">Recipe not found.</div>';
+                return;
+            }
+            // LLM: remove the border below image, improve the layout on this page to look more professional, polished while keeping the design elements and colors
+            el.innerHTML = `
+                <button class="btn outline small" id="back-btn" style="margin-bottom: 1.25rem;">
+                    <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    <span>Back to All</span>
+                </button>
+                <div class="detail-panel">
+                    ${r.image_url ? `
+                        <div class="detail-image-container">
+                            <img src="${escapeHtml(r.image_url)}" alt="${escapeHtml(r.title)}" onerror="this.parentElement.style.display='none'" />
+                        </div>
+                    ` : ''}
+                    <span class="eyebrow-label">Recipe Overview</span>
+                    <h1 class="detail-title speckled">${escapeHtml(r.title)}</h1>
+                    
+                    <div class="detail-meta">
+                        ${r.servings ? `<span>// ${r.servings} SERVINGS</span>` : ''}
+                        ${r.prep_minutes ? `<span>// PREP ${r.prep_minutes} MIN</span>` : ''}
+                        ${r.cook_minutes ? `<span>// COOK ${r.cook_minutes} MIN</span>` : ''}
+                        ${r.added_by_name ? `<span>// BY ${escapeHtml(r.added_by_name)}</span>` : ''}
+                    </div>
+
+                    ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+                    ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
+
+                    <div class="block-subhead">Ingredients List</div>
+                    <div style="margin-bottom: 2rem;">
+                        ${r.recipe_ingredients.map(i => `
+                            <div class="ingredient-row">
+                                <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
+                                <span class="ingredient-qty">${escapeHtml(fmtQty(i))}</span>
+                            </div>
+                        `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
+                    </div>
+
+                    <div class="block-subhead">Preparation Steps</div>
+                    <div>
+                        ${r.recipe_steps.map(s => {
+                // Extract title and description from step if separated by newline
+                const parts = (s.instruction || '').split('\n\n');
+                const stepTitle = parts[0] || '';
+                const stepDesc = parts.slice(1).join('\n\n') || '';
+                return `
+                            <div class="step-row">
+                                <span class="step-num">${s.step_number}</span>
+                                <div class="step-content">
+                                    <div class="step-title-text">
+                                        ${escapeHtml(stepTitle)}
+                                        ${s.timer_seconds ? ` <strong style="color:var(--glacier); font-size:0.82rem; font-family:var(--font-mono);">(${Math.round(s.timer_seconds / 60)} min timer)</strong>` : ''}
+                                    </div>
+                                    ${stepDesc ? `<div class="step-desc-text">${escapeHtml(stepDesc)}</div>` : ''}
+                                </div>
+                            </div>
+                            `;
+            }).join('') || '<div class="empty-state">No steps listed.</div>'}
+                    </div>
+
+                    ${r.source_note ? `
+                        <div class="tips-panel">
+                            <div class="tips-header">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                <span>Chef's Tips &amp; Tricks / Provenance</span>
+                            </div>
+                            <p>${escapeHtml(r.source_note)}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="detail-actions">
+                        <button class="btn primary" id="cook-btn">
+                            <span>Let's cook</span>
+                            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        </button>
+                        <button class="btn outline" id="edit-btn">Edit Recipe</button>
+                        <button class="btn danger" id="delete-btn">Delete</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('back-btn').addEventListener('click', () => showView('browse'));
+            document.getElementById('cook-btn').addEventListener('click', () => enterKitchen(r));
+            document.getElementById('edit-btn').addEventListener('click', () => openForm(r));
+            document.getElementById('delete-btn').addEventListener('click', () => deleteRecipe(r.id));
+        }
+
+        async function deleteRecipe(id) {
+            if (!confirm('Delete this recipe? This action cannot be reversed.')) return;
+            const { error } = await sb.from('recipes').delete().eq('id', id);
+            if (error) { alert(error.message); return; }
+            await loadRecipes();
+            showView('browse');
+        }
+
+        /* ---------- FORM VIEW ---------- */
+        function openForm(recipe) {
+            if (recipe) {
+                formState = {
+                    id: recipe.id,
+                    title: recipe.title || '',
+                    description: recipe.description || '',
+                    imageUrl: recipe.image_url || '',
+                    servings: recipe.servings || '',
+                    prep_minutes: recipe.prep_minutes || '',
+                    cook_minutes: recipe.cook_minutes || '',
+                    source_note: recipe.source_note || '',
+                    tagsText: (recipe.tags || []).join(', '),
+                    ingredients: recipe.recipe_ingredients.map(i => ({
+                        name: i.name,
+                        quantity: i.quantity ?? '',
+                        unit: i.unit || '',
+                        note: i.note || '',
+                        include_in_price_calc: i.include_in_price_calc !== false
+                    })),
+                    steps: recipe.recipe_steps.map(s => {
+                        const parts = (s.instruction || '').split('\n\n');
+                        return {
+                            instruction: parts[0] || '',
+                            description: parts.slice(1).join('\n\n') || '',
+                            timer_minutes: s.timer_seconds ? Math.round(s.timer_seconds / 60) : ''
+                        };
+                    })
+                };
+            } else {
+                formState = {
+                    id: null,
+                    title: '',
+                    description: '',
+                    imageUrl: '',
+                    servings: '',
+                    prep_minutes: '',
+                    cook_minutes: '',
+                    source_note: '',
+                    tagsText: '',
+                    ingredients: [{ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true }],
+                    steps: [{ instruction: '', description: '', timer_minutes: '' }]
+                };
+            }
+            showView('form');
+        }
+
+        function renderForm() {
+            const el = document.getElementById('form-view');
+            const f = formState;
+            if (!f) return;
+
+            el.innerHTML = `
+                <button class="btn outline small" id="form-back-btn" style="margin-bottom: 1.25rem;">
+                    <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    <span>Cancel</span>
+                </button>
+                <div class="form-panel">
+                    <span class="eyebrow-label">Editor</span>
+                    <h2 class="section-title speckled" style="margin-bottom: 1.5rem;">${f.id ? 'EDIT RECIPE' : 'NEW RECIPE ENTRY'}</h2>
+
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label>Recipe Title</label>
+                            <input type="text" id="f-title" value="${escapeHtml(f.title)}" placeholder="e.g. Spaghetti al Tonno" />
+                        </div>
+                        <div class="field full">
+                            <label>Short Description / Serving Notes</label>
+                            <textarea id="f-description" placeholder="A brief summary or background about this dish...">${escapeHtml(f.description)}</textarea>
+                        </div>
+                        <div class="field full">
+                            <label>Cover Image URL (Direct link to image)</label>
+                            <input type="text" id="f-image-url" value="${escapeHtml(f.imageUrl)}" placeholder="https://images.unsplash.com/..." />
+                        </div>
+                        <div class="field">
+                            <label>Servings</label>
+                            <input type="number" id="f-servings" min="1" value="${escapeHtml(f.servings)}" placeholder="4" />
+                        </div>
+                        <div class="field">
+                            <label>Prep Minutes</label>
+                            <input type="number" id="f-prep" min="0" value="${escapeHtml(f.prep_minutes)}" placeholder="15" />
+                        </div>
+                        <div class="field">
+                            <label>Cook Minutes</label>
+                            <input type="number" id="f-cook" min="0" value="${escapeHtml(f.cook_minutes)}" placeholder="20" />
+                        </div>
+                        <div class="field">
+                            <label>Tags (comma separated)</label>
+                            <input type="text" id="f-tags" value="${escapeHtml(f.tagsText)}" placeholder="dinner, pasta, seafood" />
+                        </div>
+                        <div class="field full">
+                            <label>Chef's Tips &amp; Tricks / Provenance (Multiline)</label>
+                            <textarea id="f-source" style="min-height:95px;" placeholder="e.g. Secret trick: Reserve 1/2 cup of salted pasta water to emulsify with the olive oil.">${escapeHtml(f.source_note)}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="block-subhead">Ingredients</div>
+                        <div id="ingredient-rows"></div>
+                        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="block-subhead">Preparation Steps</div>
+                        <div id="step-rows"></div>
+                        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn primary" id="save-btn">
+                            <span>Save Entry</span>
+                            <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                        </button>
+                        <button class="btn outline" id="form-cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            `;
+
+            renderIngredientRows();
+            renderStepRows();
+
+            document.getElementById('form-back-btn').addEventListener('click', cancelForm);
+            document.getElementById('form-cancel-btn').addEventListener('click', cancelForm);
+            document.getElementById('add-ingredient-btn').addEventListener('click', () => {
+                formState.ingredients.push({ name: '', quantity: '', unit: '', note: '', include_in_price_calc: true });
+                renderIngredientRows();
+            });
+            document.getElementById('add-step-btn').addEventListener('click', () => {
+                formState.steps.push({ instruction: '', description: '', timer_minutes: '' });
+                renderStepRows();
+            });
+            document.getElementById('save-btn').addEventListener('click', saveRecipe);
+        }
+
+        function cancelForm() {
+            formState = null;
+            showView(currentRecipeId ? 'detail' : 'browse');
+        }
+
+        function renderIngredientRows() {
+            const container = document.getElementById('ingredient-rows');
+            container.innerHTML = formState.ingredients.map((ing, idx) => `
+                <div class="dyn-row" data-idx="${idx}">
+                    <input type="text" class="ing-name" placeholder="Ingredient name" value="${escapeHtml(ing.name)}" />
+                    <div class="qty-stepper">
+                        <button type="button" class="qty-btn qty-dec">−</button>
+                        <input type="number" class="ing-qty" placeholder="Qty" step="any" value="${escapeHtml(ing.quantity)}" />
+                        <button type="button" class="qty-btn qty-inc">+</button>
+                    </div>
+                    <input type="text" class="unit-input ing-unit" placeholder="Unit" list="unit-suggestions" value="${escapeHtml(ing.unit)}" />
+                    <input type="text" class="note-input ing-note" placeholder="Note (e.g. finely chopped)" value="${escapeHtml(ing.note)}" />
+                    <span class="checkbox-wrap"><input type="checkbox" class="ing-price" ${ing.include_in_price_calc ? 'checked' : ''}/> Price?</span>
+                    <button class="btn danger small remove-row-btn" type="button">✕</button>
+                </div>
+            `).join('') + `
+                <datalist id="unit-suggestions">
+                    <option value="g"></option><option value="kg"></option><option value="ml"></option><option value="l"></option>
+                    <option value="ks"></option><option value="lžíce"></option><option value="lžička"></option><option value="špetka"></option>
+                    <option value="can"></option><option value="clove"></option>
+                </datalist>
+            `;
+
+            container.querySelectorAll('.dyn-row').forEach(row => {
+                const idx = Number(row.dataset.idx);
+                row.querySelector('.ing-name').addEventListener('input', e => formState.ingredients[idx].name = e.target.value);
+                row.querySelector('.ing-qty').addEventListener('input', e => formState.ingredients[idx].quantity = e.target.value);
+                row.querySelector('.ing-unit').addEventListener('input', e => formState.ingredients[idx].unit = e.target.value);
+                row.querySelector('.note-input').addEventListener('input', e => formState.ingredients[idx].note = e.target.value);
+                row.querySelector('.ing-price').addEventListener('change', e => formState.ingredients[idx].include_in_price_calc = e.target.checked);
+                row.querySelector('.remove-row-btn').addEventListener('click', () => {
+                    formState.ingredients.splice(idx, 1);
+                    renderIngredientRows();
+                });
+            });
+            wireQtySteppers(container, 0.5);
+        }
+
+        function wireQtySteppers(container, step) {
+            container.querySelectorAll('.qty-stepper').forEach(stepper => {
+                const input = stepper.querySelector('input[type=number]');
+                const dec = stepper.querySelector('.qty-dec');
+                const inc = stepper.querySelector('.qty-inc');
+                const bump = (delta) => {
+                    const min = input.min !== '' ? parseFloat(input.min) : 0;
+                    let next = (parseFloat(input.value) || 0) + delta;
+                    if (next < min) next = min;
+                    input.value = Number.isInteger(step) ? next : Math.round(next * 100) / 100;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                };
+                dec.addEventListener('click', () => bump(-step));
+                inc.addEventListener('click', () => bump(step));
+            });
+        }
+
+        function renderStepRows() {
+            const container = document.getElementById('step-rows');
+            container.innerHTML = formState.steps.map((s, idx) => `
+                <div class="dyn-row" data-idx="${idx}">
+                    <div style="display:flex; gap:0.5rem; width:100%; align-items:center;">
+                        <span style="font-family:var(--font-stencil); color:var(--glacier); font-weight:700; width:22px;">${idx + 1}.</span>
+                        <input type="text" class="step-input step-instruction" placeholder="Step title / core action (e.g. Sauté aromatics)" value="${escapeHtml(s.instruction)}" />
+                        <div class="qty-stepper" style="max-width:140px;">
+                            <button type="button" class="qty-btn qty-dec">−</button>
+                            <input type="number" class="ing-qty step-timer" placeholder="Timer (min)" min="0" value="${escapeHtml(s.timer_minutes)}" />
+                            <button type="button" class="qty-btn qty-inc">+</button>
+                        </div>
+                        <button class="btn danger small remove-row-btn" type="button">✕</button>
+                    </div>
+                    <textarea class="step-desc-input" placeholder="Extended step description &amp; tips (optional, shown in kitchen mode)...">${escapeHtml(s.description || '')}</textarea>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.dyn-row').forEach(row => {
+                const idx = Number(row.dataset.idx);
+                row.querySelector('.step-instruction').addEventListener('input', e => formState.steps[idx].instruction = e.target.value);
+                row.querySelector('.step-desc-input').addEventListener('input', e => formState.steps[idx].description = e.target.value);
+                row.querySelector('.step-timer').addEventListener('input', e => formState.steps[idx].timer_minutes = e.target.value);
+                row.querySelector('.remove-row-btn').addEventListener('click', () => {
+                    formState.steps.splice(idx, 1);
+                    renderStepRows();
+                });
+            });
+            wireQtySteppers(container, 1);
+        }
+
+        /* Saves recipe with schema resilience */
+        async function saveRecipe() {
+            const title = document.getElementById('f-title').value.trim();
+            if (!title) { alert('Please enter a recipe title.'); return; }
+
+            const imageUrl = document.getElementById('f-image-url').value.trim();
+            const payload = {
+                title,
+                description: document.getElementById('f-description').value.trim() || null,
+                image_url: imageUrl || null,
+                servings: document.getElementById('f-servings').value ? parseInt(document.getElementById('f-servings').value, 10) : null,
+                prep_minutes: document.getElementById('f-prep').value ? parseInt(document.getElementById('f-prep').value, 10) : null,
+                cook_minutes: document.getElementById('f-cook').value ? parseInt(document.getElementById('f-cook').value, 10) : null,
+                source_note: document.getElementById('f-source').value.trim() || null,
+                tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+                updated_at: new Date().toISOString()
+            };
+
+            let recipeId = formState.id;
+            let saveError = null;
+
+            if (recipeId) {
+                let res = await sb.from('recipes').update(payload).eq('id', recipeId);
+                if (res.error && res.error.message.includes('image_url')) {
+                    delete payload.image_url;
+                    res = await sb.from('recipes').update(payload).eq('id', recipeId);
+                }
+                saveError = res.error;
+            } else {
+                payload.added_by_name = yourName();
+                let res = await sb.from('recipes').insert(payload).select().single();
+                if (res.error && res.error.message.includes('image_url')) {
+                    delete payload.image_url;
+                    res = await sb.from('recipes').insert(payload).select().single();
+                }
+                saveError = res.error;
+                if (res.data) recipeId = res.data.id;
+            }
+
+            if (saveError) {
+                alert('Save error: ' + saveError.message);
+                return;
+            }
+
+            await sb.from('recipe_ingredients').delete().eq('recipe_id', recipeId);
+            const validIngredients = formState.ingredients.filter(i => i.name.trim());
+            if (validIngredients.length) {
+                const rows = validIngredients.map((i, idx) => ({
+                    recipe_id: recipeId,
+                    name: i.name.trim(),
+                    quantity: i.quantity !== '' ? parseFloat(i.quantity) : null,
+                    unit: i.unit.trim() || null,
+                    note: i.note.trim() || null,
+                    sort_order: idx,
+                    include_in_price_calc: !!i.include_in_price_calc
+                }));
+                const { error } = await sb.from('recipe_ingredients').insert(rows);
+                if (error) console.error('Ingredients save error:', error);
+            }
+
+            await sb.from('recipe_steps').delete().eq('recipe_id', recipeId);
+            const validSteps = formState.steps.filter(s => s.instruction.trim());
+            if (validSteps.length) {
+                const rows = validSteps.map((s, idx) => {
+                    const combined = s.description.trim() ? `${s.instruction.trim()}\n\n${s.description.trim()}` : s.instruction.trim();
+                    return {
+                        recipe_id: recipeId,
+                        step_number: idx + 1,
+                        instruction: combined,
+                        timer_seconds: s.timer_minutes !== '' ? parseInt(s.timer_minutes, 10) * 60 : null
+                    };
+                });
+                const { error } = await sb.from('recipe_steps').insert(rows);
+                if (error) console.error('Steps save error:', error);
+            }
+
+            formState = null;
+            currentRecipeId = recipeId;
+            await loadRecipes();
+            showView('detail');
+        }
+
+        /* ---------- KITCHEN FULLSCREEN HUD ---------- */
+        async function enterKitchen(recipe) {
+            kitchen = {
+                recipe,
+                stepIndex: 0,
+                checked: new Set(),
+                wakeLock: null,
+                timerHandle: null,
+                timerRemaining: 0,
+                timerInitial: 0,
+                timerRunning: false
+            };
+            document.getElementById('kitchen-view').classList.remove('hidden');
+            await requestWakeLock();
+            renderKitchen();
+        }
+
+        function exitKitchen() {
+            if (kitchen?.timerHandle) clearInterval(kitchen.timerHandle);
+            releaseWakeLock();
+            kitchen = null;
+            document.getElementById('kitchen-view').classList.add('hidden');
+        }
+
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    kitchen.wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.warn('WakeLock unavailable:', err);
+            }
+        }
+
+        function releaseWakeLock() {
+            if (kitchen?.wakeLock) {
+                kitchen.wakeLock.release().catch(() => { });
+            }
+        }
+
+        document.addEventListener('visibilitychange', async () => {
+            if (kitchen && document.visibilityState === 'visible' && !kitchen.wakeLock) {
+                await requestWakeLock();
+            }
+        });
+
+        function renderKitchen() {
+            const k = kitchen;
+            if (!k) return;
+            const r = k.recipe;
+            const el = document.getElementById('kitchen-view');
+            const totalSteps = r.recipe_steps.length;
+            const currentStepRaw = r.recipe_steps[k.stepIndex] || { instruction: 'Enjoy your meal!' };
+
+            // Parse Step Title and Step Extended Description
+            const parts = (currentStepRaw.instruction || '').split('\n\n');
+            const stepTitle = parts[0] || '';
+            const stepDesc = parts.slice(1).join('\n\n') || '';
+            // I like the two column approach but please make the layout of the right one with the steps a bit more polished, modern, also keep the design elements as they are - colors, and shapes are part of design identity. When there is the timer, the layout also does not feel right, feel free to improve it.
+            el.innerHTML = `
+                <div class="kitchen-topbar">
+                    <div>
+                        <span class="eyebrow-label">In Progress...</span>
+                        <div class="kitchen-title speckled">${escapeHtml(r.title)}</div>
+                    </div>
+                    <button class="btn danger small" id="exit-kitchen-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <span>Exit</span>
+                    </button>
+                </div>
+
+                <div class="kitchen-layout-grid">
+                    <!-- LEFT COLUMN: INGREDIENTS CHECKLIST & NOTES -->
+                    <aside class="kitchen-sidebar">
+                        <div class="kitchen-sidebar-header">
+                            <div>
+                                <strong style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--navy-heading);">Ingredients</strong>
+                                <span style="font-size:0.75rem; color:var(--glacier); margin-left:6px; font-weight:700;">(${k.checked.size}/${r.recipe_ingredients.length})</span>
+                            </div>
+                            <button class="btn ghost small" id="reset-checks-btn" style="font-size:0.65rem;">Reset</button>
+                        </div>
+
+                        <div class="kitchen-ing-list">
+                            ${r.recipe_ingredients.map((ing, idx) => `
+                                <div class="kitchen-ing-row ${k.checked.has(idx) ? 'checked' : ''}" data-idx="${idx}">
+                                    <span class="kitchen-ing-checkbox">${k.checked.has(idx) ? '✓' : ''}</span>
+                                    <span style="flex:1; color:var(--navy-heading);">${escapeHtml(ing.name)}${ing.note ? ` <small style="color:var(--text-faint);">(${escapeHtml(ing.note)})</small>` : ''}</span>
+                                    <span class="kitchen-ing-qty">${escapeHtml(fmtQty(ing))}</span>
+                                </div>
+                            `).join('') || '<div class="empty-state">No ingredients listed.</div>'}
+                        </div>
+
+                        ${(r.description || r.source_note) ? `
+                            <div class="kitchen-note-box">
+                                ${r.description ? `<div><strong>Overview:</strong> ${escapeHtml(r.description)}</div>` : ''}
+                                ${r.source_note ? `<div style="margin-top:0.35rem;"><strong>Tips:</strong> ${escapeHtml(r.source_note)}</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </aside>
+
+                    <!-- RIGHT COLUMN: ACTIVE STEP & DYNAMIC TIMER -->
+                    <main class="kitchen-main">
+                        <div class="kitchen-step-meta">
+                            <span class="kitchen-step-counter">STEP ${k.stepIndex + 1} OF ${totalSteps || 1}</span>
+                            <span class="rc-tag">${r.cook_minutes ? r.cook_minutes + ' MIN COOK' : 'PREPARATION'}</span>
+                        </div>
+
+                        <div class="kitchen-step-center">
+                            <div class="kitchen-step-text">${escapeHtml(stepTitle)}</div>
+                            ${stepDesc ? `<div class="kitchen-step-desc">${escapeHtml(stepDesc)}</div>` : ''}
+                            
+                            ${currentStepRaw.timer_seconds ? `
+                                <div class="kitchen-timer-block">
+                                    <div class="kitchen-timer-display" id="timer-display">--:--</div>
+                                    <div class="kitchen-timer-controls">
+                                        <button class="btn primary small" id="timer-toggle-btn">
+                                            <span>${k.timerRunning ? 'Pause' : (k.timerRemaining > 0 ? 'Resume' : `Start ${Math.round(currentStepRaw.timer_seconds / 60)}m Timer`)}</span>
+                                        </button>
+                                        <button class="btn outline small" id="timer-reset-btn">Reset</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="kitchen-nav">
+                            <button class="btn outline" id="prev-step-btn" ${k.stepIndex === 0 ? 'disabled' : ''}>
+                                <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                                <span>Previous Step</span>
+                            </button>
+                            <button class="btn primary" id="next-step-btn" ${k.stepIndex >= totalSteps - 1 ? 'disabled' : ''}>
+                                <span>${k.stepIndex >= totalSteps - 1 ? 'Finished ✓' : 'Next Step'}</span>
+                                ${k.stepIndex < totalSteps - 1 ? `<svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}
+                            </button>
+                        </div>
+                    </main>
+                </div>
+            `;
+
+            document.getElementById('exit-kitchen-btn').addEventListener('click', exitKitchen);
+            document.getElementById('reset-checks-btn').addEventListener('click', () => {
+                k.checked.clear();
+                renderKitchen();
+            });
+
+            el.querySelectorAll('.kitchen-ing-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    const idx = Number(row.dataset.idx);
+                    if (k.checked.has(idx)) k.checked.delete(idx);
+                    else k.checked.add(idx);
+                    renderKitchen();
+                });
+            });
+
+            const prevBtn = document.getElementById('prev-step-btn');
+            const nextBtn = document.getElementById('next-step-btn');
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                stopTimer();
+                k.stepIndex--;
+                renderKitchen();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                if (k.stepIndex < totalSteps - 1) {
+                    stopTimer();
+                    k.stepIndex++;
+                    renderKitchen();
+                }
+            });
+
+            const toggleBtn = document.getElementById('timer-toggle-btn');
+            const resetBtn = document.getElementById('timer-reset-btn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    if (k.timerRunning) {
+                        pauseKitchenTimer();
+                    } else {
+                        startOrResumeKitchenTimer(currentStepRaw.timer_seconds);
+                    }
+                });
+            }
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => resetKitchenTimer(currentStepRaw.timer_seconds));
+            }
+
+            if (currentStepRaw.timer_seconds) {
+                if (k.timerRemaining === 0 && !k.timerRunning) {
+                    k.timerRemaining = currentStepRaw.timer_seconds;
+                    k.timerInitial = currentStepRaw.timer_seconds;
+                }
+                updateTimerDisplay();
+            }
+        }
+
+        /* Full Timer State Controls (Start / Pause / Resume / Reset) */
+        function startOrResumeKitchenTimer(defaultSeconds) {
+            const k = kitchen;
+            if (!k) return;
+            if (k.timerRemaining <= 0) {
+                k.timerRemaining = defaultSeconds;
+                k.timerInitial = defaultSeconds;
+            }
+            k.timerRunning = true;
+            if (k.timerHandle) clearInterval(k.timerHandle);
+
+            updateTimerDisplay();
+            updateTimerBtnLabel();
+
+            k.timerHandle = setInterval(() => {
+                k.timerRemaining--;
+                updateTimerDisplay();
+                if (k.timerRemaining <= 0) {
+                    clearInterval(k.timerHandle);
+                    k.timerHandle = null;
+                    k.timerRunning = false;
+                    if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+                    const display = document.getElementById('timer-display');
+                    if (display) display.textContent = "DONE! 🔔";
+                    updateTimerBtnLabel();
+                }
+            }, 1000);
+        }
+
+        function pauseKitchenTimer() {
+            const k = kitchen;
+            if (!k) return;
+            k.timerRunning = false;
+            if (k.timerHandle) {
+                clearInterval(k.timerHandle);
+                k.timerHandle = null;
+            }
+            updateTimerBtnLabel();
+        }
+
+        function resetKitchenTimer(defaultSeconds) {
+            const k = kitchen;
+            if (!k) return;
+            pauseKitchenTimer();
+            k.timerRemaining = defaultSeconds;
+            k.timerInitial = defaultSeconds;
+            updateTimerDisplay();
+            updateTimerBtnLabel();
+        }
+
+        function stopTimer() {
+            const k = kitchen;
+            if (!k) return;
+            if (k.timerHandle) clearInterval(k.timerHandle);
+            k.timerHandle = null;
+            k.timerRunning = false;
+            k.timerRemaining = 0;
+        }
+
+        function updateTimerBtnLabel() {
+            const toggleBtn = document.getElementById('timer-toggle-btn');
+            if (!toggleBtn || !kitchen) return;
+            const span = toggleBtn.querySelector('span');
+            if (span) {
+                span.textContent = kitchen.timerRunning ? 'Pause' : (kitchen.timerRemaining > 0 && kitchen.timerRemaining < kitchen.timerInitial ? 'Resume' : 'Start Timer');
+            }
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            if (!display || !kitchen) return;
+            const m = Math.floor(kitchen.timerRemaining / 60);
+            const s = kitchen.timerRemaining % 60;
+            display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        /* ---------- REALTIME REFRESH ---------- */
+        function subscribeRealtime() {
+            sb.channel('recipes-sync')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'recipes' }, () => loadRecipes())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_ingredients' }, () => loadRecipes())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'recipe_steps' }, () => loadRecipes())
+                .subscribe();
+        }
+
+        /* ---------- BOOTSTRAP ---------- */
+        checkSession();
+    </script>
+</body>
+
+</html>

@@ -1,13 +1,1880 @@
+<!-- 
+ File Author:
+ Adam Křivka
+ Description: 
+ main landing page
+-->
+
+
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-portfolio</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adam Křivka</title>
+  <meta name="description"
+        content="My personal website - Portfolio of personal fun projects and utilities to make my life easier. It is my sandbox where I play with CS concepts I come across">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="./public/src/assets/ico/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./public/src/assets/ico/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./public/src/assets/ico/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./public/src/assets/ico/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./public/src/assets/ico/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./public/src/assets/ico/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./public/src/assets/ico/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./public/src/assets/ico/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./public/src/assets/ico/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./public/src/assets/ico/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./public/src/assets/ico/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./public/src/assets/ico/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./public/src/assets/ico/favicon-16x16.png">
+  <link rel="manifest" href="./public/src/assets/ico/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="./public/src/assets/ico/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+  <style>
+    @font-face {
+      font-family: 'MyDisplay';
+      src: url('./src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    .speckled {
+      filter: url(#distress-speckles);
+    }
+
+    /* ============ TOKENS & PALETTE ============ */
+    :root {
+      --abyss-teal: #03212d;
+      --deep-fjord: #063244;
+      --glacier: #00ace1;
+      --glacier-hover: #26b8e6;
+      --alpine-red: #FF3B30;
+      --alpine-white: #FFFFFF;
+      --ice-white: #E2E8F0;
+
+      --font-display: 'Anton', sans-serif;
+      --font-titles: 'MyDisplay', sans-serif;
+      --font-stencil: 'Allerta Stencil', sans-serif;
+      --font-body: 'Inter', sans-serif;
+
+      --edge: 0px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html[data-theme="dark"] {
+      --bg: var(--abyss-teal);
+      --surface: #072e3d;
+      --card-bg: #FFFFFF;
+      --card-text: #245685;
+      --heading: var(--alpine-white);
+      --text: var(--ice-white);
+      --text-dim: rgba(226, 232, 240, 0.65);
+      --border: rgba(226, 232, 240, 0.15);
+      --poly-fill-1: rgba(0, 168, 255, 0.12);
+      --poly-fill-2: rgba(4, 39, 54, 0.65);
+      --poly-fill-3: rgba(255, 255, 255, 0.04);
+    }
+
+    html[data-theme="light"] {
+      --bg: #F0F4F8;
+      --surface: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --card-text: #042736;
+      --heading: #245685;
+      --text: #083B4F;
+      --text-dim: rgba(8, 59, 79, 0.75);
+      --border: rgba(4, 39, 54, 0.14);
+      --poly-fill-1: rgba(0, 168, 255, 0.14);
+      --poly-fill-2: rgba(8, 59, 79, 0.06);
+      --poly-fill-3: rgba(0, 168, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 0;
+    }
+
+    .icon-arrow {
+      width: 1.1em;
+      height: 1.1em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.2s ease;
+    }
+
+    a:hover .icon-arrow,
+    button:hover .icon-arrow,
+    .all-tickets-card:hover .icon-arrow {
+      transform: translateX(4px);
+    }
+
+    .icon-external {
+      width: 1em;
+      height: 1em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.2s ease;
+    }
+
+    a:hover .icon-external {
+      transform: translate(2px, -2px);
+    }
+
+    /* ============ GLOBAL BACKGROUND POLYGONS LAYER ============ */
+    .bg-polygon-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bg-polygon-layer svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Section-level Background Polygons */
+    .section-poly-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .section-poly-bg svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============ LAYOUT CONTAINER ============ */
+    .shell {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ============ HEADER and NAVIGATION ============ */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #042330;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      cursor: pointer;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--deep-fjord);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      font-family: var(--font-stencil);
+      font-size: 0.9rem;
+      font-weight: 700;
+      overflow: hidden;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--alpine-white);
+      display: block;
+    }
+
+    .brand-role {
+      display: block;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    nav.primary-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    nav.primary-nav a {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    nav.primary-nav a:hover,
+    nav.primary-nav a.accent {
+      color: var(--glacier);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-talk {
+      background: var(--alpine-red);
+      color: var(--alpine-white);
+      padding: 0 1.25rem;
+      height: 68px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-left: 1.5rem;
+    }
+
+    .btn-talk:hover {
+      background: #E03126;
+    }
+
+    header .mobile-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--alpine-white);
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============ HERO SECTION ============ */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      position: relative;
+      padding: calc(68px + 4rem) 0 5rem;
+      background: linear-gradient(180deg, #021822 0%, #063143 100%);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 3.5rem;
+      align-items: stretch;
+    }
+
+    .eyebrow-label {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glacier);
+      display: block;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      color: var(--alpine-white);
+      font-size: clamp(3rem, 7.5vw, 6.5rem);
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-sub {
+      max-width: 620px;
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      padding-bottom: 1rem;
+    }
+
+    .hero-sub-bottom {
+      max-width: 820px;
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      padding-left: 2rem;
+      margin-bottom: 2rem;
+      margin-top: 1rem;
+      border-left: 2px solid rgba(0, 168, 255, 0.25);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Hero Right Visual Container */
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-photo-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(0, 168, 255, 0.3);
+      overflow: hidden;
+      background: var(--deep-fjord);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%);
+    }
+
+    .hero-photo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 260ms ease, filter 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
+    }
+
+    .hero-photo-container:hover img {
+      transform: scale(1.05);
+      filter: saturate(1.06) brightness(1.02);
+    }
+
+    .hero-photo-badge {
+      position: absolute;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      right: 1.25rem;
+      background: #042736e0;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.75rem 1rem;
+      z-index: 2;
+    }
+
+    .hero-photo-badge span {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glacier);
+    }
+
+    .hero-photo-badge strong {
+      display: block;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      font-family: var(--font-body);
+    }
+
+    .btn-glacier {
+      background: var(--glacier);
+      color: var(--abyss-teal);
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+
+    .btn-glacier:hover {
+      background: var(--glacier-hover);
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--alpine-white);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.75rem;
+    }
+
+    .btn-outline-light:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--heading);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
+
+    /* ============ STAT STRIP SECTION ============ */
+    .stat-strip {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border: 2px solid var(--glacier);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      flex-shrink: 0;
+    }
+
+    .stat-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .stat-value {
+      font-family: var(--font-titles);
+      font-size: clamp(2.65rem, 4.8vw, 3.85rem);
+      line-height: 1;
+      color: var(--heading);
+      text-transform: uppercase;
+    }
+
+    .stat-desc {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--glacier);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    /* ============ SECTION HEADER STYLING ============ */
+    .section {
+      padding: 4.5rem 0;
+      position: relative;
+      /* Smooth anchor landing offset */
+      scroll-margin-top: calc(68px + 1.5rem);
+    }
+
+    .section-head {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-family: var(--font-titles);
+      font-size: clamp(2.65rem, 4.8vw, 3.85rem);
+      color: var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    /* ============ CARDS GRID ============ */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    .ticket-card {
+      background: var(--card-bg);
+      color: var(--card-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(4, 39, 54, 0.12);
+      box-shadow: 0 10px 30px rgba(4, 39, 54, 0.08);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .ticket-card-image {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      transform: scale(1);
+      transition: transform 260ms ease, filter 260ms ease, box-shadow 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
+    }
+
+    .ticket-card:hover .ticket-card-image,
+    .featured-left-card:hover img,
+    .about-photo-container:hover img {
+      transform: scale(1.05);
+      filter: saturate(1.06) brightness(1.02);
+    }
+
+    .ticket-card-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%);
+    }
+
+    .ticket-validity {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 2;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .ticket-card-content {
+      padding: 1.75rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ticket-category {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #00ace1;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .ticket-card h3 {
+      font-family: var(--font-body);
+      font-weight: 1000;
+      font-size: 1rem;
+      color: #245685;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .ticket-price {
+      font-size: 0.8rem;
+      color: #222222;
+      margin-bottom: 1.25rem;
+    }
+
+    .ticket-action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn-learn-more {
+      flex: 1;
+      background: var(--glacier);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-learn-more:hover {
+      background: #008CDB;
+    }
+
+    .btn-cart-icon {
+      width: 40px;
+      background: var(--alpine-red);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .btn-cart-icon:hover {
+      background: #E03126;
+    }
+
+    /* ALL PROJECTS DARK POLYGON CARD */
+    .all-tickets-card {
+      background: linear-gradient(135deg, #053344 0%, #021a24 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 340px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .all-tickets-card:hover .all-tickets-btn {
+      color: var(--glacier);
+    }
+
+    .all-tickets-btn {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--alpine-white);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* ============ PROFILE PICTURE ============ */
+    .pfp {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============ FEATURED HIGHLIGHTS SECTION ============ */
+    .featured-section {
+      background: #042432;
+      color: var(--alpine-white);
+      position: relative;
+      padding: 4.5rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      scroll-margin-top: calc(68px + 1.5rem);
+    }
+
+    .featured-section .section-title {
+      color: var(--alpine-white);
+    }
+
+    .featured-section .eyebrow-label {
+      color: var(--glacier);
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .featured-left-card {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      cursor: default;
+    }
+
+    .featured-left-card img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      display: block;
+      transition: transform 260ms ease, filter 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
+    }
+
+    .featured-right-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-arrows {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .arrow-btn {
+      width: 38px;
+      height: 38px;
+      background: #FFFFFF;
+      color: #042736;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow-btn:hover {
+      background: var(--glacier);
+      color: #FFFFFF;
+    }
+
+    .featured-right-content h3 {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--alpine-white);
+      margin-bottom: 1rem;
+    }
+
+    .featured-right-content p {
+      color: rgba(226, 232, 240, 0.85);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ============ LINKS & FOOTER ============ */
+    body.overlay-open {
+      overflow: hidden;
+    }
+
+    #links {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      overflow-y: auto;
+      background: #021822;
+      color: #E2E8F0;
+      min-height: 100vh;
+    }
+
+    #links.active {
+      display: block;
+    }
+
+    #links .section-title {
+      color: #FFFFFF !important;
+    }
+
+    #links .eyebrow-label {
+      color: var(--glacier);
+    }
+
+    .links-polygon-mesh {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .links-polygon-mesh svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .link-card {
+      background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+      border: 1px solid rgba(0, 168, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--glacier);
+      box-shadow: 0 12px 30px rgba(0, 168, 255, 0.3);
+    }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .link-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 168, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      font-family: var(--font-stencil);
+      font-size: 0.75rem;
+      overflow: hidden;
+    }
+
+    .link-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .link-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #FFFFFF;
+    }
+
+    .link-card .icon-external {
+      color: var(--glacier);
+    }
+
+    footer {
+      position: relative;
+      background: #021620;
+      color: var(--ice-white);
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .footer-inner {
+      padding: 4rem clamp(1.25rem, 4vw, 3rem) 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-quote {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      text-transform: uppercase;
+      color: var(--alpine-white);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.75rem;
+      color: rgba(226, 232, 240, 0.65);
+    }
+
+    /* Mobile Drawer */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--bg);
+      padding: 80px 1.5rem 2rem;
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    /* RESPONSIVE STYLES */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hero-visual {
+        height: auto;
+      }
+
+      .hero-photo-container {
+        position: relative;
+        inset: auto;
+        height: 380px;
+      }
+
+
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      nav.primary-nav,
+      .btn-talk {
+        display: none;
+      }
+
+      header .mobile-toggle {
+        display: flex;
+      }
+
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer-sep {
+        display: none;
+      }
+    }
+
+    /*============ ABOUT SECTION ============ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3.5rem;
+      align-items: stretch;
+    }
+
+    .about-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    .about-text p {
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .about-text .offset-right-sm {
+      padding-left: 2rem;
+      border-left: 2px solid rgba(0, 168, 255, 0.25);
+    }
+
+    .about-text .offset-right-lg {
+      padding-left: 3.5rem;
+    }
+
+    .about-text .highlight-quote {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      color: var(--heading);
+      letter-spacing: 0.03em;
+      line-height: 1.25;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--glacier);
+      margin: 0.5rem 0;
+    }
+
+    .about-photo-container {
+      position: relative;
+      height: 100%;
+      min-height: 520px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      cursor: default;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    }
+
+    .about-photo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: brightness(0.92) contrast(1.05);
+      transition: transform 260ms ease, filter 260ms ease;
+      transform-origin: center;
+      will-change: transform, filter;
+    }
+
+    .about-photo-badge {
+      position: absolute;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      right: 1.25rem;
+      background: rgba(4, 39, 54, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.75rem 1rem;
+      z-index: 2;
+    }
+
+    .about-photo-badge span {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glacier);
+    }
+
+    .about-photo-badge strong {
+      display: block;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      font-family: var(--font-body);
+    }
+
+    @media (max-width: 992px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-photo-container {
+        height: 480px;
+        min-height: auto;
+      }
+
+      .about-text .offset-right-sm,
+      .about-text .offset-right-lg {
+        padding-left: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- GLOBAL SPECKLES FILTER DEFINITION -->
+  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+    <filter id="distress-speckles">
+      <feTurbulence
+                    type="fractalNoise"
+                    baseFrequency="0.9"
+                    numOctaves="8"
+                    seed="7"
+                    result="noise" />
+      <feColorMatrix
+                     in="noise"
+                     type="matrix"
+                     values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 15 -11"
+                     result="speckles" />
+      <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+    </filter>
+  </svg>
+
+  <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
+  <div class="bg-polygon-layer" aria-hidden="true">
+    <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
+      <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+      <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+      <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+      <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+      <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+      <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+      <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+      <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+      <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
+    </svg>
+  </div>
+
+  <!-- HEADER / NAVIGATION BAR -->
+  <header>
+    <div class="nav-inner">
+      <div class="brand" onclick="showHome()">
+        <div class="brand-mark">
+          <img class="pfp" src="./src/assets/PP.jpg" alt="Adam Křivka" />
+        </div>
+        <div>
+          <span class="brand-name">Adam Křivka</span>
+          <span class="brand-role">CS Student · FIT VUT Brno</span>
+        </div>
+      </div>
+
+      <nav class="primary-nav">
+        <a href="#work">Work</a>
+        <a href="#highlights">Highlights</a>
+        <a href="#about">About</a>
+        <a href="#lab">Lab</a>
+        <a href="/recipes/" class="accent">Recipes</a>
+        <a href="/ledger/" class="accent">Ledger</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn-talk" onclick="showLinks()">
+          Let's Talk
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HOME VIEW ================= -->
+    <div id="home">
+
+      <!-- HERO SECTION -->
+      <section class="hero">
+        <div class="section-poly-bg" aria-hidden="true">
+          <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 600,0 350,380 0,280" fill="rgba(0, 168, 255, 0.15)" />
+            <polygon points="600,0 1200,0 950,320 350,380" fill="rgba(4, 39, 54, 0.7)" />
+            <polygon points="1200,0 1440,0 1440,400 950,320" fill="rgba(0, 168, 255, 0.08)" />
+            <polygon points="0,280 350,380 450,600 0,600" fill="rgba(4, 39, 54, 0.5)" />
+            <polygon points="350,380 950,320 850,600 450,600" fill="rgba(0, 168, 255, 0.12)" />
+            <polygon points="950,320 1440,400 1440,600 850,600" fill="rgba(4, 39, 54, 0.8)" />
+          </svg>
+        </div>
+
+        <div class="shell">
+          <div class="hero-grid">
+            <!-- Left Hero Content Column -->
+            <div>
+              <span class="eyebrow-label data-nosnippet">CS Student @ FIT, Brno University of Technology</span>
+              <h1 class="hero-title">
+                Em Construção<br>
+                <span style="color: var(--glacier);">My portfolio</span>
+              </h1>
+              <p class="hero-sub">
+                My personal website - a portfolio of personal fun projects and utilities to make my life easier along
+                the
+                way. It is my sandbox where I play with CS concepts and ideas I come across.<br>
+              </p>
+
+              <p class="hero-sub-bottom offset-right-sm">
+                Some of these projects are not public under <em>privacy protection</em> and safeguarding of <em>business
+                  information</em>.
+              </p>
+
+              <p class="hero-sub">
+                Generally love designing front-end including graphic sw like Photoshop, Premiere Pro and After Effects;
+                here
+                in the form of finetuning details I see and experimenting with elements gradually. <strong>Subtle
+                  changes
+                  every day!</strong>
+              </p>
+              <div class="hero-actions">
+                <a href="/ledger/" class="btn-glacier">
+                  Latest Project
+                  <svg class="icon-arrow" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                  </svg>
+                </a>
+                <a href="#" class="btn-outline-light">My CV (not yet)</a>
+              </div>
+            </div>
+
+            <!-- Right Hero Image Visual -->
+            <div class="hero-visual">
+              <div class="hero-photo-container">
+                <img src="./src/assets/PP_FullSize.jpg" alt="ProfilePicture" />
+                <div class="hero-photo-badge">
+                  <span>Adam Křivka</span>
+                  <strong>Personal site for projects and experiments</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- METRIC STAT STRIP -->
+      <div class="stat-strip">
+        <div class="shell">
+          <div class="stat-grid">
+            <!-- Stat Card 1 -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <!-- Academic / Cap Icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5" />
+                </svg>
+              </div>
+              <div>
+                <div class="stat-value speckled">VUT</div>
+                <span class="stat-desc">Faculty of IT</span>
+              </div>
+            </div>
+
+            <!-- Stat Card 2 -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <!-- Lightning Icon -->
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <div>
+                <div class="stat-value speckled">5</div>
+                <span class="stat-desc">Projects so far</span>
+              </div>
+            </div>
+
+            <!-- Stat Card 3 -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <!-- Code / Software Engineering Icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <div>
+                <div class="stat-value speckled">FOR</div>
+                <span class="stat-desc">Clients &amp; myself</span>
+              </div>
+            </div>
+
+            <!-- Stat Card 4 -->
+            <div class="stat-card">
+              <div class="stat-icon">
+                <!-- Gear / Engineering Icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+              </div>
+              <div>
+                <div class="stat-value speckled">FUN</div>
+                <span class="stat-desc">Driven Development</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORK / PROJECTS SECTION -->
+      <section class="section" id="work">
+        <div class="shell">
+          <div class="section-head">
+            <span class="eyebrow-label">Selected Work</span>
+            <h2 class="section-title speckled">CURRENTLY BUILDING</h2>
+          </div>
+
+          <div class="grid-4">
+            <!-- Project Card 1 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image"
+                   style="background-image: url('./src/assets/LedgerBanner.jpg');">
+                <span class="ticket-validity">STATUS - LIVE</span>
+              </div>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">01 - Web Application</span>
+                  <h3>Work Ledger</h3>
+                  <div class="ticket-price">HTML + JS - Helps keep track of time spent</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="/ledger/" class="btn-learn-more">
+                    VIEW PROJECT
+                    <svg class="icon-arrow" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            fill="none" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project Card 2 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image"
+                   style="background-image: url('./src/assets/RecipesBanner.jpg');">
+                <span class="ticket-validity">STATUS - POLISHING</span>
+              </div>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">02 - Useful Utility</span>
+                  <h3>Recipes CRUD</h3>
+                  <div class="ticket-price">Guard the most delicious recipes and provide users with immersive kitchen mode</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="/recipes" class="btn-learn-more">
+                    LET'S COOK
+                    <svg class="icon-arrow" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            fill="none" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Project Card 3 -->
+            <article class="ticket-card">
+              <div class="ticket-card-image"
+                   style="background-image: url('');">
+                <span class="ticket-validity">STATUS - STANDARD</span>
+              </div>
+              <div class="ticket-card-content">
+                <div>
+                  <span class="ticket-category">03 - Quality Control</span>
+                  <h3>Personal Touch</h3>
+                  <div class="ticket-price">Can't let poor quality out the door - reviewed by hand</div>
+                </div>
+                <div class="ticket-action-row">
+                  <a href="#" class="btn-learn-more">
+                    LEARN MORE
+                    <svg class="icon-arrow" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                  <button class="btn-cart-icon" aria-label="Open project">
+                    <svg class="icon-external" viewBox="0 0 24 24">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            fill="none" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <!-- ALL PROJECTS DARK POLYGON CARD -->
+            <article class="all-tickets-card" onclick="showLinks()">
+              <div class="section-poly-bg" aria-hidden="true">
+                <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+                  <polygon points="0,0 300,0 180,220 0,160" fill="rgba(0, 168, 255, 0.2)" />
+                  <polygon points="300,0 300,400 180,220" fill="rgba(4, 39, 54, 0.8)" />
+                  <polygon points="0,160 180,220 300,400 0,400" fill="rgba(0, 168, 255, 0.1)" />
+                </svg>
+              </div>
+              <div class="all-tickets-btn">
+                ALL PROJECTS
+                <svg class="icon-arrow" viewBox="0 0 24 24">
+                  <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURED HIGHLIGHTS SECTION -->
+      <section class="featured-section" id="highlights">
+        <div class="section-poly-bg" aria-hidden="true">
+          <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMid slice">
+            <polygon points="0,0 700,0 450,500 0,500" fill="rgba(0, 168, 255, 0.08)" />
+            <polygon points="700,0 1440,0 1440,300 450,500" fill="rgba(3, 33, 45, 0.95)" />
+            <polygon points="1440,300 1440,500 450,500" fill="rgba(0, 168, 255, 0.05)" />
+          </svg>
+        </div>
+
+        <div class="shell">
+          <div class="section-head">
+            <span class="eyebrow-label">My last lil project</span>
+            <h2 class="section-title speckled">WORK LEDGER TRACKER</h2>
+          </div>
+
+          <div class="featured-grid">
+            <div class="featured-left-card">
+              <img src="./src/assets/LedgerBanner.jpg"
+                   alt="Work Ledger UI">
+            </div>
+
+            <div class="featured-right-content">
+              <div class="nav-arrows">
+                <button class="arrow-btn" aria-label="Previous">
+                  <svg class="icon-arrow" viewBox="0 0 24 24" style="transform: rotate(180deg);">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button class="arrow-btn" aria-label="Next">
+                  <svg class="icon-arrow" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+              <h3>Transparent activity &amp; time logging system</h3>
+              <p>
+                A way to keep track of work on other projects where time is valuable. A fun project to play with a DB
+                queries. Personally I'd say it helps me a lot.
+              </p>
+              <a href="/ledger/" class="btn-glacier">
+                Explore Ledger
+                <svg class="icon-arrow" viewBox="0 0 24 24">
+                  <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section class="section" id="about">
+        <div class="shell">
+          <div class="section-head">
+            <span class="eyebrow-label">A little about me</span>
+            <h2 class="section-title speckled">ADAM KŘIVKA</h2>
+          </div>
+
+          <div class="about-grid">
+            <!-- LEFT COLUMN: STAGGERED PARAGRAPHS -->
+            <div class="about-text">
+              <p>
+                I’m a <strong style="color: var(--heading);">Computer Science student at FIT, Brno University of
+                  Technology</strong>,
+                and this website is slowly becoming a collection of things I’ve built along the way.
+                Most of what you’ll find here is a work in progress: small tools, experiments,
+                half-finished ideas, and the occasional project that actually made it all the way
+                to the finish line.
+              </p>
+
+              <p class="offset-right-sm">
+                I like building things that solve real problems in my life, even when those problems are very specific
+                to
+                me. One of my goals is to create a personal portfolio of apps and
+                programs that I genuinely find useful in my everyday life: all in one place.
+                They don’t necessarily have to make sense to anyone else. If something makes my
+                life a little easier, or gives me a reason to finally implement something I’ve
+                only encountered in theory, that’s already a good enough reason to build it.
+              </p>
+
+              <p>... and so on.</p>
+
+              <p class="highlight-quote speckled">
+                "Not just about computers."
+              </p>
+
+              <p>
+                Outside of IT, I spend a lot of time playing <strong style="color: var(--heading);">badminton</strong>
+                and
+                <strong style="color: var(--heading);">beach volleyball</strong>, skiing, running, and, whenever I get
+                the chance,
+                <strong style="color: var(--glacier);">SURFING</strong>. I love good food, travelling, mountains,
+                praias, and generally finding excuses
+                to be somewhere new. I am also involved in volunteering with
+                international students and working as an <strong style="color: var(--heading);">ESN Causes
+                  Manager</strong>,
+                which has given me the chance to meet people from all over the world and be part
+                of things that have nothing to do with programming.
+              </p>
+
+              <p class="offset-right-sm">
+                One place that has especially stuck with me is <strong style="color: var(--heading);">Portugal</strong>,
+                where I
+                had the opportunity to do my Erasmus at <strong style="color: var(--heading);">FCUP in Porto</strong>.
+                Living
+                abroad, travelling, meeting people from completely different backgrounds, learning <em>português</em>,
+                and
+                discovering new places have probably taught me just as much as university has.
+              </p>
+
+              <p>
+                So this portfolio isn’t really meant to be a perfect showcase of polished software.
+                It’s more like a record of curiosity - a place where I can keep the things I build,
+                experiment with ideas, learn by actually making them, and occasionally turn a
+                completely unnecessary idea into something surprisingly useful.
+              </p>
+
+              <p style="font-size: 0.95rem; opacity: 0.85;">
+                Despite all of that, I would be really glad if at least someone liked even a tiny bit of my work haha.
+                <strong style="color: var(--glacier); letter-spacing: 0.05em;">Explore!</strong>
+              </p>
+            </div>
+
+            <!-- RIGHT COLUMN: TALL VERTICAL PHOTO CONTAINER -->
+            <div class="about-photo-container">
+              <img src="./src/assets/AboutMeBanner.jpg" alt="Adam Křivka in Portugal">
+
+              <div class="about-photo-badge">
+                <span>Praia do Magoito</span>
+                <strong>Erasmus @ FCUP · Surf &amp; Sun</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LAB / NOTES SECTION -->
+      <section class="section" id="lab" style="padding-top: 0;">
+        <div class="shell">
+          <div class="section-head">
+            <span class="eyebrow-label">Lab &amp; Research</span>
+            <h2 class="section-title speckled">NOTES &amp; EXPERIMENTS</h2>
+          </div>
+          <p style="color: var(--text-dim);">
+            Nothing published here yet - this is where write-ups on AI experiments and small builds will land as they're
+            ready.
+          </p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================= LINKS VIEW ================= -->
+    <div id="links">
+      <!-- Polygonal Mesh Background for Links Section -->
+      <div class="links-polygon-mesh" aria-hidden="true">
+        <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+          <polygon points="0,0 720,0 480,450 0,380" fill="rgba(3, 33, 45, 0.85)" />
+          <polygon points="720,0 1440,0 1440,500 480,450" fill="rgba(0, 168, 255, 0.12)" />
+          <polygon points="0,380 480,450 320,800 0,800" fill="rgba(0, 168, 255, 0.08)" />
+          <polygon points="480,450 1440,500 1440,800 320,800" fill="rgba(4, 39, 54, 0.9)" />
+        </svg>
+      </div>
+
+      <section class="section" style="padding-top: calc(68px + 4rem); position: relative; z-index: 2;">
+        <div class="shell">
+          <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <span class="eyebrow-label">Elsewhere</span>
+              <h2 class="section-title" style="color: var(--heading);">CONNECT WITH ME</h2>
+            </div>
+            <button class="btn-outline" onclick="showHome()">
+              <svg class="icon-arrow" viewBox="0 0 24 24" style="transform: rotate(180deg);">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+              </svg>
+              Back
+            </button>
+          </div>
+
+          <div class="links-grid">
+            <a class="link-card" href="https://github.com/krivkaadam" target="_blank" rel="noreferrer">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/GithubIMG.jpg" alt="GitHub" />
+                </div>
+                <span class="link-name">GitHub</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+            <a class="link-card" href="https://x.com/krivkaadam" target="_blank" rel="noreferrer">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/TwitterIMG.jpg" alt="Twitter" />
+                </div>
+                <span class="link-name">Twitter / X</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+            <a class="link-card" href="https://www.instagram.com/_krivkaadam_" target="_blank" rel="noreferrer">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/InstagramIMG.jpg" alt="Instagram" />
+                </div>
+                <span class="link-name">Instagram</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+            <a class="link-card" href="https://www.facebook.com/adam.krivka.9" target="_blank" rel="noreferrer">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/FacebookIMG.jpg" alt="Facebook" />
+                </div>
+                <span class="link-name">Facebook</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+            <a class="link-card" href="mailto:krivkaad@gmail.com">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/GoogleIMG.jpg" alt="Email" />
+                </div>
+                <span class="link-name">Email Me</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+            <a class="link-card" href="https://wa.me/adam_krivka">
+              <div class="link-left">
+                <div class="link-icon">
+                  <img src="./src/assets/WhatsappIMG.jpg" alt="WhatsApp" />
+                </div>
+                <span class="link-name">WhatsApp</span>
+              </div>
+              <svg class="icon-external" viewBox="0 0 24 24">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                      fill="none" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER SECTION WITH FACETED POLYGONS -->
+  <footer id="siteFooter">
+    <div class="section-poly-bg" aria-hidden="true">
+      <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMid slice">
+        <polygon points="0,300 400,300 600,100 0,50" fill="rgba(0, 168, 255, 0.08)" />
+        <polygon points="600,100 1000,0 1440,300 400,300" fill="rgba(4, 39, 54, 0.9)" />
+      </svg>
+    </div>
+
+    <div class="shell footer-inner">
+      <div class="footer-grid">
+        <div>
+          <h2 class="footer-quote">
+            not done.<br>
+            coming <span style="color: var(--glacier);">soon.</span>
+          </h2>
+          <p style="color: rgba(226, 232, 240, 0.75); margin-bottom: 1.5rem;">
+            Open for thoughtful projects and technical collaboration.
+          </p>
+          <button class="btn-glacier" onclick="showLinks()">
+            View All Links
+            <svg class="icon-arrow" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div style="background: rgba(4, 39, 54, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); padding: 2rem;">
+          <h3
+              style="font-family: var(--font-stencil); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--alpine-white);">
+            Stay In Touch</h3>
+          <p style="font-size: 0.82rem; color: rgba(226, 232, 240, 0.7); margin-bottom: 1.25rem;">No mailing list yet -
+            this box is just here for when there is one.</p>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="email" placeholder="enter@email.com"
+                   style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255, 255, 255, 0.2); padding: 0.8rem; color: #fff;">
+            <button type="button"
+                    style="background: var(--glacier); color: #042736; padding: 0.8rem 1.2rem; font-weight: 800;">JOIN</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">v<span id="footer-version">0.1.0</span></span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">no personal data collected :&#41;</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Published <span id="footer-published">__BUILD_TIMESTAMP__</span></span>
+        <span class="footer-sep">·</span>
+        <span>Brno, Czech Republic</span>
+        <span class="footer-sep">·</span>
+        <a class="footer-item footer-link" id="footer-contact" href="mailto:krivkaad@gmail.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE MENU DRAWER -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button style="align-self: flex-end; background: transparent; color: #fff; font-size: 1.5rem;"
+            id="mobileClose">✕</button>
+    <a href="#" onclick="showHome(); closeMobile(); return false;"
+       style="font-family: var(--font-display); font-size: 1.8rem;">HOME</a>
+    <a href="#work" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">WORK</a>
+    <a href="#highlights" onclick="closeMobile();"
+       style="font-family: var(--font-display); font-size: 1.8rem;">HIGHLIGHTS</a>
+    <a href="#about" onclick="closeMobile();" style="font-family: var(--font-display); font-size: 1.8rem;">ABOUT</a>
+    <a href="/ledger/" style="font-family: var(--font-display); font-size: 1.8rem; color: var(--glacier);">LEDGER</a>
+    <button class="btn-glacier" onclick="showLinks(); closeMobile();" style="margin-top: 1rem;">LET'S TALK</button>
+  </div>
+
+  <script>
+    // Get the full year dynamically
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const homeEl = document.getElementById('home');
+    const linksEl = document.getElementById('links');
+    const footerEl = document.getElementById('siteFooter');
+
+    // Switch between views, hides the other ones, 
+    function showLinks() {
+      homeEl.style.display = 'none';
+      linksEl.classList.add('active');
+      footerEl.style.display = 'none';
+      document.body.classList.add('overlay-open');
+      window.scrollTo(0, 0);
+    }
+
+    function showHome() {
+      homeEl.style.display = '';
+      linksEl.classList.remove('active');
+      footerEl.style.display = '';
+      document.body.classList.remove('overlay-open');
+      window.scrollTo(0, 0);
+    }
+
+    // Showing the mobile options menu
+    const mobileMenu = document.getElementById('mobileMenu');
+    document.getElementById('mobileToggle').addEventListener('click', () => mobileMenu.classList.add('open'));
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() { mobileMenu.classList.remove('open'); }
+  </script>
+
+</body>
+
 </html>
+
+<!-- END OF FILE: index.html-->

@@ -1,0 +1,1297 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Compras</title>
+
+  <link rel="apple-touch-icon" sizes="57x57" href="../src/assets/ico/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="../src/assets/ico/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../src/assets/ico/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../src/assets/ico/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../src/assets/ico/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../src/assets/ico/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../src/assets/ico/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../src/assets/ico/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../src/assets/ico/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../src/assets/ico/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../src/assets/ico/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../src/assets/ico/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../src/assets/ico/favicon-16x16.png">
+  <link rel="manifest" href="../src/assets/ico/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="../src/assets/ico/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Allerta+Stencil&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @font-face {
+      font-family: 'MyDisplay';
+      src: url('../../src/assets/fonts/ExplorerCondensed-Bold.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    /* ============ TOKENS & PALETTE (Matterhorn Alpine Theme) ============ */
+    :root {
+      --abyss-teal: #03212d;
+      --deep-fjord: #063244;
+      --glacier: #00ace1;
+      --glacier-hover: #26b8e6;
+      --alpine-red: #FF3B30;
+      --alpine-white: #FFFFFF;
+      --ice-white: #E2E8F0;
+
+      --bg: var(--abyss-teal);
+      --surface: #072e3d;
+      --card-bg: #FFFFFF;
+      --card-text: #042736;
+      --heading: var(--alpine-white);
+      --text: var(--ice-white);
+      --text-dim: rgba(226, 232, 240, 0.7);
+      --text-faint: rgba(226, 232, 240, 0.45);
+      --border: rgba(226, 232, 240, 0.15);
+      --border-strong: rgba(0, 172, 225, 0.35);
+
+      --poly-fill-1: rgba(0, 168, 255, 0.12);
+      --poly-fill-2: rgba(4, 39, 54, 0.65);
+      --poly-fill-3: rgba(255, 255, 255, 0.04);
+
+      --font-display: 'Anton', sans-serif;
+      --font-titles: 'MyDisplay', sans-serif;
+      --font-stencil: 'Allerta Stencil', sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+      --header-h: 68px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font-family: inherit;
+    }
+
+    .speckled {
+      filter: url(#distress-speckles);
+    }
+
+    /* ============ POLYGON BACKGROUNDS ============ */
+    .bg-polygon-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bg-polygon-layer svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .section-poly-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .section-poly-bg svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============ HEADER ============ */
+    header.top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #042330;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      height: var(--header-h);
+    }
+
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--deep-fjord);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      border: 1px solid rgba(0, 172, 225, 0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--alpine-white);
+      display: block;
+      line-height: 1.15;
+    }
+
+    .brand-name em {
+      color: var(--glacier);
+      font-style: normal;
+    }
+
+    .brand-role {
+      display: block;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: var(--font-stencil);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Read-only badge showing the signed-in identity — tied to the login, not free text */
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      height: 34px;
+    }
+
+    .user-badge svg {
+      width: 14px;
+      height: 14px;
+      color: var(--glacier);
+      flex-shrink: 0;
+    }
+
+    .user-badge-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--alpine-white);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Every header control now shares the same pill height/border language */
+    .header-right > * {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* ============ BUTTONS & ICONS ============ */
+    .icon-arrow {
+      width: 1.1em;
+      height: 1.1em;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-glacier {
+      background: var(--glacier);
+      color: var(--abyss-teal);
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-glacier:hover {
+      background: var(--glacier-hover);
+    }
+
+    .btn-glacier:hover .icon-arrow {
+      transform: translateX(4px);
+    }
+
+    .btn-glacier:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--alpine-white);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-outline-light:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+    }
+
+    .btn-outline-light:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid rgba(255, 59, 48, 0.4);
+      color: var(--alpine-red);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-danger:hover {
+      background: rgba(255, 59, 48, 0.12);
+      border-color: var(--alpine-red);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-dim);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .btn-ghost:hover {
+      color: var(--glacier);
+    }
+
+    /* ============ LOGIN HERO VIEW ============ */
+    #login-screen {
+      position: relative;
+      z-index: 2;
+      max-width: 440px;
+      margin: 140px auto 60px;
+      padding: 3rem 2.5rem;
+      background: linear-gradient(135deg, #063244 0%, #021a24 100%);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+    }
+
+    .eyebrow-label {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--glacier);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    #login-screen h1 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 3.2rem;
+      letter-spacing: 0.02em;
+      color: var(--alpine-white);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    #login-screen p {
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+    }
+
+    .field label {
+      display: block;
+      font-family: var(--font-stencil);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(226, 232, 240, 0.6);
+      margin-bottom: 6px;
+    }
+
+    input[type=email],
+    input[type=password],
+    input[type=text] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--alpine-white);
+      padding: 12px 14px;
+      font-size: 0.95rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--glacier);
+      box-shadow: 0 0 0 2px rgba(0, 172, 225, 0.2);
+    }
+
+    #error-msg {
+      color: var(--alpine-red);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      min-height: 1.2em;
+      font-weight: 600;
+    }
+
+    /* ============ APP MAIN CONTENT ============ */
+    .app-main {
+      flex: 1;
+      padding-top: calc(var(--header-h) + 2.5rem);
+      padding-bottom: 5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* ============ STAT STRIP ============ */
+    .stat-strip-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border: 2px solid var(--glacier);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--glacier);
+      flex-shrink: 0;
+    }
+
+    .stat-icon svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--alpine-white);
+      text-transform: uppercase;
+    }
+
+    .stat-desc {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--glacier);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    /* ============ ADD ITEM BAR ============ */
+    .add-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 0.9rem;
+    }
+
+    .add-bar input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--alpine-white);
+      padding: 14px 16px;
+      font-size: 1rem;
+    }
+
+    /* ============ QUICK-ADD / RECENT ITEMS ============ */
+    .recent-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2.5rem;
+    }
+
+    .recent-chips.hidden {
+      display: none;
+    }
+
+    .recent-label {
+      font-family: var(--font-stencil);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-right: 4px;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.76rem;
+      padding: 6px 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .chip:hover {
+      border-color: var(--glacier);
+      color: var(--glacier);
+      background: rgba(0, 172, 225, 0.08);
+    }
+
+    /* ============ RECEIPT ITEMS & LIST ============ */
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+     font-family: var(--font-titles);
+      font-size: clamp(2.65rem, 4.8vw, 3.85rem);
+      color: var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .receipt {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .receipt-item {
+      background: linear-gradient(135deg, #063244 0%, #031e2b 100%);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      position: relative;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .receipt-item:hover {
+      border-color: var(--border-strong);
+      box-shadow: 0 10px 30px rgba(0, 172, 225, 0.1);
+    }
+
+    .ri-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 1.05rem;
+    }
+
+    .ri-name {
+      font-weight: 700;
+      color: var(--alpine-white);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+
+    .ri-name-input {
+      max-width: 60%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--glacier);
+      color: var(--alpine-white);
+      padding: 6px 9px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .ri-dots {
+      flex: 1;
+      border-bottom: 1px dotted rgba(226, 232, 240, 0.3);
+      transform: translateY(-4px);
+      min-width: 16px;
+    }
+
+    .ri-price {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      color: var(--glacier);
+    }
+
+    .ri-price.pending {
+      font-family: var(--font-body);
+      color: var(--text-faint);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    .ri-meta {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .ri-meta span:not(:last-child)::after {
+      content: '·';
+      margin-left: 10px;
+      color: var(--text-faint);
+    }
+
+    .ri-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(226, 232, 240, 0.08);
+    }
+
+    .no-match {
+      font-size: 0.85rem;
+      color: var(--alpine-red);
+      font-weight: 600;
+    }
+
+    .ri-alt {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: rgba(0, 172, 225, 0.05);
+      border-left: 3px solid var(--glacier);
+      font-size: 0.85rem;
+    }
+
+    .ri-alt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      color: var(--text);
+    }
+
+    .ri-alt-row .shop {
+      color: var(--text-dim);
+    }
+
+    .empty-state {
+      background: var(--surface);
+      color: var(--text-dim);
+      padding: 48px 24px;
+      text-align: center;
+      font-size: 0.95rem;
+      border: 1px dashed var(--border);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      position: relative;
+      background: #021620;
+      color: var(--ice-white);
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+      margin-top: auto;
+    }
+
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 3rem clamp(1.25rem, 4vw, 3rem) 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: rgba(226, 232, 240, 0.65);
+    }
+
+    @media (max-width: 768px) {
+      .stat-strip-box {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .ri-name, .ri-name-input {
+        max-width: 45%;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-right {
+        gap: 6px;
+      }
+
+      .user-badge-name {
+        max-width: 80px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- GLOBAL DISTRESS FILTER DEFINITION -->
+  <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+    <filter id="distress-speckles">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="8" seed="7" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 15 -11" result="speckles" />
+      <feComposite in="SourceGraphic" in2="speckles" operator="out" />
+    </filter>
+  </svg>
+
+  <!-- GLOBAL FIXED BACKGROUND POLYGON LAYER -->
+  <div class="bg-polygon-layer" aria-hidden="true">
+    <svg viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice">
+      <polygon points="0,0 520,0 280,380 0,300" fill="var(--poly-fill-1)" />
+      <polygon points="520,0 1100,0 860,340 280,380" fill="var(--poly-fill-2)" />
+      <polygon points="1100,0 1440,0 1440,320 860,340" fill="var(--poly-fill-3)" />
+      <polygon points="0,300 280,380 380,720 0,800" fill="var(--poly-fill-2)" />
+      <polygon points="280,380 860,340 720,740 380,720" fill="var(--poly-fill-1)" />
+      <polygon points="860,340 1440,320 1440,680 720,740" fill="var(--poly-fill-2)" />
+      <polygon points="0,800 380,720 480,1000 0,1000" fill="var(--poly-fill-3)" opacity="0.5" />
+      <polygon points="380,720 720,740 880,1000 480,1000" fill="var(--poly-fill-1)" />
+      <polygon points="720,740 1440,680 1440,1000 880,1000" fill="var(--poly-fill-2)" />
+    </svg>
+  </div>
+
+  <!-- HEADER -->
+  <header class="top">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 20 L9 8 L13 14 L16 9 L21 20 Z" />
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">Compras<em>.</em></span>
+          <span class="brand-role">Shared Grocery List</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-badge hidden" id="user-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span class="user-badge-name" id="user-badge-name"></span>
+        </div>
+        <!--LLM: please make the arrow an icon that blends nicely into the design-->
+        <a href="../" class="btn-outline-light">← Home</a>
+        <button id="signout" class="btn-outline-light hidden">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-screen">
+    <span class="eyebrow-label">Grocery Optimization</span>
+    <h1 class="speckled">Compras</h1>
+    <p>Sign in to sync the shared household list.</p>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" />
+    </div>
+    <button class="btn-glacier" id="login-btn" style="width:100%; justify-content:center; margin-top:0.5rem;">
+      Sign in
+      <svg class="icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <div id="error-msg"></div>
+  </div>
+
+  <!-- APP VIEW -->
+  <main class="app-main hidden" id="app-screen">
+    <div class="shell">
+      <div class="stat-strip-box" id="mini-stats"></div>
+
+      <div class="add-bar">
+        <input type="text" id="new-item-input" placeholder="Add an item, e.g. tomato sauce, butter, coffee..." />
+        <button class="btn-glacier" id="add-item-btn">
+          Add
+          <svg class="icon-arrow" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="recent-chips hidden" id="recent-chips"></div>
+
+      <div class="section-head">
+        <div>
+          <span class="eyebrow-label">Live Inventory</span>
+          <!-- LLM: Why is the custom font not applied correctly?-->
+          <h2 class="section-title speckled">On the list</h2>
+        </div>
+        <!--LLM: make the button blend into design more-->
+        <button class="btn-outline-light" id="recheck-all-btn">Recheck all</button>
+      </div>
+
+      <div id="list-container"></div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="siteFooter">
+    <div class="section-poly-bg" aria-hidden="true">
+      <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMid slice">
+        <polygon points="0,300 400,300 600,100 0,50" fill="rgba(0, 168, 255, 0.08)" />
+        <polygon points="600,100 1000,0 1440,300 400,300" fill="rgba(4, 39, 54, 0.9)" />
+      </svg>
+    </div>
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">v<span id="footer-version">0.1.0</span></span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">no personal data collected :&#41;</span>
+        <span class="footer-sep">·</span>
+        <span class="footer-item">Published <span id="footer-published">__BUILD_TIMESTAMP__</span></span>
+        <span class="footer-sep">·</span>
+        <span>Brno, Czech Republic</span>
+        <span class="footer-sep">·</span>
+        <a class="footer-item footer-link" id="footer-contact" href="mailto:krivkaad@gmail.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const SUPABASE_URL = "https://eyvgammlolmqsylagygk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dmdhbW1sb2xtcXN5bGFneWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NjE3NzcsImV4cCI6MjEwMjAzNzc3N30.ZMNTTj_VRblCWGo-BI_ixEOxsz0EPtRJGKGIrr3zfLg";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const RECENT_KEY = 'kosik_recent_items';
+    let currentUser = null;
+    let displayName = '';
+    let items = [];
+    let checkingIds = new Set();
+    let expandedIds = new Set();
+    let editingIds = new Set();
+    let isRecheckingAll = false;
+
+    /* ---------- Auth ---------- */
+    async function checkSession() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) { currentUser = session.user; showApp(); }
+      else { showLogin(); }
+    }
+
+    async function attemptLogin() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errEl = document.getElementById('error-msg');
+      errEl.textContent = '';
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) { errEl.textContent = error.message; return; }
+      currentUser = data.user;
+      showApp();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', attemptLogin);
+    ['email', 'password'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
+    });
+
+    document.getElementById('signout').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      currentUser = null;
+      showLogin();
+    });
+
+    function showLogin() {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById('signout').classList.add('hidden');
+      document.getElementById('user-badge').classList.add('hidden');
+    }
+
+    // Display name now comes straight from the account used to sign in —
+    // full name if the account has one set, otherwise the email's local part.
+    function computeDisplayName(user) {
+      if (!user) return 'Someone';
+      const meta = user.user_metadata || {};
+      if (meta.full_name) return meta.full_name;
+      if (meta.name) return meta.name;
+      if (user.email) return user.email.split('@')[0];
+      return 'Someone';
+    }
+
+    async function showApp() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+      document.getElementById('signout').classList.remove('hidden');
+
+      displayName = computeDisplayName(currentUser);
+      document.getElementById('user-badge-name').textContent = displayName;
+      document.getElementById('user-badge').classList.remove('hidden');
+
+      renderRecentChips();
+      await loadItems();
+      subscribeRealtime();
+    }
+
+    function yourName() {
+      return displayName || 'Someone';
+    }
+
+    /* ---------- Data Operations ---------- */
+    async function loadItems() {
+      const { data, error } = await sb.from('shopping_items').select('*').order('created_at', { ascending: false });
+      if (error) { console.error(error); return; }
+      items = data || [];
+      renderList();
+    }
+
+    document.getElementById('add-item-btn').addEventListener('click', addItem);
+    document.getElementById('new-item-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') addItem(); });
+
+    async function addItem() {
+      const input = document.getElementById('new-item-input');
+      const name = input.value.trim();
+      if (!name) return;
+      const { error } = await sb.from('shopping_items').insert({
+        name,
+        added_by_name: yourName()
+      });
+      if (error) { alert(error.message); return; }
+      input.value = '';
+      pushRecentItem(name);
+      await loadItems();
+    }
+
+    // Removing an item is immediate — no confirmation popup.
+    async function removeItem(id) {
+      const { error } = await sb.from('shopping_items').delete().eq('id', id);
+      if (error) { alert(error.message); return; }
+      await loadItems();
+    }
+
+    async function renameItem(id, newName) {
+      const name = newName.trim();
+      if (!name) return;
+      const { error } = await sb.from('shopping_items').update({ name }).eq('id', id);
+      if (error) { alert(error.message); return; }
+      editingIds.delete(id);
+      await loadItems();
+    }
+
+    async function checkPrice(id, name) {
+      checkingIds.add(id);
+      renderList();
+      try {
+        const { data, error } = await sb.functions.invoke('kupi-fetcher', { body: { product: name } });
+        if (error) throw error;
+
+        if (!data || !data.found) {
+          await sb.from('shopping_items').update({
+            checked_at: new Date().toISOString(),
+            best_price: null, best_price_per_100: null, best_store: null,
+            best_amount_text: null, best_validity: null,
+            raw_results: data || { found: false }
+          }).eq('id', id);
+        } else {
+          const c = data.overallCheapest;
+          await sb.from('shopping_items').update({
+            checked_at: new Date().toISOString(),
+            best_price: c.price,
+            best_price_per_100: c.pricePer100,
+            best_store: c.shop,
+            best_amount_text: c.amountText,
+            best_validity: c.validity,
+            raw_results: data
+          }).eq('id', id);
+        }
+      } catch (err) {
+        alert('Price check failed: ' + (err.message || err));
+      } finally {
+        checkingIds.delete(id);
+        await loadItems();
+      }
+    }
+
+    // Rechecks every item on the list, one at a time, reusing checkPrice.
+    async function recheckAll() {
+      if (isRecheckingAll || !items.length) return;
+      isRecheckingAll = true;
+      const btn = document.getElementById('recheck-all-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Rechecking…'; }
+      const targets = [...items];
+      for (const item of targets) {
+        await checkPrice(item.id, item.name);
+      }
+      isRecheckingAll = false;
+      if (btn) { btn.disabled = false; btn.textContent = 'Recheck all'; }
+    }
+    document.getElementById('recheck-all-btn').addEventListener('click', recheckAll);
+
+    /* ---------- Quick add / recent items ---------- */
+    /* LLM: add an option to delete some of the recent searches or make a max count of them and delete the last in the queue so that only one line of them exists */
+    function getRecentItems() {
+      try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+      catch (e) { return []; }
+    }
+
+    function pushRecentItem(name) {
+      let recent = getRecentItems();
+      recent = recent.filter(n => n.toLowerCase() !== name.toLowerCase());
+      recent.unshift(name);
+      recent = recent.slice(0, 8);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); } catch (e) { }
+      renderRecentChips();
+    }
+
+    function renderRecentChips() {
+      const el = document.getElementById('recent-chips');
+      if (!el) return;
+      const recent = getRecentItems();
+      if (!recent.length) { el.innerHTML = ''; el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+      el.innerHTML = '<span class="recent-label">Quick add</span>' +
+        recent.map(n => `<button type="button" class="chip" data-name="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('');
+      el.querySelectorAll('.chip').forEach(btn => {
+        btn.addEventListener('click', () => quickAdd(btn.dataset.name));
+      });
+    }
+
+    async function quickAdd(name) {
+      const { error } = await sb.from('shopping_items').insert({ name, added_by_name: yourName() });
+      if (error) { alert(error.message); return; }
+      pushRecentItem(name);
+      await loadItems();
+    }
+
+    /* ---------- Helpers & Rendering ---------- */
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str || '';
+      return d.innerHTML;
+    }
+
+    function fmtMoney(amount) {
+      if (amount == null) return '';
+      return `${Math.round(amount * 100) / 100} Kč`;
+    }
+
+    function fmtCheckedAt(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      const now = new Date();
+      const sameDay = d.toDateString() === now.toDateString();
+      return sameDay
+        ? `checked ${d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`
+        : `checked ${d.toLocaleDateString()}`;
+    }
+
+    const ICON_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>';
+    const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+    const ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+
+    function renderMiniStats() {
+      const el = document.getElementById('mini-stats');
+      if (!el) return;
+      const total = items.length;
+      const checked = items.filter(i => i.checked_at).length;
+      const pending = total - checked;
+      el.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-icon">${ICON_LIST}</div>
+          <div>
+            <div class="stat-value speckled">${total}</div>
+            <span class="stat-desc">On the list</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">${ICON_CHECK}</div>
+          <div>
+            <div class="stat-value speckled">${checked}</div>
+            <span class="stat-desc">Priced</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">${ICON_CLOCK}</div>
+          <div>
+            <div class="stat-value speckled">${pending}</div>
+            <span class="stat-desc">Pending</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderList() {
+      renderMiniStats();
+      const container = document.getElementById('list-container');
+      if (!items.length) {
+        container.innerHTML = '<div class="empty-state">Nothing on the list yet — add the first thing above.</div>';
+        return;
+      }
+
+      const rows = items.map(item => {
+        const isChecking = checkingIds.has(item.id);
+        const isExpanded = expandedIds.has(item.id);
+        const isEditing = editingIds.has(item.id);
+        const hasResult = !!item.checked_at;
+        const noMatch = hasResult && item.best_price == null;
+
+        let priceHtml, metaHtml, altHtml = '';
+
+        if (isChecking) {
+          priceHtml = `<span class="ri-price pending">checking…</span>`;
+          metaHtml = '';
+        } else if (!hasResult) {
+          priceHtml = `<span class="ri-price pending">not checked</span>`;
+          metaHtml = `<span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>`;
+        } else if (noMatch) {
+          priceHtml = `<span class="no-match">no match found</span>`;
+          metaHtml = `<span>${fmtCheckedAt(item.checked_at)}</span><span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>`;
+        } else {
+          priceHtml = `<span class="ri-price speckled">${fmtMoney(item.best_price)}</span>`;
+          const per100 = item.best_price_per_100 != null ? `${fmtMoney(item.best_price_per_100)} / 100` : '';
+          metaHtml = `
+            <span>${escapeHtml(item.best_store || '')}</span>
+            ${item.best_amount_text ? `<span>${escapeHtml(item.best_amount_text)}</span>` : ''}
+            ${per100 ? `<span>${per100}</span>` : ''}
+            ${item.best_validity ? `<span>${escapeHtml(item.best_validity)}</span>` : ''}
+            <span>${fmtCheckedAt(item.checked_at)}</span>
+            <span>added by ${escapeHtml(item.added_by_name || 'someone')}</span>
+          `;
+
+          const products = item.raw_results?.products || [];
+          if (isExpanded && products.length) {
+            altHtml = `<div class="ri-alt">` + products.map(p => `
+              <div style="margin-bottom:8px;">
+                <div style="font-weight:700; margin-bottom:3px; color:var(--alpine-white);">${escapeHtml(p.name)}</div>
+                ${p.offers.slice(0, 5).map(o => `
+                  <div class="ri-alt-row">
+                    <span class="shop">${escapeHtml(o.shop)} (${escapeHtml(o.amountText)})</span>
+                    <span>${fmtMoney(o.price)}${o.pricePer100 != null ? ` · ${fmtMoney(o.pricePer100)}/100` : ''}</span>
+                  </div>
+                `).join('')}
+              </div>
+            `).join('') + `</div>`;
+          }
+        }
+
+        const showAltToggle = hasResult && !noMatch && (item.raw_results?.products?.length > 0);
+
+        const nameHtml = isEditing
+          ? `<input type="text" class="ri-name-input" value="${escapeHtml(item.name)}" />`
+          : `<span class="ri-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>`;
+
+        const actionsHtml = isEditing
+          ? `
+            <button class="btn-glacier save-btn" style="padding:6px 12px; font-size:0.75rem;">Save</button>
+            <button class="btn-ghost cancel-btn">Cancel</button>
+          `
+          : `
+            <button class="btn-glacier check-btn" style="padding:6px 12px; font-size:0.75rem;" ${isChecking ? 'disabled' : ''}>
+              ${hasResult ? 'Recheck' : 'Check price'}
+            </button>
+            <button class="btn-ghost edit-btn">Edit</button>
+            ${showAltToggle ? `<button class="btn-ghost toggle-btn">${isExpanded ? 'Hide offers' : 'Show all offers'}</button>` : ''}
+            <button class="btn-danger remove-btn">Remove</button>
+          `;
+
+        return `
+          <div class="receipt-item" data-id="${item.id}">
+            <div class="ri-row">
+              ${nameHtml}
+              <span class="ri-dots"></span>
+              ${priceHtml}
+            </div>
+            ${metaHtml ? `<div class="ri-meta">${metaHtml}</div>` : ''}
+            ${altHtml}
+            <div class="ri-actions">
+              ${actionsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `<div class="receipt">${rows}</div>`;
+
+      container.querySelectorAll('.receipt-item').forEach(el => {
+        const id = el.dataset.id;
+        const item = items.find(i => i.id === id);
+
+        const checkBtn = el.querySelector('.check-btn');
+        if (checkBtn) checkBtn.addEventListener('click', () => checkPrice(id, item.name));
+
+        const removeBtn = el.querySelector('.remove-btn');
+        if (removeBtn) removeBtn.addEventListener('click', () => removeItem(id));
+
+        const toggleBtn = el.querySelector('.toggle-btn');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+            if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+            renderList();
+          });
+        }
+
+        const editBtn = el.querySelector('.edit-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            editingIds.add(id);
+            renderList();
+          });
+        }
+
+        const nameInput = el.querySelector('.ri-name-input');
+        const saveBtn = el.querySelector('.save-btn');
+        const cancelBtn = el.querySelector('.cancel-btn');
+        if (nameInput) {
+          nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') renameItem(id, nameInput.value);
+            if (e.key === 'Escape') { editingIds.delete(id); renderList(); }
+          });
+          nameInput.focus();
+          nameInput.select();
+        }
+        if (saveBtn) saveBtn.addEventListener('click', () => renameItem(id, nameInput.value));
+        if (cancelBtn) cancelBtn.addEventListener('click', () => { editingIds.delete(id); renderList(); });
+      });
+    }
+
+    /* ---------- Realtime Channel ---------- */
+    function subscribeRealtime() {
+      sb.channel('shopping-items-changes')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'shopping_items' },
+          () => { loadItems(); }
+        )
+        .subscribe();
+    }
+
+    checkSession();
+  </script>
+</body>
+
+</html>
