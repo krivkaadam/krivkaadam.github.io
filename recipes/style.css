@@ -47,6 +47,11 @@ html {
     scroll-behavior: smooth;
 }
 
+html.kitchen-open,
+body.kitchen-open {
+    overflow: hidden;
+}
+
 body {
     background: var(--abyss-teal);
     color: var(--ice-white);

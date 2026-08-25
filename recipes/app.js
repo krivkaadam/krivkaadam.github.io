@@ -682,6 +682,8 @@ async function enterKitchen(recipe) {
         timerRunning: false
     };
     document.getElementById('kitchen-view').classList.remove('hidden');
+    document.documentElement.classList.add('kitchen-open');
+    document.body.classList.add('kitchen-open');
     await requestWakeLock();
     renderKitchen();
 }
@@ -691,6 +693,8 @@ function exitKitchen() {
     releaseWakeLock();
     kitchen = null;
     document.getElementById('kitchen-view').classList.add('hidden');
+    document.documentElement.classList.remove('kitchen-open');
+    document.body.classList.remove('kitchen-open');
 }
 
 async function requestWakeLock() {
