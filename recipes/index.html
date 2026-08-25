@@ -636,7 +636,7 @@
 
         .detail-title {
             font-family: var(--font-titles);
-            font-size: clamp(1.9rem, 4.5vw, 3rem);
+            font-size: clamp(2.85rem, 6.45vw, 4.5rem);
             color: var(--navy-heading);
             text-transform: uppercase;
             letter-spacing: 0.02em;
@@ -1237,9 +1237,10 @@
     </div>
 
     <!-- LOGIN SCREEN -->
+    <!-- LLM: Add return home button-->
     <div id="login-screen">
         <span class="eyebrow-label">Authentication</span>
-        <h1>Recipes</h1>
+        <h1 class="section-title speckled">Recipes</h1>
         <p>Sign in to access your culinary ledger.</p>
         <div class="field">
             <label for="email">Email Address</label>
@@ -1335,15 +1336,15 @@
         <footer id="siteFooter">
             <div class="footer-inner">
                 <div class="footer-bottom">
-                    <span>© <span id="year"></span> Adam Křivka. All rights reserved.</span>
+                    <span>© <span id="year"></span> VITE_AUTHOR_NAME. All rights reserved.</span>
                     <span class="footer-sep">·</span>
                     <span class="footer-item">v<span id="footer-version">0.2.1</span></span>
                     <span class="footer-sep">·</span>
                     <span class="footer-item">no personal data collected :&#41;</span>
                     <span class="footer-sep">·</span>
-                    <span class="footer-item">Published <span id="footer-published">2026-08-24 21:45:34</span></span>
+                    <span class="footer-item">Published <span id="footer-published">2026-08-25 09:14:54</span></span>
                     <span class="footer-sep">·</span>
-                    <span>Brno, Czech Republic</span>
+                    <span>VITE_AUTHOR_LOCATION</span>
                     <span class="footer-sep">·</span>
                     <a class="footer-item footer-link" href="mailto:krivkaad@gmail.com">Contact</a>
                 </div>
@@ -1368,8 +1369,8 @@
     </svg>
 
     <script>
-        const SUPABASE_URL = "https://eyvgammlolmqsylagygk.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dmdhbW1sb2xtcXN5bGFneWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0NjE3NzcsImV4cCI6MjEwMjAzNzc3N30.ZMNTTj_VRblCWGo-BI_ixEOxsz0EPtRJGKGIrr3zfLg";
+        const SUPABASE_URL = "VITE_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "VITE_SUPABASE_ANON_KEY";
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const NAME_KEY = 'recepty_adam';
@@ -1564,7 +1565,7 @@
                 el.innerHTML = '<div class="empty-state">Recipe not found.</div>';
                 return;
             }
-
+            // LLM: remove the border below image, improve the layout on this page to look more professional, polished while keeping the design elements and colors
             el.innerHTML = `
                 <button class="btn outline small" id="back-btn" style="margin-bottom: 1.25rem;">
                     <svg class="icon-vector icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
@@ -1633,7 +1634,7 @@
 
                     <div class="detail-actions">
                         <button class="btn primary" id="cook-btn">
-                            <span>Enter Kitchen HUD</span>
+                            <span>Let's cook</span>
                             <svg class="icon-vector icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
                         </button>
                         <button class="btn outline" id="edit-btn">Edit Recipe</button>
@@ -2021,16 +2022,16 @@
             const parts = (currentStepRaw.instruction || '').split('\n\n');
             const stepTitle = parts[0] || '';
             const stepDesc = parts.slice(1).join('\n\n') || '';
-
+            // I like the two column approach but please make the layout of the right one with the steps a bit more polished, modern, also keep the design elements as they are - colors, and shapes are part of design identity. When there is the timer, the layout also does not feel right, feel free to improve it.
             el.innerHTML = `
                 <div class="kitchen-topbar">
                     <div>
-                        <span class="eyebrow-label">LIVE KITCHEN HUD</span>
+                        <span class="eyebrow-label">In Progress...</span>
                         <div class="kitchen-title speckled">${escapeHtml(r.title)}</div>
                     </div>
                     <button class="btn danger small" id="exit-kitchen-btn">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        <span>Exit HUD</span>
+                        <span>Exit</span>
                     </button>
                 </div>
 
