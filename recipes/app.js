@@ -842,23 +842,11 @@ function renderKitchen() {
         });
     });
 
-    const prevButton = document.getElementById('prev-step-btn');
-
     document.getElementById('prev-step-btn')?.addEventListener('click', () => {
         stopTimer();
-        k.stepIndex--;
+        if (k.stepIndex > 0) k.stepIndex--;
         renderKitchen();
     });
-
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowLeft') {
-            event.preventDefault();
-            stopTimer();
-            k.stepIndex--;
-            renderKitchen();
-
-        }
-    })
 
     const nextButton = document.getElementById('next-step-btn');
 
@@ -869,17 +857,6 @@ function renderKitchen() {
             renderKitchen();
         }
     });
-
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowRight') {
-            event.preventDefault();
-            if (k.stepIndex < totalSteps - 1) {
-                stopTimer();
-                k.stepIndex++;
-                renderKitchen();
-            }
-        }
-    })
 
     document.getElementById('timer-toggle-btn')?.addEventListener('click', () => {
         if (k.timerRunning) {
@@ -901,6 +878,24 @@ function renderKitchen() {
         updateTimerDisplay();
     }
 }
+
+window.addEventListener('keydown', (event) => {
+    if (!kitchen || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+
+    const stepCount = kitchen.recipe.recipe_steps.length;
+    if (stepCount === 0) return;
+
+    const lastStepIndex = stepCount - 1;
+    const nextStepIndex = event.key === 'ArrowLeft'
+        ? Math.max(0, kitchen.stepIndex - 1)
+        : Math.min(lastStepIndex, kitchen.stepIndex + 1);
+
+    if (nextStepIndex === kitchen.stepIndex) return;
+    event.preventDefault();
+    stopTimer();
+    kitchen.stepIndex = nextStepIndex;
+    renderKitchen();
+});
 
 function startOrResumeKitchenTimer(defaultSeconds) {
     const k = kitchen;
