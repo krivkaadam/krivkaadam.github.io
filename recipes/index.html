@@ -51,10 +51,10 @@
     </div>
 
     <!-- LOGIN SCREEN -->
-    <div id="login-screen">
+    <div id="login-screen" class="hidden">
         <span class="eyebrow-label">Authentication</span>
-        <h1 class="section-title speckled">Recipes</h1>
-        <p>Sign in to access your culinary ledger.</p>
+        <h1 class="section-title speckled">Sign In</h1>
+        <p>Sign in to edit and add recipes.</p>
         <div class="field">
             <label for="email">Email Address</label>
             <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
@@ -70,14 +70,9 @@
                       stroke-linejoin="round" fill="none" />
             </svg>
         </button>
-        <a href="../" class="btn outline full" id="login-home-link" style="margin-top:0.75rem;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-            <span>Back to Portfolio</span>
-        </a>
+        <button type="button" class="btn outline full" id="cancel-login-btn" style="margin-top:0.75rem;">
+            <span>Cancel / Back to Recipes</span>
+        </button>
         <div id="error-msg"></div>
     </div>
 
@@ -108,10 +103,13 @@
                         </svg>
                         <span class="btn-label-long">Portfolio</span>
                     </a>
-                    <button class="btn primary small" id="new-recipe-btn">
+                    <button class="btn primary small hidden" id="new-recipe-btn">
                         <span>+ <span class="btn-label-long">New Recipe</span></span>
                     </button>
-                    <button class="btn outline small" id="signout">
+                    <button class="btn outline small" id="signin-nav-btn">
+                        <span>Sign In</span>
+                    </button>
+                    <button class="btn outline small hidden" id="signout">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
@@ -119,7 +117,6 @@
                         <span class="btn-label-long">Sign Out</span>
                     </button>
                 </div>
-            </div>
         </header>
 
         <main class="shell">
@@ -163,7 +160,7 @@
                     <span class="footer-sep">·</span>
                     <span class="footer-item">no personal data collected :&#41;</span>
                     <span class="footer-sep">·</span>
-                    <span class="footer-item">Published <span id="footer-published">2026-08-25 12:03:14</span></span>
+                    <span class="footer-item">Published <span id="footer-published">2026-08-25 12:34:03</span></span>
                     <span class="footer-sep">·</span>
                     <span>Brno, Czech Republic</span>
                     <span class="footer-sep">·</span>
@@ -189,7 +186,7 @@
         </filter>
     </svg>
 
-   <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
