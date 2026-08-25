@@ -456,7 +456,7 @@ select {
 
 .recipe-card {
     background: linear-gradient(135deg, var(--surface-card-a) 0%, var(--surface-card-b) 100%);
-    border: 1px solid var(--border);
+    
     padding: 1.35rem;
     cursor: pointer;
     position: relative;
@@ -482,7 +482,6 @@ select {
     position: relative;
     background: var(--deep-fjord);
     overflow: hidden;
-    border-bottom: 1px solid var(--border);
 }
 
 .rc-image-wrap img {
@@ -494,7 +493,7 @@ select {
 }
 
 .recipe-card:hover .rc-image-wrap img {
-    transform: scale(1.04);
+    transform: scale(1.0);
 }
 
 .rc-badge-pill {
@@ -1079,6 +1078,11 @@ select {
     align-items: center;
     justify-content: center;
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.kitchen-step-number-badge span {
+    display: block;
+    line-height: 1;
 }
 
 .kitchen-step-copy {
