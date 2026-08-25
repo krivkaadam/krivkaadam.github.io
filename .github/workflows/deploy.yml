@@ -32,7 +32,7 @@ jobs:
           VITE_AUTHOR_NAME: ${{ secrets.VITE_AUTHOR_NAME }}
           VITE_AUTHOR_LOCATION: ${{ secrets.VITE_AUTHOR_LOCATION }}
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Setup Pages
