@@ -1068,7 +1068,8 @@ select {
     flex-shrink: 0;
     width: 76px;
     height: 76px;
-    background: var(--deep-fjord);
+    background: #dceefa;
+    border: 1px solid #7aa8c8;
     color: var(--glacier);
     font-family: var(--font-titles);
     font-size: 2.1rem;

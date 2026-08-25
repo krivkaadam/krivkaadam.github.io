@@ -780,7 +780,8 @@ function renderKitchen() {
                 </div>
 
                 <div class="kitchen-step-body">
-                    <div class="kitchen-step-number-badge"><span class="speckled">${k.stepIndex + 1}</span></div>
+        
+                    <div class="kitchen-step-number-badge"><h2 class="section-title speckled">${k.stepIndex + 1}</h2></div>
                     <div class="kitchen-step-copy">
                         <div class="kitchen-step-text">${escapeHtml(stepTitle)}</div>
                         ${stepDesc ? `<div class="kitchen-step-desc">${escapeHtml(stepDesc)}</div>` : ''}
