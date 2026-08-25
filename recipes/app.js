@@ -3,7 +3,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const NAME_KEY = 'recepty_adam';
+const NAME_KEY = 'recipes';
 let currentUser = null;
 let recipes = [];
 let searchTerm = '';
@@ -67,9 +67,9 @@ async function showApp() {
 
 function yourName() {
     try {
-        return localStorage.getItem(NAME_KEY) || prompt('Your name (shown as contributor):') || 'Adam';
+        return localStorage.getItem(NAME_KEY) || prompt('Your name (shown as contributor):') || 'Unknown';
     } catch (e) {
-        return 'Adam';
+        return 'Unknown';
     }
 }
 
@@ -234,8 +234,11 @@ function renderDetail() {
                     ${(r.tags && r.tags.length) ? `<div class="detail-tags">${r.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
                     ${r.description ? `<div class="detail-desc">${escapeHtml(r.description)}</div>` : ''}
 
-                    <div class="block-subhead">Ingredients List</div>
-                    <div style="margin-bottom: 2rem;">
+                    <div class="block-subhead">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M6 3a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3M18 3v18M18 8h-3a2 2 0 0 0 0 4h3v6"/></svg>
+                        Ingredients List
+                    </div>
+                    <div style="margin-bottom: 2.75rem;">
                         ${r.recipe_ingredients.map(i => `
                             <div class="ingredient-row">
                                 <span class="ingredient-name">${escapeHtml(i.name)}${i.note ? ` <span class="ingredient-note">(${escapeHtml(i.note)})</span>` : ''}</span>
@@ -244,7 +247,10 @@ function renderDetail() {
                         `).join('') || '<div class="empty-state">No ingredients cataloged.</div>'}
                     </div>
 
-                    <div class="block-subhead">Preparation Steps</div>
+                    <div class="block-subhead">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        Preparation Steps
+                    </div>
                     <div>
                         ${r.recipe_steps.map(s => {
         // Extract title and description from step if separated by newline
@@ -398,15 +404,21 @@ function renderForm() {
                     </div>
 
                     <div class="form-section">
-                        <div class="block-subhead">Ingredients</div>
+                        <div class="block-subhead">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M6 3a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3M18 3v18M18 8h-3a2 2 0 0 0 0 4h3v6"/></svg>
+                            Ingredients
+                        </div>
                         <div id="ingredient-rows"></div>
-                        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.5rem;">+ Add Ingredient</button>
+                        <button class="btn outline small" id="add-ingredient-btn" style="margin-top: 0.75rem;">+ Add Ingredient</button>
                     </div>
 
                     <div class="form-section">
-                        <div class="block-subhead">Preparation Steps</div>
+                        <div class="block-subhead">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            Preparation Steps
+                        </div>
                         <div id="step-rows"></div>
-                        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.5rem;">+ Add Step</button>
+                        <button class="btn outline small" id="add-step-btn" style="margin-top: 0.75rem;">+ Add Step</button>
                     </div>
 
                     <div class="form-actions">
@@ -719,20 +731,26 @@ function renderKitchen() {
                             <span class="rc-tag">${r.cook_minutes ? r.cook_minutes + ' MIN COOK' : 'PREPARATION'}</span>
                         </div>
 
-                        <div class="kitchen-step-center">
-                            <div class="kitchen-step-text">${escapeHtml(stepTitle)}</div>
-                            ${stepDesc ? `<div class="kitchen-step-desc">${escapeHtml(stepDesc)}</div>` : ''}
+                        <div class="kitchen-step-body">
+                            <div class="kitchen-step-number-badge speckled">${k.stepIndex + 1}</div>
+                            <div class="kitchen-step-copy">
+                                <div class="kitchen-step-text">${escapeHtml(stepTitle)}</div>
+                                ${stepDesc ? `<div class="kitchen-step-desc">${escapeHtml(stepDesc)}</div>` : ''}
+                            </div>
 
                             ${currentStepRaw.timer_seconds ? `
                                 <div class="kitchen-timer-card" id="kitchen-timer-card">
-                                    <span class="kitchen-timer-label">Step Timer</span>
+                                    <span class="kitchen-timer-label">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+                                        Step Timer
+                                    </span>
                                     <div class="kitchen-timer-display" id="timer-display">--:--</div>
                                     <div class="kitchen-timer-bar-track">
                                         <div class="kitchen-timer-bar-fill" id="timer-bar-fill" style="width:100%;"></div>
                                     </div>
                                     <div class="kitchen-timer-controls">
                                         <button class="btn primary small" id="timer-toggle-btn">
-                                            <span>${k.timerRunning ? 'Pause' : (k.timerRemaining > 0 ? 'Resume' : `Start ${Math.round(currentStepRaw.timer_seconds / 60)}m Timer`)}</span>
+                                            <span>${k.timerRunning ? 'Pause' : (k.timerRemaining > 0 ? 'Resume' : `Start ${Math.round(currentStepRaw.timer_seconds / 60)}m`)}</span>
                                         </button>
                                         <button class="btn outline small" id="timer-reset-btn">Reset</button>
                                     </div>
