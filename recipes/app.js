@@ -288,10 +288,10 @@ function renderDetail() {
             </div>
             <div>
                 ${r.recipe_steps.map(s => {
-                    const parts = (s.instruction || '').split('\n\n');
-                    const stepTitle = parts[0] || '';
-                    const stepDesc = parts.slice(1).join('\n\n') || s.description || '';
-                    return `
+        const parts = (s.instruction || '').split('\n\n');
+        const stepTitle = parts[0] || '';
+        const stepDesc = parts.slice(1).join('\n\n') || s.description || '';
+        return `
                         <div class="step-row">
                             <span class="step-num">${s.step_number}</span>
                             <div class="step-content">
@@ -303,7 +303,7 @@ function renderDetail() {
                             </div>
                         </div>
                     `;
-                }).join('') || '<div class="empty-state">No steps listed.</div>'}
+    }).join('') || '<div class="empty-state">No steps listed.</div>'}
             </div>
 
             ${r.source_note ? `
@@ -842,19 +842,44 @@ function renderKitchen() {
         });
     });
 
+    const prevButton = document.getElementById('prev-step-btn');
+
     document.getElementById('prev-step-btn')?.addEventListener('click', () => {
         stopTimer();
         k.stepIndex--;
         renderKitchen();
     });
 
-    document.getElementById('next-step-btn')?.addEventListener('click', () => {
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            stopTimer();
+            k.stepIndex--;
+            renderKitchen();
+
+        }
+    })
+
+    const nextButton = document.getElementById('next-step-btn');
+
+    nextButton?.addEventListener('click', () => {
         if (k.stepIndex < totalSteps - 1) {
             stopTimer();
             k.stepIndex++;
             renderKitchen();
         }
     });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            if (k.stepIndex < totalSteps - 1) {
+                stopTimer();
+                k.stepIndex++;
+                renderKitchen();
+            }
+        }
+    })
 
     document.getElementById('timer-toggle-btn')?.addEventListener('click', () => {
         if (k.timerRunning) {
